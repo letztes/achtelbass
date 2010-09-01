@@ -20,6 +20,9 @@ class gachtelbass(object):
         gtk.main_quit()
         return False
 
+    # Man muss sich nun ueberlegen, wie die Elemente angeordnet sein sollen.
+# Das heisst, wie die vboxes und hboxes bzw. tabellen verschachtelt werden.
+
 def main():
     gtk.main()
     return 0

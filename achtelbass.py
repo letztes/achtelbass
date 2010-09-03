@@ -19,6 +19,7 @@
 #       neuer Datei, würde ja alternativ zu den bisher implementierten
 #       Methoden in Pitches und Durations verwendet werden. Sie soll
 #       Methoden zum Lernen andere zum Generieren enthalten.
+#   *   Primen als wählbares Intervall hinzufügen
 
 import durations
 import pitches

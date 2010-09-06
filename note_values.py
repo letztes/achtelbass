@@ -13,11 +13,11 @@
 
 import random
 
-class durations(object):
-    def __init__(self, selectable_durations, beat):
-        self.Selectable_Durations = selectable_durations
-        self.Beat = beat
-        self.PMX_Durations = {
+class note_values(object):
+    def __init__(self, selectable_note_values, time_signature):
+        self.Selectable_Note_Values = selectable_note_values
+        self.Time_Signature = time_signature
+        self.PMX_Note_Values = {
                              1.0    : 0,
                              1.0/2  : 2,
                              1.0/4  : 4,
@@ -28,12 +28,12 @@ class durations(object):
         self.Result = []
     
     def calculate(self):
-        remaining_bar_length = self.Beat # Zum Beispiel 3.0/4 = 0.75
+        remaining_bar_length = self.Time_Signature # Zum Beispiel 3.0/4 = 0.75
         while remaining_bar_length > 0.0:          
-            chosen_duration = random.choice(self.Selectable_Durations)
-            if remaining_bar_length - chosen_duration >= 0.0:
-                self.Result.append(self.PMX_Durations[chosen_duration])
-                remaining_bar_length -= chosen_duration
+            chosen_note_value = random.choice(self.Selectable_Note_Values)
+            if remaining_bar_length - chosen_note_value >= 0.0:
+                self.Result.append(self.PMX_Note_Values[chosen_note_value])
+                remaining_bar_length -= chosen_note_value
         self.Result.append("/\n")
 
 ##############################################################################

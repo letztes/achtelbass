@@ -25,13 +25,27 @@
 #       definieren in nicht-öffentliche __Methoden auslagern.
 #   *   In ./achtelbass_gui_draft.html nicht drin, muss aber auch durch
 #       graphische Bedienelemente abgedeckt sein: Taktart und Taktauflösung
+#   *   Anzahl der Seiten soll in einem Menü (Bearbeiten) einstellbar sein.
 
 import pygtk
 pygtk.require('2.0')
 import gtk
 
+import achtelbass
+
 class gachtelbass(object):
     def __init__(self):
+        self.parameters = {'tonic' : '',
+                            'mode' : '',
+                            'intervals' : {},
+                            'min_pitch' : '',
+                            'max_pitch' : '',
+                            'rest_frequency' : '',
+                            'time_signature' : '',
+                            'note_values' : {},
+                            'tuplets' : '',
+                            'tuplets_frequency' : '',
+                           }
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_window.set_title("achtelbass")
         self.main_window.connect("delete_event", self.delete_event)
@@ -84,14 +98,14 @@ class gachtelbass(object):
 
 # The actual content of achtelbass programm user interface
 # Nested VBoxes are used, so that the title of the widget is displayed above
-        content_hbox = gtk.HBox(False, 0)
-        content_hbox.show()
-        main_vbox.pack_start(content_hbox, False, False, 5)
+        parameters_hbox = gtk.HBox(False, 0)
+        parameters_hbox.show()
+        main_vbox.pack_start(parameters_hbox, False, False, 5)
 
 # Tonic is the first nested VBox
         tonic_vbox = gtk.VBox(False, 0)
         tonic_vbox.show()
-        content_hbox.pack_start(tonic_vbox)
+        parameters_hbox.pack_start(tonic_vbox, False, False, 2)
 
         tonic_combo_box = gtk.combo_box_new_text()
         tonic_combo_box.show()
@@ -121,12 +135,12 @@ class gachtelbass(object):
         
         mode_vbox = gtk.VBox(False, 0)
         mode_vbox.show()
-        content_hbox.pack_start(mode_vbox)
+        parameters_hbox.pack_start(mode_vbox, False, False, 2)
 
         mode_combo_box = gtk.combo_box_new_text()
         mode_combo_box.show()
-        mode_combo_box.append_text('Major')
-        mode_combo_box.append_text('Minor')
+        mode_combo_box.append_text('Dur')
+        mode_combo_box.append_text('Moll')
         
         mode_combo_box.connect("changed", self.select_mode)
         mode_combo_box.set_active(0) # 'Major' shall be default value
@@ -141,18 +155,19 @@ class gachtelbass(object):
 
         intervals_vbox = gtk.VBox(False, 0)
         intervals_vbox.show()
-        content_hbox.pack_start(intervals_vbox)
+        parameters_hbox.pack_start(intervals_vbox, False, False, 2)
 
         intervals_label = gtk.Label('Intervals')
         intervals_label.show()
         intervals_label.set_alignment(0, 0)
 
-        intervals_vbox.pack_start(intervals_label)
+        intervals_vbox.pack_start(intervals_label, False, False, 2)
 
-        for interval in ('Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave'):
+#        for interval in ('Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave'):
+        for interval in ('Primen', 'Sekunden', 'Terzen', 'Quarten', 'Quinten', 'Sexten', 'Septimen', 'Oktaven',):
             checkbutton = gtk.CheckButton(interval)
             checkbutton.show()
-            intervals_vbox.pack_start(checkbutton)
+            intervals_vbox.pack_start(checkbutton, False, False, 2)
             checkbutton.connect('toggled', self.add_interval, interval)
             if (interval == 'Second'):
                 checkbutton.set_active(True)
@@ -163,7 +178,7 @@ class gachtelbass(object):
 
         min_pitch_vbox = gtk.VBox(False, 0)
         min_pitch_vbox.show()
-        content_hbox.pack_start(min_pitch_vbox)
+        parameters_hbox.pack_start(min_pitch_vbox, False, False, 2)
 
         min_pitch_label = gtk.Label('Min pitch')
         min_pitch_label.show()
@@ -184,7 +199,7 @@ class gachtelbass(object):
 
         max_pitch_vbox = gtk.VBox(False, 0)
         max_pitch_vbox.show()
-        content_hbox.pack_start(max_pitch_vbox)
+        parameters_hbox.pack_start(max_pitch_vbox, False, False, 2)
 
         max_pitch_label = gtk.Label('Max pitch')
         max_pitch_label.show()
@@ -200,6 +215,144 @@ class gachtelbass(object):
 
         max_pitch_vbox.pack_start(max_pitch_label, False, False, 2)
         max_pitch_vbox.pack_start(max_pitch_combo_box, False, False, 2)
+
+# Rest frequency VBox
+        
+        rest_frequency_vbox = gtk.VBox(False, 0)
+        rest_frequency_vbox.show()
+        parameters_hbox.pack_start(rest_frequency_vbox, False, False, 2)
+
+        rest_frequency_label = gtk.Label('Rest frequency')
+        rest_frequency_label.show()
+        rest_frequency_label.set_alignment(0, 0)
+
+        rest_frequency_combo_box = gtk.combo_box_new_text()
+        rest_frequency_combo_box.show()
+        rest_frequency_combo_box.append_text("no rests")
+        rest_frequency_combo_box.append_text("0.1")
+        rest_frequency_combo_box.append_text("0.2")
+        rest_frequency_combo_box.append_text("0.3")
+        rest_frequency_combo_box.append_text("0.4")
+        rest_frequency_combo_box.append_text("0.5")
+
+        rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
+        rest_frequency_combo_box.set_active(0)
+
+        rest_frequency_vbox.pack_start(rest_frequency_label, False, False, 2)
+        rest_frequency_vbox.pack_start(rest_frequency_combo_box, False, False, 2)
+
+# Time signature VBox
+        
+        time_signature_vbox = gtk.VBox(False, 0)
+        time_signature_vbox.show()
+        parameters_hbox.pack_start(time_signature_vbox, False, False, 2)
+
+        time_signature_label = gtk.Label('Time signature')
+        time_signature_label.show()
+        time_signature_label.set_alignment(0, 0)
+
+        time_signature_combo_box = gtk.combo_box_new_text()
+        time_signature_combo_box.show()
+        time_signature_combo_box.append_text("2/2")
+        time_signature_combo_box.append_text("3/4")
+        time_signature_combo_box.append_text("4/4")
+
+        time_signature_combo_box.connect("changed", self.select_time_signature)
+        time_signature_combo_box.set_active(2)
+
+        time_signature_vbox.pack_start(time_signature_label, False, False, 2)
+        time_signature_vbox.pack_start(time_signature_combo_box, False, False, 2)
+
+# Note value VBox
+        
+        note_value_vbox = gtk.VBox(False, 0)
+        note_value_vbox.show()
+        parameters_hbox.pack_start(note_value_vbox, False, False, 2)
+
+        note_value_label = gtk.Label('Note values')
+        note_value_label.show()
+        note_value_label.set_alignment(0, 0)
+
+        note_value_vbox.pack_start(note_value_label, False, False, 2)
+        
+#TODO here: display (vector graphic) images instead of fraction of digits
+# for note values
+        for note_value in ("1", "1/2", "1/4", "1/8", "1/16", "1/32"):
+            checkbutton = gtk.CheckButton(note_value)
+            checkbutton.show()
+            note_value_vbox.pack_start(checkbutton, False, False, 2)
+            checkbutton.connect("toggled", self.add_note_value, note_value)
+            if (note_value == "1"):
+                checkbutton.set_active(True)
+
+
+# Tuplet VBox
+        
+        tuplet_vbox = gtk.VBox(False, 0)
+        tuplet_vbox.show()
+        parameters_hbox.pack_start(tuplet_vbox, False, False, 2)
+
+        tuplet_label = gtk.Label('Tuplets')
+        tuplet_label.show()
+        tuplet_label.set_alignment(0, 0)
+
+        tuplet_combo_box = gtk.combo_box_new_text()
+        tuplet_combo_box.show()
+        tuplet_combo_box.append_text("no tuplets")
+        tuplet_combo_box.append_text("3")
+        tuplet_combo_box.append_text("4")
+        tuplet_combo_box.append_text("5")
+        tuplet_combo_box.append_text("6")
+        tuplet_combo_box.append_text("7")
+
+        tuplet_combo_box.connect("changed", self.select_tuplet)
+        tuplet_combo_box.set_active(0)
+
+        tuplet_vbox.pack_start(tuplet_label, False, False, 2)
+        tuplet_vbox.pack_start(tuplet_combo_box, False, False, 2)
+
+
+# Tuplet frequency VBox
+        
+        tuplet_frequency_vbox = gtk.VBox(False, 0)
+        tuplet_frequency_vbox.show()
+        parameters_hbox.pack_start(tuplet_frequency_vbox, False, False, 2)
+
+        tuplet_frequency_label = gtk.Label('Tuplet frequency')
+        tuplet_frequency_label.show()
+        tuplet_frequency_label.set_alignment(0, 0)
+
+        tuplet_frequency_combo_box = gtk.combo_box_new_text()
+        tuplet_frequency_combo_box.show()
+        tuplet_frequency_combo_box.append_text("no tuplets")
+        tuplet_frequency_combo_box.append_text("0.1")
+        tuplet_frequency_combo_box.append_text("0.2")
+        tuplet_frequency_combo_box.append_text("0.3")
+        tuplet_frequency_combo_box.append_text("0.4")
+        tuplet_frequency_combo_box.append_text("0.5")
+        tuplet_frequency_combo_box.append_text("0.6")
+        tuplet_frequency_combo_box.append_text("0.7")
+        tuplet_frequency_combo_box.append_text("0.8")
+        tuplet_frequency_combo_box.append_text("0.9")
+        tuplet_frequency_combo_box.append_text("1")
+
+        tuplet_frequency_combo_box.connect("changed", self.select_tuplet_frequency)
+        tuplet_frequency_combo_box.set_active(0)
+
+        tuplet_frequency_vbox.pack_start(tuplet_frequency_label, False, False, 2)
+        tuplet_frequency_vbox.pack_start(tuplet_frequency_combo_box, False, False, 2)
+
+# The submit button
+        submit_box = gtk.HBox(False, 0)
+        submit_box.show()
+        main_vbox.pack_start(submit_box, False, False, 0)
+
+        submit_button = gtk.Button("Generate")
+        submit_button.show()
+        submit_button.connect("clicked", self.execute_achtelbass)
+        submit_box.pack_start(submit_button, True, False, 0)
+
+
 
     def delete_event(self, widget, event, data=None):
         gtk.main_quit()
@@ -219,23 +372,60 @@ class gachtelbass(object):
         about_window.show()
 
     def select_tonic(self, widget):
-        print widget.get_active_text()
+        self.parameters['tonic'] = widget.get_active_text()
+        print self.parameters['tonic']
 
     def select_mode(self, widget):
-        print widget.get_active_text()
+        self.parameters['mode'] = widget.get_active_text()
+        print self.parameters['mode']
+        #print widget.get_active_text()
 
-    def add_interval(self, widget, interval):
-        print interval
-
-    def select_min_pitch(self, widget):
-        print widget.get_active_text()
 # Jedes Mal, wenn die Checkbox angeklickt wird, kommt ein toggled-Signal.
 # Dabei ist es gleich, ob das Häkchen gesetzt oder entfernt wird.
 # Es muss also eine Routine her, die genauso den Wert für das jeweilige
 # Intervall hinzufügt und wieder entfernt.
+# Eine Liste muss
+    def add_interval(self, widget, interval):
+        if widget.get_active():
+            self.parameters['intervals'][interval] = True
+        else:
+            del self.parameters['intervals'][interval]
+        print self.parameters['intervals']
+
+    def select_min_pitch(self, widget):
+        self.parameters['min_pitch'] = widget.get_active_text()
+        print self.parameters['min_pitch']
 
     def select_max_pitch(self, widget):
-        print widget.get_active_text()
+        self.parameters['max_pitch'] = widget.get_active_text()
+        print self.parameters['max_pitch']
+
+    def select_time_signature(self, widget):
+        self.parameters['time_signature'] = widget.get_active_text()
+        print self.parameters['time_signature']
+
+    def add_note_value(self, widget, note_value):
+        if widget.get_active():
+            self.parameters['note_values'][note_value] = True
+        else:
+            del self.parameters['note_values'][note_value]
+        print self.parameters['note_values']
+
+    def select_rest_frequency(self, widget):
+        self.parameters['rest_frequency'] = widget.get_active_text()
+        print self.parameters['rest_frequency']
+
+    def select_tuplet(self, widget):
+        self.parameters['tuplet'] = widget.get_active_text()
+        print self.parameters['tuplet']
+
+    def select_tuplet_frequency(self, widget):
+        self.parameters['tuplets_frequency'] = widget.get_active_text()
+        print self.parameters['tuplets_frequency']
+
+    def execute_achtelbass(self, widget):
+        new_achtelbass = achtelbass.achtelbass(self.parameters)
+#        print self.parameters
 
 def main():
     gtk.main()

@@ -81,19 +81,19 @@ class output(object):
         self.Key = self.Key.lower();
         self.Key = re.sub(r'[ \-]', '', self.Key)
         amount_of_accidentals = {
-                             "cdur" : 0,
-                             "gdur" : 1,
-                             "ddur" : 2,
-                             "adur" : 3,
-                             "edur" : 4,
-                             "hdur" : 5,
-                             "fisdur" : 6,
-                             "gesdur" : -6,
-                             "desdur" : -5,
-                             "asdur" : -4,
-                             "esdur" : -3,
-                             "bdur" : -2,
-                             "fdur" : -1,
+                             "cmajor" : 0,
+                             "gmajor" : 1,
+                             "dmajor" : 2,
+                             "amajor" : 3,
+                             "emajor" : 4,
+                             "bmajor" : 5,
+                             "f#major" : 6,
+                             "gbmajor" : -6,
+                             "dbmajor" : -5,
+                             "abmajor" : -4,
+                             "ebmajor" : -3,
+                             "bbmajor" : -2,
+                             "fmajor" : -1,
                             }
         return amount_of_accidentals[self.Key]
     

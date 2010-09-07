@@ -58,8 +58,19 @@ class achtelbass(object):
         self.Min_Pitch = parameters['min_pitch'] #'c3'
         self.Max_Pitch = parameters['max_pitch'] # 'd5'
         self.Rest_Frequency = parameters['rest_frequency'] # 0.25 # 0.01 (very few) till 1 (very every, bad) or 0 (none)
-        self.Selectable_Note_Values = parameters['note_values'].keys() # [1.0/4, 1.0/8] # [1.0, 1.0/2, 1.0/4, 1.0/8, 1.0/16, 1.0/32]
-        self.Time_Signature = parameters['time_signature'] # 4.0/4
+#        self.Selectable_Note_Values = parameters['note_values'].keys() # [1.0/4, 1.0/8] # [1.0, 1.0/2, 1.0/4, 1.0/8, 1.0/16, 1.0/32]
+        self.Fraction_Values = {'2/2' : 1.0,
+                                '3/4' : 0.75,
+                                '4/4' : 1.0,
+                                '1' : 1.0,
+                                '1/2' : 0.5,
+                                '1/4' : 0.25,
+                                '1/8' : 0.125,
+                                '1/16' : 0.0625,
+                                '1/32' : 0.03125,
+                               }
+        self.Selectable_Note_Values = [self.Fraction_Values[note_value] for note_value in parameters['note_values'].keys()]
+        self.Time_Signature = self.Fraction_Values[parameters['time_signature']] # 4.0/4
         self.Tuplets = parameters['tuplets'] # 3 # 0 wenn n-Tolen nicht gewünscht sind. besser hier als bei freq.
         self.Tuplets_Frequency = parameters['tuplets_frequency'] # 1 # 0 wenn n-Tolen unerwünscht.
 

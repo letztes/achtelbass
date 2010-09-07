@@ -24,14 +24,14 @@ class pitches(object):
         # braucht nicht von vornherein definiert zu werden, es reicht wenn man
         # die Intervalle generisch benennt.
         self.Interval_Values = {
-                                'Primen' : 0,
-                                'Sekunden' : 1,
-                                'Terzen' : 2,
-                                'Quarten' : 3,
-                                'Quinten' : 4,
-                                'Sexten' : 5,
-                                'Septimen' : 6,
-                                'Oktaven' : 7,
+                                'Unison' : 0,
+                                'Second' : 1,
+                                'Third' : 2,
+                                'Fourth' : 3,
+                                'Fifth' : 4,
+                                'Sixth' : 5,
+                                'Seventh' : 6,
+                                'Octave' : 7,
                                }
         
         self.Result = []

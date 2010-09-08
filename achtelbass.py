@@ -9,11 +9,6 @@
 # TODO
 #   *   In allen Modulen den Klassennamen in CapWords schreiben.
 #       http://www.python.org/dev/peps/pep-0008/
-#   *   GTK+ Frontend implementieren. Wahrscheinlich in einer neuen Datei,
-#       gachtelbass oder so. Diese Datei hier würde dann dort aufgerufen
-#       werden und die Werte von gachtelbass übernehmen. Diese Datei hier
-#       sollte wohl Werte von außen erwarten, so kann man sie nicht nur mit
-#       GTK+, sondern auch als CGI verwenden.
 #   *   Klasse implementieren, die aus PMX-Dateien maschinell lernt, welche
 #       Intervalle und Rhythmen häufig kombiniert werden. Wahrscheinlich in
 #       neuer Datei, würde ja alternativ zu den bisher implementierten
@@ -24,6 +19,7 @@
 #       überprüfen kann, ob der Benutzer richtig gespielt hat. Etwa so:
 #       http://www.youtube.com/watch?v=dr5_kAQ8OGg
 #   *   Grand Staff implementieren: Optional zwei Notensysteme gleichzeitig
+#   *   n-Tolen implementieren
 #
 
 import note_values
@@ -51,14 +47,28 @@ import warnings
     
 class achtelbass(object):
     def __init__(self, parameters):
-#        print parameters
         self.Parameters = parameters
-        self.Key = parameters['tonic'] + '-' + parameters['mode'] #'f-Dur', f-Major
-        self.Intervals = parameters['intervals'].keys() #['Sekunden', 'Terzen']
-        self.Min_Pitch = parameters['min_pitch'] #'c3'
-        self.Max_Pitch = parameters['max_pitch'] # 'd5'
-        self.Rest_Frequency = parameters['rest_frequency'] # 0.25 # 0.01 (very few) till 1 (very every, bad) or 0 (none)
-#        self.Selectable_Note_Values = parameters['note_values'].keys() # [1.0/4, 1.0/8] # [1.0, 1.0/2, 1.0/4, 1.0/8, 1.0/16, 1.0/32]
+        self.Frequency_Values = {'no tuplets' : 0,
+                                 'no rests' : 0,
+                                 '0.1' : 0.1,
+                                 '0.2' : 0.2,
+                                 '0.3' : 0.3,
+                                 '0.4' : 0.4,
+                                 '0.5' : 0.5,
+                                 '0.6' : 0.6,
+                                 '0.7' : 0.7,
+                                 '0.8' : 0.8,
+                                 '0.9' : 0.9,
+                                 '1' : 1,
+                                 '2' : 2,
+                                 '3' : 3,
+                                 '4' : 4,
+                                 '5' : 5,
+                                 '6' : 6,
+                                 '7' : 7,
+                                 '8' : 8,
+                                 '9' : 9,
+                                }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,
                                 '4/4' : 1.0,
@@ -69,23 +79,29 @@ class achtelbass(object):
                                 '1/16' : 0.0625,
                                 '1/32' : 0.03125,
                                }
+        self.PMX_Note_Values = {
+                                 0 : 1.0,
+                                 2 : 1.0/2,
+                                 4 : 1.0/4,
+                                 8 : 1.0/8,
+                                 1 : 1.0/16,
+                                 3 : 1.0/32,
+                                }
+    
+        self.Key = parameters['tonic'] + '-' + parameters['mode']
+        self.Intervals = parameters['intervals'].keys()
+        self.Min_Pitch = parameters['min_pitch']
+        self.Max_Pitch = parameters['max_pitch']
+        self.Rest_Frequency = self.Frequency_Values[parameters['rest_frequency']]
         self.Selectable_Note_Values = [self.Fraction_Values[note_value] for note_value in parameters['note_values'].keys()]
-        self.Time_Signature = self.Fraction_Values[parameters['time_signature']] # 4.0/4
-        self.Tuplets = parameters['tuplets'] # 3 # 0 wenn n-Tolen nicht gewünscht sind. besser hier als bei freq.
-        self.Tuplets_Frequency = parameters['tuplets_frequency'] # 1 # 0 wenn n-Tolen unerwünscht.
+#TODO Split time signature to extra variable zähler und nenner für ausgabe
+        self.Time_Signature = self.Fraction_Values[parameters['time_signature']]
+        self.Tuplets = parameters['tuplets']
+        self.Tuplets_Frequency = parameters['tuplets_frequency']
 
         # Ausgabe immer so gestalten, dass etwa 40 bars, 10 systems pro Seite stehen
         self.Amount_Of_Bars = 81 # 40 bars in 10 systems fit perfectly in 1 page.   
         self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
-        self.PMX_Note_Values = {
-                 0 : 1.0,
-                 2 : 1.0/2,
-                 4 : 1.0/4,
-                 8 : 1.0/8,
-                 1 : 1.0/16,
-                 3 : 1.0/32,
-                }
-    
         self.Note_Values = self.get_note_values()
         self.Pitches = self.get_pitches()
         self.Note_String = self.glue_together()

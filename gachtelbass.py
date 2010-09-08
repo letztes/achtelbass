@@ -25,7 +25,8 @@ import achtelbass
 # The locales file contains a dictionary which contains all the strings
 # that are displayed on buttons and so. The keys of the dictionary are
 # the english terms, the values the terms in the language of choice.
-from locales_de import locales
+#from locales_de import locales
+from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
 class gachtelbass(object):
@@ -225,11 +226,11 @@ class gachtelbass(object):
         rest_frequency_combo_box = gtk.combo_box_new_text()
         rest_frequency_combo_box.show()
         rest_frequency_combo_box.append_text(locales['no rests'])
-        rest_frequency_combo_box.append_text("0.1")
-        rest_frequency_combo_box.append_text("0.2")
-        rest_frequency_combo_box.append_text("0.3")
-        rest_frequency_combo_box.append_text("0.4")
-        rest_frequency_combo_box.append_text("0.5")
+        rest_frequency_combo_box.append_text(locales["0.1"])
+        rest_frequency_combo_box.append_text(locales["0.2"])
+        rest_frequency_combo_box.append_text(locales["0.3"])
+        rest_frequency_combo_box.append_text(locales["0.4"])
+        rest_frequency_combo_box.append_text(locales["0.5"])
 
         rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
         rest_frequency_combo_box.set_active(0)

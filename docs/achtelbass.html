@@ -3,44 +3,72 @@
     <body>
         <h1>The Documentation</h1>
         <div>
-            <h2>How to use the program</h2>
-            <p>At the moment the program can only be invoked from the
-            command line. The appropriate command is
-            <pre>$ python achtelbass.py</pre>
-            All the parameters like intervals, range of pitches, etc. are
-            hard coded. However, soon this values will be accepted as
-            command line arguments.
-            </p>
+            <h2>User manual</h2>
+            <div>
+                <h3>How to use the program</h3>
+                <p>At the moment the program can only be invoked from the
+                command line. The appropriate command is
+                <pre>$ python achtelbass.py</pre>
+                All the parameters like intervals, range of pitches, etc. are
+                hard coded. However, soon this values will be accepted as
+                command line arguments.
+                </p>
+            </div>
+            <div>
+                <h3>Requirements</h3>
+                <p>The python scripts themselves produce only PMX code, which
+                needs to be converted by PMX, the MusixTeX preprocessor, into
+                the MusixTeX format. This in turn needs the MusixTeX program,
+                which generates DVI files. Those can be displayed or printed
+                directly, but probably one wants to convert them to PDF. So
+                another program is required. Last, a viewer for PDF files is
+                required in order to display the sheet music. For the
+                optionally MIDI files a MIDI player is required.</p>
+                <p>The software requirements are:
+                    <ul>
+                        <li>Operating system</li>
+                        <li>Python interpreter</li>
+                        <li>PMX</li>
+                        <li>MusixTeX (normally comes with PMX)</li>
+                        <li>DVI to PDF converter (pdfdvi for instance)</li>
+                        <li>PDF viewer (evince or so)</li>
+                    </ul>
+                </p>
+            </div>
+            <div>
+                <h3>Upcoming features (todo list)</h3>
+                <p>
+                    <ul>
+                        <li>GTK+ frontend</li>
+                        <li>Machine learning routines</li>
+                    </ul>
+                </p>
+            </div>
         </div>
         <div>
-            <h2>Requirements</h2>
-            <p>The python scripts themselves produce only PMX code, which
-            needs to be converted by PMX, the MusixTeX preprocessor, into
-            the MusixTeX format. This in turn needs the MusixTeX program,
-            which generates DVI files. Those can be displayed or printed
-            directly, but probably one wants to convert them to PDF. So
-            another program is required. Last, a viewer for PDF files is
-            required in order to display the sheet music. For the
-            optionally MIDI files a MIDI player is required.</p>
-            <p>The software requirements are:
-                <ul>
-                    <li>Operating system</li>
-                    <li>Python interpreter</li>
-                    <li>PMX</li>
-                    <li>MusixTeX (normally comes with PMX)</li>
-                    <li>DVI to PDF converter (pdfdvi for instance)</li>
-                    <li>PDF viewer (evince or so)</li>
-                </ul>
-            </p>
-        </div>
-        <div>
-            <h2>Upcoming features (todo list)</h2>
-            <p>
-                <ul>
-                    <li>GTK+ frontend</li>
-                    <li>Machine learning routines</li>
-                </ul>
-            </p>
+            <h2>Programmer Manual</h2>
+
+            </div>
+
+            <div>
+                <h3>Translation of the GUI</h3>
+                <p>The text on the buttons and in the menu of the GUI is
+                loaded from a file called locales_xx.py, where xx stands
+                for a two letter code. The file contains only a dictionary
+                with the english terms as keys and the terms in the target
+                language as values.
+                If you wish to translate the application into a new
+                language you first need to copy the file locales_template.py
+                to locales_de.py in case the new language was german. Then
+                you replace all the values in the dictionary with german
+                terms for the corresponding items.
+                When new widgets are introduced to the application or old
+                ones are modified, the locales_template.py file and all the
+                existing locales files need to be modified to.
+                </p>
+
+            </div>
+            
         </div>
     </body>
 </html>

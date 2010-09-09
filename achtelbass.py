@@ -7,19 +7,23 @@
 # Licence:      GPL
 #
 # TODO
-#   *   In allen Modulen den Klassennamen in CapWords schreiben.
-#       http://www.python.org/dev/peps/pep-0008/
+#   Großes
 #   *   Klasse implementieren, die aus PMX-Dateien maschinell lernt, welche
 #       Intervalle und Rhythmen häufig kombiniert werden. Wahrscheinlich in
 #       neuer Datei, würde ja alternativ zu den bisher implementierten
 #       Methoden in Pitches und Note_Values verwendet werden. Sie soll
 #       Methoden zum Lernen andere zum Generieren enthalten.
-#   *   Primen als wählbares Intervall hinzufügen
 #   *   MIDI-Input implementieren, damit die Software selbstständig
 #       überprüfen kann, ob der Benutzer richtig gespielt hat. Etwa so:
 #       http://www.youtube.com/watch?v=dr5_kAQ8OGg
 #   *   Grand Staff implementieren: Optional zwei Notensysteme gleichzeitig
 #   *   n-Tolen implementieren
+#
+#   Eher kleines
+#   *   In allen Modulen den Klassennamen in CapWords schreiben.
+#       http://www.python.org/dev/peps/pep-0008/
+#   *   Wenn direkt auf Kommandozeile aufgerufen, soll mit getopts params
+#       geholt werden
 #
 
 import note_values
@@ -40,9 +44,6 @@ import warnings
 # dauern erwartet 2 Parameter: selectable_note_values, time_signature
 #                              [1/2, 1/8]            4/4
 #
-# TODO Für die Bruchzahlen in note_values und time_signature müssen die
-# ints nach floats mit regulären Ausdrücken umgewandelt werden.
-# Und nach floats konvertieren! Mit der Methode float().
     
     
 class achtelbass(object):
@@ -69,6 +70,16 @@ class achtelbass(object):
                                  '8' : 8,
                                  '9' : 9,
                                 }
+        self.Tuplets_Values = {'no tuplets' : 0,
+                                '2' : 'x2',
+                                '3' : 'x3',
+                                '4' : 'x4',
+                                '5' : 'x5',
+                                '6' : 'x6',
+                                '7' : 'x7',
+                                '8' : 'x8',
+                                '9' : 'x9',
+                              }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,
                                 '4/4' : 1.0,
@@ -94,9 +105,13 @@ class achtelbass(object):
         self.Max_Pitch = parameters['max_pitch']
         self.Rest_Frequency = self.Frequency_Values[parameters['rest_frequency']]
         self.Selectable_Note_Values = [self.Fraction_Values[note_value] for note_value in parameters['note_values'].keys()]
-#TODO Split time signature to extra variable zähler und nenner für ausgabe
+        self.Selectable_Note_Values.sort()
+
+        match = re.search('(\d)/(\d)', parameters['time_signature'])
+        self.Time_Signature_Numerator = match.group(1)
+        self.Time_Signature_Denominator = match.group(2)
         self.Time_Signature = self.Fraction_Values[parameters['time_signature']]
-        self.Tuplets = parameters['tuplets']
+        self.Tuplets = self.Tuplets_Values[parameters['tuplets']]
         self.Tuplets_Frequency = parameters['tuplets_frequency']
 
         # Ausgabe immer so gestalten, dass etwa 40 bars, 10 systems pro Seite stehen
@@ -109,13 +124,16 @@ class achtelbass(object):
     
     
     def get_note_values(self):
-        new_note_values = note_values.note_values(self.Selectable_Note_Values, self.Time_Signature)
+        new_note_values = note_values.note_values(self.Selectable_Note_Values, self.Time_Signature, self.Tuplets, self.Tuplets_Frequency)
         for i in range(self.Amount_Of_Bars):
             new_note_values.calculate()
         
         return new_note_values.Result
     
     def get_pitches(self):
+#TODO Berechnen, wie viele pitches berechnet werden müssen: Anzahl der Elemente
+# in der Note_Values Liste plus Summe der Multiolen.
+
         new_pitches = pitches.pitches(len(self.Note_Values), self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals)
         
         return new_pitches.easy()
@@ -127,26 +145,45 @@ class achtelbass(object):
 
         previous_pitch = self.Pitches[0]
         previous_clef = "b"
+        j = 0 # separate iterator for pitches. 
         for i in range(len(self.Note_Values)):
+            print note_string
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"
             else:
-                # a rest or a note?
-                if random.uniform(0, 1) < self.Rest_Frequency:
-                    note_string += 'r'+str(self.Note_Values[i]) + ' '
+                if self.Note_Values[i].count('x'): # Falls Multiole
+#An dieser Stelle, das heißt als erste Note in der Multiolengruppe, kommt
+# bisweilen keine Pause vor. Muss man ändern.
+                    match = re.search('x(\d)', self.Note_Values[i])
+                    note_string += self.Pitches[j] + self.Note_Values[i] + ' '
+                    j += 1
+                    tuplet_remain = int(match.group(1))
+                    while tuplet_remain > 1:
+                        if random.uniform(0, 1) < self.Rest_Frequency:
+                            note_string += 'r '
+                        else:
+                            note_string += self.Pitches[j] + ' '
+                            j += 1
+                        tuplet_remain -= 1
+
                 else:
-                    note_string += re.sub(r'^(.)(.)$', r"\g<1>"+str(self.Note_Values[i])+"\g<2>", self.Pitches[i]) + ' '
+                    # a rest or a note?
+                    if random.uniform(0, 1) < self.Rest_Frequency:
+                        note_string += 'r'+str(self.Note_Values[i]) + ' '
+                    else:
+                        note_string += re.sub(r'^(.)(.)$', r"\g<1>"+str(self.Note_Values[i])+"\g<2>", self.Pitches[j]) + ' '
+                        j += 1
                 
               # nachfolgender Fall für Vorzeichenwechsel im Fließtext
-                if previous_clef == 'b' and self.Notes.index(self.Pitches[i]) > self.Notes.index('d4'):
+                if previous_clef == 'b' and self.Notes.index(self.Pitches[j]) > self.Notes.index('d4'):
                     note_string += 'Ct '
                     previous_clef = 't'
                     
-                if previous_clef == 't' and self.Notes.index(self.Pitches[i]) < self.Notes.index('b3'):
+                if previous_clef == 't' and self.Notes.index(self.Pitches[j]) < self.Notes.index('b3'):
                     note_string += 'Cb '
                     previous_clef = 'b'
                     
-                previous_pitch = self.Pitches[i]
+                previous_pitch = self.Pitches[j]
         note_string = re.sub(r"(C[bt] )(/\n)", r"\g<2>\g<1>", note_string)
         note_string = re.sub(r"\n/$", r"", note_string)
         
@@ -154,8 +191,8 @@ class achtelbass(object):
     
     def print_out(self):
         
-        new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars)
-        new_output.schreiben()
+        new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator)
+        new_output.print_out()
         
 # Ausführen nicht vergessen!
 #achtelbass()

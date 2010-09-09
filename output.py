@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*- 
 
 #TODO
-#   *   Attribut- und Methodennamen auf Englisch übersetzen.
 #
 #
 
@@ -10,26 +9,28 @@
 import re
 
 class output(object):
-    def __init__(self, key, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars):
+    def __init__(self, key, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator):
         self.Key = key
         self.Min_Pitch = min_pitch
         self.Max_Pitch = max_pitch
         self.Intervals = intervals
         self.Note_String = note_string
+        self.Time_Signature_Numerator = time_signature_numerator
+        self.Time_Signature_Denominator = time_signature_denominator
         
         ## Hier faengt die Definition der Praeambelelemente an.
         ## Zwoelf Zahlen stehen als erstes in der Praeambel, durch whitespace
         ## getrennt.
-        ## Die ersten acht beschreiben musikalische Daten.
+        ## Die ersten acht beprint_out musikalische Daten.
         
         # Anzahl der Notensysteme (relativ zu der Anzahl der Instrumente)
-        self.Anzahl_Notensysteme = 1
+        self.Amount_Of_Note_Systems = 1
         
-        self.Anzahl_Instrumente = 1	# Anzahl der Instrumente
-        self.Logischer_Metrumzaehler = 4
-        self.Logischer_Metrumnenner = 4
-        self.Gedruckter_Metrumzaehler = 4
-        self.Gedruckter_Metrumnenner = 4
+        self.Amount_Of_Instruments = 1	# Anzahl der Instrumente
+        self.Logical_Meter_Numerator = self.Time_Signature_Numerator 
+        self.Logical_Meter_Denominator = self.Time_Signature_Denominator 
+        self.Printed_Meter_Numerator = self.Time_Signature_Numerator 
+        self.Printed_Meter_Denominator = self.Time_Signature_Denominator 
         
         # Anzahl logischer Schlaege im ersten Auftakt. Dezimalbrueche moeglich.
         self.Auftaktschlaege = 0
@@ -37,36 +38,36 @@ class output(object):
         # Vorzeichen entsprechend dem Quintenzirkel. Positive Zahlen sind Kreuze, negative sind bs.
         self.Amount_Of_Accidentals = self.get_amount_of_accidentals()
         
-        ## Die naechsten vier Zeilen beschreiben drucktechnische Details.
+        ## Die naechsten vier Zeilen beprint_out drucktechnische Details.
         
         # Anzahl der Seiten, die das Dokument haben soll.
         # 30 bis 60 Noten pro System, 10 bis 20 Systeme pro Seite.
-#        self.Anzahl_Seiten = amount_of_bars / 40
+#        self.Amount_Of_Pages = amount_of_bars / 40
         if amount_of_bars % 40 < 20:
-            self.Anzahl_Seiten = amount_of_bars / 40
+            self.Amount_Of_Pages = amount_of_bars / 40
         else:
-            self.Anzahl_Seiten = (amount_of_bars / 40) + 1
+            self.Amount_Of_Pages = (amount_of_bars / 40) + 1
         
         # Anzahl der Notensysteme, d.h. gedruckter Partiturzeilen
-        self.Anzahl_Systeme = amount_of_bars / 4
-        self.Groesse_System = 16 # Groesse eines Notensystems in pt
+        self.Amount_Of_Systems = amount_of_bars / 4
+        self.Size_Of_System = 16 # Groesse eines Notensystems in pt
         
-        # Einrueckung in Prozent. 8.5 % schreibt man als .085
-        self.Einrueckung = .1
+        # Indentation in Prozent. 8.5 % schreibt man als .085
+        self.Indentation = .1
         
         ## Namen der Instrumente, von unten nach oben.
         # Wird vor das jeweilige Notensystem geschrieben.
         # Kann leergelassen werden.
-        self.Instrumentenbezeichnung = 'Blockfloete'
+        self.Instrument_Name = 'Blockfloete'
         
-        ## Notenschluessel, von unten nach oben.
+        ## Clef, von unten nach oben.
         # b heisst Bassschluessel, t heisst Violinschluessel.
-        # Wird in notenschluessel() berechnet.
-        self.Notenschluessel = self.notenschluessel(pitches[0])
-        self.Notenschluessel_Vormals = self.Notenschluessel
+        # Wird in get_clef() berechnet.
+        self.Clef = self.get_clef(pitches[0])
+        self.Clef_Vormals = self.Clef
 
-        ## Das Verzeichnis, in das die Tex-Datei geschrieben werden soll.
-        self.Verzeichnis = "./"
+        ## Das Directory, in das die Tex-Datei geschrieben werden soll.
+        self.Directory = "./"
         
         ## Titel des Stuecks.
         #Wird zusammengestellt aus den Intervalsn und dem Notenumfang.
@@ -97,27 +98,27 @@ class output(object):
                             }
         return amount_of_accidentals[self.Key]
     
-    def schreiben(self):
+    def print_out(self):
         
         # Zunaechst die Praeambel
         print "% PRAEAMBEL\n"
-        praeambel = str(self.Anzahl_Notensysteme) + ' '
-        praeambel += str(self.Anzahl_Instrumente) + ' '
-        praeambel += str(self.Logischer_Metrumzaehler) + ' '
-        praeambel += str(self.Logischer_Metrumnenner) + ' '
-        praeambel += str(self.Gedruckter_Metrumzaehler) + ' '
-        praeambel += str(self.Gedruckter_Metrumnenner) + ' '
+        praeambel = str(self.Amount_Of_Note_Systems) + ' '
+        praeambel += str(self.Amount_Of_Instruments) + ' '
+        praeambel += str(self.Logical_Meter_Numerator) + ' '
+        praeambel += str(self.Logical_Meter_Denominator) + ' '
+        praeambel += str(self.Printed_Meter_Numerator) + ' '
+        praeambel += str(self.Printed_Meter_Denominator) + ' '
         praeambel += str(self.Auftaktschlaege) + ' '
         praeambel += str(self.Amount_Of_Accidentals) + ' '
         print praeambel + ' '
-        praeambel = str(self.Anzahl_Seiten) + ' '
-        praeambel += str(self.Anzahl_Systeme) + ' '
-        praeambel += str(self.Groesse_System) + ' '
-        praeambel += str(self.Einrueckung) + ' '
+        praeambel = str(self.Amount_Of_Pages) + ' '
+        praeambel += str(self.Amount_Of_Systems) + ' '
+        praeambel += str(self.Size_Of_System) + ' '
+        praeambel += str(self.Indentation) + ' '
         print praeambel
-        print self.Instrumentenbezeichnung
-        print self.Notenschluessel
-        print self.Verzeichnis
+        print self.Instrument_Name
+        print self.Clef
+        print self.Directory
         print self.Titel
         
         # Der Corpus
@@ -139,7 +140,7 @@ class output(object):
         
         
     
-    def notenschluessel(self, notenhoehe):
+    def get_clef(self, notenhoehe):
         if re.search(r"[4567]$", notenhoehe):
             return 't'
         if re.search(r"[123]$", notenhoehe):
@@ -147,4 +148,4 @@ class output(object):
         
         
 #neu = ausgabe(['e4', 'g1'])
-#neu.schreiben()
+#neu.print_out()

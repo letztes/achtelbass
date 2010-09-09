@@ -1,5 +1,10 @@
-<html>
-    <head><!--no head so far--></head>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>achtelbass documentation</title>
+    </head>
     <body>
         <h1>The Documentation</h1>
         <div>
@@ -7,11 +12,11 @@
             <div>
                 <h3>How to use the program</h3>
                 <p>At the moment the program can only be invoked from the
-                command line. The appropriate command is
+                command line. The appropriate command is</p>
                 <pre>$ python achtelbass.py</pre>
-                All the parameters like intervals, range of pitches, etc. are
-                hard coded. However, soon this values will be accepted as
-                command line arguments.
+                <p>All the parameters like intervals, range of pitches,
+                etc. are hard coded. However, soon this values will be
+                accepted as command line arguments.
                 </p>
             </div>
             <div>
@@ -24,47 +29,54 @@
                 another program is required. Last, a viewer for PDF files is
                 required in order to display the sheet music. For the
                 optionally MIDI files a MIDI player is required.</p>
-                <p>The software requirements are:
-                    <ul>
-                        <li>Operating system</li>
-                        <li>Python interpreter</li>
-                        <li>PMX</li>
-                        <li>MusixTeX (normally comes with PMX)</li>
-                        <li>DVI to PDF converter (pdfdvi for instance)</li>
-                        <li>PDF viewer (evince or so)</li>
-                    </ul>
-                </p>
-            </div>
-            <div>
-                <h3>Upcoming features (todo list)</h3>
-                <p>
-                    <ul>
-                        <li>GTK+ frontend</li>
-                        <li>Machine learning routines</li>
-                    </ul>
-                </p>
+                <p>The software requirements are:</p>
+                <ul>
+                    <li>Operating system</li>
+                    <li>Python interpreter</li>
+                    <li>PMX</li>
+                    <li>MusixTeX (normally comes with PMX)</li>
+                    <li>DVI to PDF converter (pdfdvi for instance)</li>
+                    <li>PDF viewer (evince or so)</li>
+                </ul>
             </div>
         </div>
         <div>
-            <h2>Programmer Manual</h2>
+            <h2>Programmers Manual</h2>
 
+            <div>
+                <h3>Upcoming features (todo list)</h3>
+                <ul>
+                    <li>Command line arguments</li>
+                    <li>Machine learning routines</li>
+                </ul>
             </div>
-
             <div>
                 <h3>Translation of the GUI</h3>
                 <p>The text on the buttons and in the menu of the GUI is
                 loaded from a file called locales_xx.py, where xx stands
-                for a two letter code. The file contains only a dictionary
-                with the english terms as keys and the terms in the target
-                language as values.
+                for a two letter code of the language in question. The file
+                contains only a dictionary with the english terms as keys
+                and the terms in the target language as values.<br />
                 If you wish to translate the application into a new
-                language you first need to copy the file locales_template.py
+                language you first need to make a copy the file
+                locales_template.py, for instance
                 to locales_de.py in case the new language was german. Then
                 you replace all the values in the dictionary with german
                 terms for the corresponding items.
+                If you want to associate keyboard keys like 'F' for the
+                file menu, all you have to do is to add an underscore right
+                in front of that character that shall become the mnemonic
+                character while editing the dictionary values.<br />
+                <strong>Caveat when introducing new widgets.</strong> 
                 When new widgets are introduced to the application or old
                 ones are modified, the locales_template.py file and all the
-                existing locales files need to be modified to.
+                existing locales files need to be modified to.<br />
+                However, this is only true for the accelerations with the
+                ALT-key. The accelerations with the CTRL-key work
+                different. They are bound to the key in question (e.g.
+                'CTRL+S' for Save) in the code, where the widget is 
+                defined. Maybe one day there will exist a second dictionary
+                for those key bindings too.
                 </p>
 
             </div>
@@ -72,3 +84,24 @@
         </div>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -47,6 +47,9 @@ class gachtelbass(object):
         self.main_window.set_title("achtelbass")
         self.main_window.connect("delete_event", self.delete_event)
 
+# Create a menu and add acceleration to it
+        accel_group = gtk.AccelGroup()
+        self.main_window.add_accel_group(accel_group)
 # File menu
         file_submenu = gtk.Menu()
 
@@ -54,6 +57,7 @@ class gachtelbass(object):
         menu_item_save_configuration.connect("activate", self.save_configuration, locales['Save configuration'])
         menu_item_save_configuration.show()
         file_submenu.append(menu_item_save_configuration)
+        menu_item_save_configuration.add_accelerator("activate", accel_group, ord("S"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
 
         menu_item_load_configuration = gtk.MenuItem(locales['Load configuration'])
         menu_item_load_configuration.connect("activate", self.load_configuration, locales['Load configuration'])
@@ -344,7 +348,7 @@ class gachtelbass(object):
         submit_box.show()
         main_vbox.pack_start(submit_box, False, False, 0)
 
-        submit_button = gtk.Button(locales['Generate'])
+        submit_button = gtk.Button(locales['Generate'], stock=None, use_underline=True)
         submit_button.show()
         submit_button.connect("clicked", self.execute_achtelbass)
         submit_box.pack_start(submit_button, True, False, 0)
@@ -405,8 +409,8 @@ class gachtelbass(object):
         print self.parameters['rest_frequency']
 
     def select_tuplet(self, widget):
-        self.parameters['tuplet'] = locales_inverse[widget.get_active_text()]
-        print self.parameters['tuplet']
+        self.parameters['tuplets'] = locales_inverse[widget.get_active_text()]
+        print self.parameters['tuplets']
 
     def select_tuplet_frequency(self, widget):
         self.parameters['tuplets_frequency'] = locales_inverse[widget.get_active_text()]

@@ -1,9 +1,9 @@
 locales = {
-            'File' : 'File',
-            'Save configuration' : 'Save configuration',
-            'Load configuration' : 'Load configuration',
-            'Quit' : 'Quit',
-            'Help' : 'Help',
+            'File' : '_File',
+            'Save configuration' : '_Save configuration',
+            'Load configuration' : '_Load configuration',
+            'Quit' : '_Quit',
+            'Help' : '_Help',
             'About' : 'About',
             'Tonic' : 'Tonic',
             'C' : 'C',
@@ -55,6 +55,6 @@ locales = {
             '0.8' : '0.8',
             '0.9' : '0.9',
             '1' : '1',
-            'Generate' : 'Generate',
+            'Generate' : '_Generate',
 
 }

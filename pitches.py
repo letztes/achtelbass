@@ -44,22 +44,23 @@ class pitches(object):
     
     def easy(self):
         _current_pitch = self.Selectable_Pitches[0]
+        _pre_previous_pitch = ''
         self.Result.append(_current_pitch)
         for i in range(self.Amount-1):# -1 weil der erste Ton=Tonika feststeht
             _up_or_down = random.choice(["up", "down"])
             _current_interval = random.choice(self.Intervals)
             _step = self.Interval_Values[_current_interval]
-            if _up_or_down == "up" and self.Selectable_Pitches.index(_current_pitch) + _step <= self.Selectable_Pitches.index(self.Selectable_Pitches[-1]):
+            if _up_or_down == "up" and self.Selectable_Pitches.index(_current_pitch) + _step <= self.Selectable_Pitches.index(self.Selectable_Pitches[-1]) and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]:
                 _current_pitch = self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]
             else:
                 _up_or_down = "down"
                 
-            if _up_or_down == "down":
+            if _up_or_down == "down" and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)-_step]:
                 if self.Selectable_Pitches.index(_current_pitch) - _step > 0:
                     _current_pitch = self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)-_step]
                 else:
                     _current_pitch = self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]
-                    
+            _pre_previous_pitch = _current_pitch
             self.Result.append(_current_pitch)
         return self.Result
 

@@ -46,7 +46,7 @@ class gachtelbass(object):
         self.Time_Signatures = ['2/2', '3/4', '4/4']
         self.Note_Values = ["1", "1/2", "1/4", "1/8", "1/16", "1/32"]
         self.Tuplets = ['no tuplets', '2', '3', '4', '5', '6', '7']
-        self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9']
+        self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']
 # Parameters that will be passed to the actual achtelbass script
         try:
             file_object = open(CONFIGURATION_FILENAME, 'r')
@@ -64,7 +64,6 @@ class gachtelbass(object):
                                 'tuplets' : 'no tuplets',
                                 'tuplets_frequency' : 'no tuplets',
                                }
-        #print self.Tonics.index(self.parameters['tonic'])
         
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_window.set_title("achtelbass")
@@ -171,7 +170,7 @@ class gachtelbass(object):
             checkbutton.show()
             intervals_vbox.pack_start(checkbutton, False, False, 2)
             checkbutton.connect('toggled', self.add_interval, locales[interval])
-            if (locales[interval] == locales['Second']):
+            if (locales[interval] in self.parameters['intervals'].keys()):
                 checkbutton.set_active(True)
 
         self.main_window.show()
@@ -192,7 +191,7 @@ class gachtelbass(object):
             min_pitch_combo_box.append_text(pitch)
 
         min_pitch_combo_box.connect("changed", self.select_min_pitch)
-        min_pitch_combo_box.set_active(7)
+        min_pitch_combo_box.set_active(self.Pitches.index(self.parameters['min_pitch']))
 
         min_pitch_vbox.pack_start(min_pitch_label, False, False, 2)
         min_pitch_vbox.pack_start(min_pitch_combo_box, False, False, 2)
@@ -213,7 +212,7 @@ class gachtelbass(object):
             max_pitch_combo_box.append_text(pitch)
 
         max_pitch_combo_box.connect("changed", self.select_max_pitch)
-        max_pitch_combo_box.set_active(15)
+        max_pitch_combo_box.set_active(self.Pitches.index(self.parameters['max_pitch']))
 
         max_pitch_vbox.pack_start(max_pitch_label, False, False, 2)
         max_pitch_vbox.pack_start(max_pitch_combo_box, False, False, 2)
@@ -234,7 +233,7 @@ class gachtelbass(object):
             rest_frequency_combo_box.append_text(locales[rest_frequency])
 
         rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
-        rest_frequency_combo_box.set_active(0)
+        rest_frequency_combo_box.set_active(self.Rest_Frequencies.index(self.parameters['rest_frequency']))
 
         rest_frequency_vbox.pack_start(rest_frequency_label, False, False, 2)
         rest_frequency_vbox.pack_start(rest_frequency_combo_box, False, False, 2)
@@ -255,7 +254,7 @@ class gachtelbass(object):
             time_signature_combo_box.append_text(time_signature)
 
         time_signature_combo_box.connect("changed", self.select_time_signature)
-        time_signature_combo_box.set_active(2)
+        time_signature_combo_box.set_active(self.Time_Signatures.index(self.parameters['time_signature']))
 
         time_signature_vbox.pack_start(time_signature_label, False, False, 2)
         time_signature_vbox.pack_start(time_signature_combo_box, False, False, 2)
@@ -279,7 +278,7 @@ class gachtelbass(object):
             checkbutton.show()
             note_value_vbox.pack_start(checkbutton, False, False, 2)
             checkbutton.connect("toggled", self.add_note_value, note_value)
-            if (note_value == "1"):
+            if note_value in self.parameters['note_values'].keys():
                 checkbutton.set_active(True)
 
 
@@ -299,7 +298,7 @@ class gachtelbass(object):
             tuplet_combo_box.append_text(locales[tuplet])
 
         tuplet_combo_box.connect("changed", self.select_tuplet)
-        tuplet_combo_box.set_active(0)
+        tuplet_combo_box.set_active(self.Tuplets.index(self.parameters['tuplets']))
 
         tuplet_vbox.pack_start(tuplet_label, False, False, 2)
         tuplet_vbox.pack_start(tuplet_combo_box, False, False, 2)
@@ -317,20 +316,11 @@ class gachtelbass(object):
 
         tuplet_frequency_combo_box = gtk.combo_box_new_text()
         tuplet_frequency_combo_box.show()
-        tuplet_frequency_combo_box.append_text(locales['no tuplets'])
-        tuplet_frequency_combo_box.append_text("0.1")
-        tuplet_frequency_combo_box.append_text("0.2")
-        tuplet_frequency_combo_box.append_text("0.3")
-        tuplet_frequency_combo_box.append_text("0.4")
-        tuplet_frequency_combo_box.append_text("0.5")
-        tuplet_frequency_combo_box.append_text("0.6")
-        tuplet_frequency_combo_box.append_text("0.7")
-        tuplet_frequency_combo_box.append_text("0.8")
-        tuplet_frequency_combo_box.append_text("0.9")
-        tuplet_frequency_combo_box.append_text("1")
+        for tuplet_frequency in self.Tuplet_Frequencies:
+            tuplet_frequency_combo_box.append_text(locales[tuplet_frequency])
 
         tuplet_frequency_combo_box.connect("changed", self.select_tuplet_frequency)
-        tuplet_frequency_combo_box.set_active(0)
+        tuplet_frequency_combo_box.set_active(self.Tuplet_Frequencies.index(self.parameters['tuplets_frequency']))
 
         tuplet_frequency_vbox.pack_start(tuplet_frequency_label, False, False, 2)
         tuplet_frequency_vbox.pack_start(tuplet_frequency_combo_box, False, False, 2)
@@ -379,49 +369,39 @@ class gachtelbass(object):
 
     def select_tonic(self, widget):
         self.parameters['tonic'] = locales_inverse[widget.get_active_text()]
-        print self.parameters['tonic']
 
     def select_mode(self, widget):
         self.parameters['mode'] = locales_inverse[widget.get_active_text()]
-        print self.parameters['mode']
 
     def add_interval(self, widget, interval):
         if widget.get_active():
             self.parameters['intervals'][locales_inverse[interval]] = True
         else:
             del self.parameters['intervals'][locales_inverse[interval]]
-        print self.parameters['intervals']
 
     def select_min_pitch(self, widget):
         self.parameters['min_pitch'] = widget.get_active_text()
-        print self.parameters['min_pitch']
 
     def select_max_pitch(self, widget):
         self.parameters['max_pitch'] = widget.get_active_text()
-        print self.parameters['max_pitch']
 
     def select_time_signature(self, widget):
         self.parameters['time_signature'] = widget.get_active_text()
-        print self.parameters['time_signature']
 
     def add_note_value(self, widget, note_value):
         if widget.get_active():
             self.parameters['note_values'][note_value] = True
         else:
             del self.parameters['note_values'][note_value]
-        print self.parameters['note_values']
 
     def select_rest_frequency(self, widget):
         self.parameters['rest_frequency'] = locales_inverse[widget.get_active_text()]
-        print self.parameters['rest_frequency']
 
     def select_tuplet(self, widget):
         self.parameters['tuplets'] = locales_inverse[widget.get_active_text()]
-        print self.parameters['tuplets']
 
     def select_tuplet_frequency(self, widget):
         self.parameters['tuplets_frequency'] = locales_inverse[widget.get_active_text()]
-        print self.parameters['tuplets_frequency']
 
 # Some parameter values for achtelbass must be numbers, but gtk+ displays
 # only strings. So the strings are converted before passed to achtelbass.

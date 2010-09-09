@@ -133,8 +133,13 @@ class achtelbass(object):
     def get_pitches(self):
 #TODO Berechnen, wie viele pitches berechnet werden müssen: Anzahl der Elemente
 # in der Note_Values Liste plus Summe der Multiolen.
+        amount = len(self.Note_Values)
+        for note_value in self.Note_Values:
+            if isinstance(note_value, str) and note_value.count('x'):
+                tuplet_value = note_value[1:len(note_value)]
+                amount += int(tuplet_value)
 
-        new_pitches = pitches.pitches(len(self.Note_Values), self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals)
+        new_pitches = pitches.pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals)
         
         return new_pitches.easy()
     
@@ -150,7 +155,7 @@ class achtelbass(object):
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"
             else:
-                if self.Note_Values[i].count('x'): # Falls Multiole
+                if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
 #An dieser Stelle, das heißt als erste Note in der Multiolengruppe, kommt
 # bisweilen keine Pause vor. Muss man ändern.
                     match = re.search('x(\d)', self.Note_Values[i])

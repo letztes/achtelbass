@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # TODO: 
-#   *   Optionale n-Tolen
-#       Triole mit der Gesamtdauer einer Viertel aus c4, d4 und e4 schreibt man als c44x3 d4 e4
 #   *   Optionale Punktierungen 
 #       ein Viertel+Achtel c4 gefolgt von einem Achtel d4 schreibt man als c44d d8
 #   *   Optionale Bindebögen

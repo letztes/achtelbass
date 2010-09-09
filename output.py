@@ -99,10 +99,11 @@ class output(object):
         return amount_of_accidentals[self.Key]
     
     def print_out(self):
-        
+       
+        output_string = ''
         # Zunaechst die Praeambel
-        print "% PRAEAMBEL\n"
-        praeambel = str(self.Amount_Of_Note_Systems) + ' '
+        praeambel = "% PRAEAMBEL\n\n"
+        praeambel += str(self.Amount_Of_Note_Systems) + ' '
         praeambel += str(self.Amount_Of_Instruments) + ' '
         praeambel += str(self.Logical_Meter_Numerator) + ' '
         praeambel += str(self.Logical_Meter_Denominator) + ' '
@@ -110,16 +111,16 @@ class output(object):
         praeambel += str(self.Printed_Meter_Denominator) + ' '
         praeambel += str(self.Auftaktschlaege) + ' '
         praeambel += str(self.Amount_Of_Accidentals) + ' '
-        print praeambel + ' '
-        praeambel = str(self.Amount_Of_Pages) + ' '
+        praeambel += " \n"
+        praeambel += str(self.Amount_Of_Pages) + ' '
         praeambel += str(self.Amount_Of_Systems) + ' '
         praeambel += str(self.Size_Of_System) + ' '
         praeambel += str(self.Indentation) + ' '
-        print praeambel
-        print self.Instrument_Name
-        print self.Clef
-        print self.Directory
-        print self.Titel
+        output_string += praeambel + "\n"
+        output_string += self.Instrument_Name + "\n"
+        output_string += self.Clef + "\n"
+        output_string += self.Directory + "\n"
+        output_string += self.Titel + "\n"
         
         # Der Corpus
         # Gibt die Seitennummer (P = Pagenumber) aus. r = Right. c = Text.
@@ -128,16 +129,13 @@ class output(object):
         # Dabei werden die Noten um eine Oktave tiefer ausgegeben.
         # T-12 ist die Anweisung zum Transponieren um 12 Halbtoene nach unten
         # beim Schreiben der Midi-Datei.
-        print "% CORPUS"
-        print "Prc Ii34"
+        output_string += "% CORPUS" + "\n"
+        output_string += "Prc Ii34" + "\n"
         
         # An dieser Stelle werden die eigentlichen Noten gesetzt.
-        print self.Note_String
+        output_string += self.Note_String + "\n"
         
-        
-        
-        
-        
+        return output_string
         
     
     def get_clef(self, notenhoehe):

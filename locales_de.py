@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
 locales = {
-            'File' : 'Datei',
-            'Save configuration' : 'Einstellungen speichern',
-            'Load configuration' : 'Einstellungen laden',
-            'Quit' : 'Beenden',
-            'Help' : 'Hilfe',
-            'About' : 'Info',
+            'File' : '_Datei',
+            'Quit' : '_Beenden',
+            'Help' : '_Hilfe',
+            'About' : '_Info',
             'Tonic' : 'Tonika',
             'C' : 'C',
             'G' : 'G',
@@ -59,6 +57,6 @@ locales = {
             '0.8' : '0,8',
             '0.9' : '0,9',
             '1' : '1',
-            'Generate' : 'Generieren',
+            'Generate' : '_Generieren',
 
 }

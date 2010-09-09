@@ -30,7 +30,7 @@ import achtelbass
 # that are displayed on buttons and so. The keys of the dictionary are
 # the english terms, the values the terms in the language of choice.
 #from locales_de import locales
-from locales_en import locales
+from locales_de import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
 CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"
@@ -169,8 +169,8 @@ class gachtelbass(object):
             checkbutton = gtk.CheckButton(locales[interval])
             checkbutton.show()
             intervals_vbox.pack_start(checkbutton, False, False, 2)
-            checkbutton.connect('toggled', self.add_interval, locales[interval])
-            if (locales[interval] in self.parameters['intervals'].keys()):
+            checkbutton.connect('toggled', self.add_interval, interval)
+            if (interval in self.parameters['intervals'].keys()):
                 checkbutton.set_active(True)
 
         self.main_window.show()
@@ -375,9 +375,9 @@ class gachtelbass(object):
 
     def add_interval(self, widget, interval):
         if widget.get_active():
-            self.parameters['intervals'][locales_inverse[interval]] = True
+            self.parameters['intervals'][interval] = True
         else:
-            del self.parameters['intervals'][locales_inverse[interval]]
+            del self.parameters['intervals'][interval]
 
     def select_min_pitch(self, widget):
         self.parameters['min_pitch'] = widget.get_active_text()

@@ -7,6 +7,9 @@
 # Licence:      GPL
 #
 # TODO
+#   Wichtiges
+#   *   In note_values.py wird Unsinn berechnet: ['', '', 2, '/\n', '', '', '', '', '/\n', '', 2, 2, '/\n', 2, 2, 2, '/\n' usw. Ausprobiert mit Halben
+#       und Vierteln.
 #   Großes
 #   *   Klasse implementieren, die aus PMX-Dateien maschinell lernt, welche
 #       Intervalle und Rhythmen häufig kombiniert werden. Wahrscheinlich in
@@ -26,13 +29,14 @@
 #       geholt werden
 #
 
-import note_values
-import pitches
-import output
-
+import os
 import random
 import re
 import warnings
+
+import note_values
+import pitches
+import output
 
 
 # Die Reihenfolge ist:
@@ -120,7 +124,7 @@ class achtelbass(object):
         self.Note_Values = self.get_note_values()
         self.Pitches = self.get_pitches()
         self.Note_String = self.glue_together()
-        self.print_out()
+        self.display()
     
     
     def get_note_values(self):
@@ -157,7 +161,8 @@ class achtelbass(object):
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
 #An dieser Stelle, das heißt als erste Note in der Multiolengruppe, kommt
-# bisweilen keine Pause vor. Muss man ändern.
+# bisweilen keine Pause vor. Muss man ändern. Überhaupt ist in den
+# Multiolen noch keine Pause möglich.
                     match = re.search('x(\d)', self.Note_Values[i])
                     note_string += self.Pitches[j] + self.Note_Values[i] + ' '
                     j += 1
@@ -175,7 +180,8 @@ class achtelbass(object):
                     if random.uniform(0, 1) < self.Rest_Frequency:
                         note_string += 'r'+str(self.Note_Values[i]) + ' '
                     else:
-                        note_string += re.sub(r'^(.)(.)$', r"\g<1>"+str(self.Note_Values[i])+"\g<2>", self.Pitches[j]) + ' '
+#                        note_string += re.sub(r'^(.)(.)$', r"\g<1>"+str(self.Note_Values[i])+"\g<2>", self.Pitches[j]) + ' '# not efficient.
+                        note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
                         j += 1
                 
               # nachfolgender Fall für Vorzeichenwechsel im Fließtext
@@ -193,10 +199,20 @@ class achtelbass(object):
         
         return note_string
     
-    def print_out(self):
+    def display(self):
         
         new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator)
-        new_output.print_out()
-        
-# Ausführen nicht vergessen!
-#achtelbass()
+        pmx_string = new_output.print_out()
+        file_object = open('out.pmx', "w")
+        file_object.write(pmx_string)
+        file_object.close()
+        os.system('pmx out.pmx')
+        #os.system('evince out.dvi')
+       
+
+
+
+
+
+
+

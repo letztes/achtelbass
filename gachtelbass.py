@@ -13,11 +13,15 @@
 #   *   Refactoring: Wiederkehrende Aufrufe wie jene beim  Menüeinträge-
 #       definieren in nicht-öffentliche __Methoden auslagern.
 #   *   Anzahl der Seiten soll in einem Menü (Bearbeiten) einstellbar sein.
-#   *   
+#   *   Konfiguration soll nicht explizit gespeichert und geladen werden,
+#       sondern automatisch in eine Datei
+#       ${HOME}/.config/achtelbass/Preferences oder so
+
 
 import pygtk
 pygtk.require('2.0')
 import gtk
+import os
 
 # The achtelbass file contains the actual music generator
 import achtelbass
@@ -28,6 +32,12 @@ import achtelbass
 #from locales_de import locales
 from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
+
+CONFIGURATION_DIRNAME = "${HOME}/.config/achtelbass/"
+CONFIGURATION_FILENAME = CONFIGURATION_DIRNAME+"configuration"
+
+# TODO Aus CONFIGURATION_FILENAME Konfiguration in Dict einlesen und Werte
+# in den Widgets entsprechend setzen.
 
 class gachtelbass(object):
     def __init__(self):
@@ -368,6 +378,21 @@ class gachtelbass(object):
         about_window.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
         about_window.set_transient_for(self.main_window)
 #TODO here: Add a short Text about me and a button to close the window.
+        textview = gtk.TextView()
+        textbuffer = textview.get_buffer()
+        textbuffer.set_text("achtelbass written by Artur Spengler letztes@gmail.com")
+
+        textview.set_editable(False)
+        textview.set_cursor_visible(False)
+        textview.set_wrap_mode(gtk.WRAP_WORD)
+        textview.set_justification(gtk.JUSTIFY_CENTER)
+        textview.show()
+
+        about_vbox = gtk.VBox(False, 10)
+        about_vbox.set_border_width(10)
+        about_vbox.pack_start(textview, True, True, 0)
+        about_vbox.show()
+        about_window.add(about_vbox)
         about_window.show()
 
     def select_tonic(self, widget):
@@ -420,6 +445,12 @@ class gachtelbass(object):
 # only strings. So the strings are converted before passed to achtelbass.
 # Either here or in achtelbass.
     def execute_achtelbass(self, widget):
+# Zunächst die Konfiguration in eine Datei schreiben
+        if not os.path.exists(CONFIGURATION_DIRNAME):
+            os.makedirs(CONFIGURATION_DIRNAME)
+        file_object = open(CONFIGURATION_FILENAME, "w")
+        file_object.write(str(self.parameters))
+        file_object.close()
         new_achtelbass = achtelbass.achtelbass(self.parameters)
 
 def main():

@@ -147,7 +147,6 @@ class achtelbass(object):
         previous_clef = "b"
         j = 0 # separate iterator for pitches. 
         for i in range(len(self.Note_Values)):
-            print note_string
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"
             else:

@@ -17,11 +17,11 @@
 #       sondern automatisch in eine Datei
 #       ${HOME}/.config/achtelbass/Preferences oder so
 
-
-import pygtk
-pygtk.require('2.0')
+import cPickle
 import gtk
 import os
+import pygtk
+pygtk.require('2.0')
 
 # The achtelbass file contains the actual music generator
 import achtelbass
@@ -33,26 +33,39 @@ import achtelbass
 from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
-CONFIGURATION_DIRNAME = "${HOME}/.config/achtelbass/"
+CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"
 CONFIGURATION_FILENAME = CONFIGURATION_DIRNAME+"configuration"
-
-# TODO Aus CONFIGURATION_FILENAME Konfiguration in Dict einlesen und Werte
-# in den Widgets entsprechend setzen.
 
 class gachtelbass(object):
     def __init__(self):
+        self.Tonics = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F']
+        self.Modes = ['Major', 'Minor']
+        self.Intervals = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
+        self.Pitches = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        self.Rest_Frequencies = ['no rests', '0.1', '0.2', '0.3', '0.4', '0.5']
+        self.Time_Signatures = ['2/2', '3/4', '4/4']
+        self.Note_Values = ["1", "1/2", "1/4", "1/8", "1/16", "1/32"]
+        self.Tuplets = ['no tuplets', '2', '3', '4', '5', '6', '7']
+        self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9']
 # Parameters that will be passed to the actual achtelbass script
-        self.parameters = {'tonic' : '',
-                            'mode' : '',
-                            'intervals' : {},
-                            'min_pitch' : '',
-                            'max_pitch' : '',
-                            'rest_frequency' : '',
-                            'time_signature' : '',
-                            'note_values' : {},
-                            'tuplets' : '',
-                            'tuplets_frequency' : '',
-                           }
+        try:
+            file_object = open(CONFIGURATION_FILENAME, 'r')
+            self.parameters = cPickle.load(file_object)
+            file_object.close()
+        except IOError:
+            self.parameters = {'tonic' : 'C',
+                                'mode' : 'Major',
+                                'intervals' : {'Second' : True},
+                                'min_pitch' : 'c2',
+                                'max_pitch' : 'd3',
+                                'rest_frequency' : '0',
+                                'time_signature' : '4/4',
+                                'note_values' : {'1' : True},
+                                'tuplets' : 'no tuplets',
+                                'tuplets_frequency' : 'no tuplets',
+                               }
+        #print self.Tonics.index(self.parameters['tonic'])
+        
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_window.set_title("achtelbass")
         self.main_window.connect("delete_event", self.delete_event)
@@ -62,17 +75,6 @@ class gachtelbass(object):
         self.main_window.add_accel_group(accel_group)
 # File menu
         file_submenu = gtk.Menu()
-
-        menu_item_save_configuration = gtk.MenuItem(locales['Save configuration'])
-        menu_item_save_configuration.connect("activate", self.save_configuration, locales['Save configuration'])
-        menu_item_save_configuration.show()
-        file_submenu.append(menu_item_save_configuration)
-        menu_item_save_configuration.add_accelerator("activate", accel_group, ord("S"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
-
-        menu_item_load_configuration = gtk.MenuItem(locales['Load configuration'])
-        menu_item_load_configuration.connect("activate", self.load_configuration, locales['Load configuration'])
-        menu_item_load_configuration.show()
-        file_submenu.append(menu_item_load_configuration)
 
         menu_item_quit = gtk.MenuItem(locales['Quit'])
         menu_item_quit.connect("activate", self.delete_event, locales['Quit'])
@@ -120,22 +122,11 @@ class gachtelbass(object):
 
         tonic_combo_box = gtk.combo_box_new_text()
         tonic_combo_box.show()
-        tonic_combo_box.append_text('C')
-        tonic_combo_box.append_text('G')
-        tonic_combo_box.append_text('D')
-        tonic_combo_box.append_text('A')
-        tonic_combo_box.append_text('E')
-        tonic_combo_box.append_text('H')
-        tonic_combo_box.append_text('Fis')
-        tonic_combo_box.append_text('Ges')
-        tonic_combo_box.append_text('Des')
-        tonic_combo_box.append_text('As')
-        tonic_combo_box.append_text('Es')
-        tonic_combo_box.append_text('B')
-        tonic_combo_box.append_text('F')
+        for tonic in self.Tonics:
+            tonic_combo_box.append_text(locales[tonic])
 
         tonic_combo_box.connect("changed", self.select_tonic)
-        tonic_combo_box.set_active(0) # 'C' shall be the default selected
+        tonic_combo_box.set_active(self.Tonics.index(self.parameters['tonic']))
         tonic_label = gtk.Label(locales['Tonic'])
         tonic_label.show()
         tonic_label.set_alignment(0, 0)
@@ -150,11 +141,11 @@ class gachtelbass(object):
 
         mode_combo_box = gtk.combo_box_new_text()
         mode_combo_box.show()
-        mode_combo_box.append_text(locales['Major'])
-        mode_combo_box.append_text(locales['Minor'])
+        for mode in self.Modes:
+            mode_combo_box.append_text(locales[mode])
         
         mode_combo_box.connect("changed", self.select_mode)
-        mode_combo_box.set_active(0) # 'Major' shall be default value
+        mode_combo_box.set_active(self.Modes.index(self.parameters['mode']))
 
         mode_label = gtk.Label(locales['Mode'])
         mode_label.show()
@@ -175,12 +166,12 @@ class gachtelbass(object):
         intervals_vbox.pack_start(intervals_label, False, False, 2)
 
 #        for interval in ('Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave'):
-        for interval in (locales['Unison'], locales['Second'], locales['Third'], locales['Fourth'], locales['Fifth'], locales['Sixth'], locales['Seventh'], locales['Octave']):
-            checkbutton = gtk.CheckButton(interval)
+        for interval in self.Intervals:
+            checkbutton = gtk.CheckButton(locales[interval])
             checkbutton.show()
             intervals_vbox.pack_start(checkbutton, False, False, 2)
-            checkbutton.connect('toggled', self.add_interval, interval)
-            if (interval == locales['Second']):
+            checkbutton.connect('toggled', self.add_interval, locales[interval])
+            if (locales[interval] == locales['Second']):
                 checkbutton.set_active(True)
 
         self.main_window.show()
@@ -197,7 +188,7 @@ class gachtelbass(object):
 
         min_pitch_combo_box = gtk.combo_box_new_text()
         min_pitch_combo_box.show()
-        for pitch in ("c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"):
+        for pitch in self.Pitches:
             min_pitch_combo_box.append_text(pitch)
 
         min_pitch_combo_box.connect("changed", self.select_min_pitch)
@@ -218,7 +209,7 @@ class gachtelbass(object):
 
         max_pitch_combo_box = gtk.combo_box_new_text()
         max_pitch_combo_box.show()
-        for pitch in ("c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"):
+        for pitch in self.Pitches:
             max_pitch_combo_box.append_text(pitch)
 
         max_pitch_combo_box.connect("changed", self.select_max_pitch)
@@ -239,12 +230,8 @@ class gachtelbass(object):
 
         rest_frequency_combo_box = gtk.combo_box_new_text()
         rest_frequency_combo_box.show()
-        rest_frequency_combo_box.append_text(locales['no rests'])
-        rest_frequency_combo_box.append_text(locales["0.1"])
-        rest_frequency_combo_box.append_text(locales["0.2"])
-        rest_frequency_combo_box.append_text(locales["0.3"])
-        rest_frequency_combo_box.append_text(locales["0.4"])
-        rest_frequency_combo_box.append_text(locales["0.5"])
+        for rest_frequency in self.Rest_Frequencies:
+            rest_frequency_combo_box.append_text(locales[rest_frequency])
 
         rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
         rest_frequency_combo_box.set_active(0)
@@ -264,9 +251,8 @@ class gachtelbass(object):
 
         time_signature_combo_box = gtk.combo_box_new_text()
         time_signature_combo_box.show()
-        time_signature_combo_box.append_text("2/2")
-        time_signature_combo_box.append_text("3/4")
-        time_signature_combo_box.append_text("4/4")
+        for time_signature in self.Time_Signatures:
+            time_signature_combo_box.append_text(time_signature)
 
         time_signature_combo_box.connect("changed", self.select_time_signature)
         time_signature_combo_box.set_active(2)
@@ -288,7 +274,7 @@ class gachtelbass(object):
         
 #TODO here: display (vector graphic) images instead of fraction of digits
 # for note values
-        for note_value in ("1", "1/2", "1/4", "1/8", "1/16", "1/32"):
+        for note_value in self.Note_Values:
             checkbutton = gtk.CheckButton(note_value)
             checkbutton.show()
             note_value_vbox.pack_start(checkbutton, False, False, 2)
@@ -309,12 +295,8 @@ class gachtelbass(object):
 
         tuplet_combo_box = gtk.combo_box_new_text()
         tuplet_combo_box.show()
-        tuplet_combo_box.append_text(locales['no tuplets'])
-        tuplet_combo_box.append_text("3")
-        tuplet_combo_box.append_text("4")
-        tuplet_combo_box.append_text("5")
-        tuplet_combo_box.append_text("6")
-        tuplet_combo_box.append_text("7")
+        for tuplet in self.Tuplets:
+            tuplet_combo_box.append_text(locales[tuplet])
 
         tuplet_combo_box.connect("changed", self.select_tuplet)
         tuplet_combo_box.set_active(0)
@@ -396,7 +378,7 @@ class gachtelbass(object):
         about_window.show()
 
     def select_tonic(self, widget):
-        self.parameters['tonic'] = widget.get_active_text()
+        self.parameters['tonic'] = locales_inverse[widget.get_active_text()]
         print self.parameters['tonic']
 
     def select_mode(self, widget):
@@ -449,7 +431,7 @@ class gachtelbass(object):
         if not os.path.exists(CONFIGURATION_DIRNAME):
             os.makedirs(CONFIGURATION_DIRNAME)
         file_object = open(CONFIGURATION_FILENAME, "w")
-        file_object.write(str(self.parameters))
+        cPickle.dump(self.parameters, file_object)
         file_object.close()
         new_achtelbass = achtelbass.achtelbass(self.parameters)
 

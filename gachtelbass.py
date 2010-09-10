@@ -56,15 +56,14 @@ class gachtelbass(object):
             self.parameters = {'tonic' : 'C',
                                 'mode' : 'Major',
                                 'intervals' : {'Second' : True},
-                                'min_pitch' : 'c2',
-                                'max_pitch' : 'd3',
-                                'rest_frequency' : '0',
+                                'min_pitch' : 'c4',
+                                'max_pitch' : 'd5',
+                                'rest_frequency' : 'no rests',
                                 'time_signature' : '4/4',
                                 'note_values' : {'1' : True},
                                 'tuplets' : 'no tuplets',
                                 'tuplets_frequency' : 'no tuplets',
                                }
-        
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_window.set_title("achtelbass")
         self.main_window.connect("delete_event", self.delete_event)

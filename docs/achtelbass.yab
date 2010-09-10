@@ -1,0 +1,397 @@
+sub main()
+   input " \nWaehlen Sie die Tonleiter:\n Eb-dur, F'-moll, Gis-dur, usw.\nTonleiter: " tonleiter$
+   if lower$(tonleiter$) = "q" exit
+   grundton$=grundton$(tonleiter$)
+   grundnote=grundnote(grundton$)
+   tongeschlecht$=tongeschlecht$(tonleiter$)
+   repeat
+      input "\nWaehlen Sie den Schwierigkeitsgrad:\n beginner, normal, hard, expert\nModus: " modus$
+      if lower$(modus$) = "q" exit
+      modus$ = modus$(modus$)
+   until(modus$ = "e" or modus$ = "h" or modus$ = "n" or modus$ = "b")
+
+   b = tl(grundnote,tongeschlecht$,4)
+   gespeichertezufallszahl1 = 6
+   gespeichertezufallszahl2 = 66
+   gespeichertezufallszahl3 = 666
+
+   clear screen
+   open window 960,700
+   repeat
+
+      for j=0 to 6 // Die Notenlienien
+         color 0,0,250
+         line 20,30+j*90,930,30+j*90
+         line 20,40+j*90,930,40+j*90
+         line 20,50+j*90,930,50+j*90
+         line 20,60+j*90,930,60+j*90
+         line 20,70+j*90,930,70+j*90
+         
+         color 0,0,0 // Der Bassschluessel
+         fill circle 25,40+j*90,3
+         new curve   
+            line to 22,j*90+40
+            line to   22,j*90+35
+            line to 28,j*90+30
+            line to 34,j*90+30
+            line to 40,j*90+33
+            line to 45,j*90+40
+            line to 45,j*90+50
+            line to 35,j*90+58
+         new curve
+            line to 34,j*90+30
+            line to 41,j*90+33
+            line to 46,j*90+40
+            line to 46,j*90+50
+            line to 36,j*90+58
+            line to 25,j*90+63
+         new curve
+            line to 46,j*90+48
+            line to 36,j*90+58
+            line to 25,j*90+63
+         new curve
+            line to 41,j*90+33
+            line to 47,j*90+42
+            line to 47,j*90+48
+         new curve
+            line to 44,j*90+39
+            line to 44,j*90+50
+         new curve
+            line to 40,j*90+33
+            line to 45,j*90+45
+            line to 41,j*90+33
+            line to 45,j*90+45
+            line to 35,j*90+58
+            line to 46,j*90+45
+            line to 36,j*90+58
+            line to 47,j*90+45
+         fill circle 52,j*90+35,2
+         fill circle 52,j*90+45,2
+                  
+         x=80
+         y=85
+         while (x < 920) // Die Taktstriche
+            color 0,0,250
+            line 920,25+j*90 to 920,75+j*90
+            if mod(x-80,120)=0 then
+               k=k+1
+               text x-22,25+j*90,str$(k)
+               line x-10,25+j*90 to x-10,75+j*90
+               taktwertigkeit = 8
+            end if
+            if taktwertigkeit > 0 then
+               repeat
+                  switch modus$
+                     case "e":notenwert = int(ran(taktwertigkeit))+1:break
+                     default:notenwert = 2
+                  end switch
+               until(!notenwert=3 and !notenwert=5 and !notenwert=6 and !notenwert=7)
+                  taktwertigkeit = taktwertigkeit-(notenwert)
+               if modus$ = "b" or modus$ = "n" then 
+                  pausevsnote = 1
+               else
+                  pausevsnote =   int(ran(15))
+               end if
+               if pausevsnote = 0 then
+                  switch notenwert
+                     case 8:a=125:break
+                     case 4:a=126:break
+                     case 2:a=127:break
+                     case 1:a=128:break
+                  end switch
+               else
+               repeat
+                  zufallszahl = int(ran(8))
+                  switch modus$
+                     case "b":okay = abs(zufallszahl-gespeichertezufallszahl1)=1 and   (zufallszahl<>gespeichertezufallszahl2 or (zufallszahl = gespeichertezufallszahl2 and gespeichertezufallszahl1<>gespeichertezufallszahl3)):break
+                     case "n":okay = abs(zufallszahl-gespeichertezufallszahl1)=1 and (zufallszahl<>gespeichertezufallszahl2 or (zufallszahl = gespeichertezufallszahl2 and gespeichertezufallszahl1<>gespeichertezufallszahl3)):break
+                     case "h":okay = (abs(b-tl(grundnote,tongeschlecht$,zufallszahl))<6 and (abs(zufallszahl-gespeichertezufallszahl1)=1 or abs(zufallszahl-gespeichertezufallszahl1)=2 or abs(zufallszahl-gespeichertezufallszahl1)=3)):break
+                     case "e":okay = (abs(b-tl(grundnote,tongeschlecht$,zufallszahl))<6 and (abs(zufallszahl-gespeichertezufallszahl1)=1 or abs(zufallszahl-gespeichertezufallszahl1)=2 or abs(zufallszahl-gespeichertezufallszahl1)=3)):break
+                  end switch
+               until(okay = true)
+                  gespeichertezufallszahl3 = gespeichertezufallszahl2
+                  gespeichertezufallszahl2 = gespeichertezufallszahl1
+                  gespeichertezufallszahl1 = zufallszahl
+                  a=tl(grundnote,tongeschlecht$,zufallszahl)
+                  b=a
+               end if 
+               glattesA=glatteNoten(a)
+               x = drawtl(modus$, notenwert, glattesA, x, y, j)
+            end if
+            x=x+15
+         wend
+      next
+      color 0,0,0
+      text 480,660,tonleiter$,"cc"
+      text 910,660,"q zum Beenden","cc"
+      
+      taste$ = inkey$
+      clear window
+               k=0 // Zählvariable für Nummerierung der Taktstriche
+   until(taste$ = "q" or taste$ = "esc")
+   close window
+   exit
+end sub
+
+sub modus$(modus$)
+   if instr(modus$,"e") = 1 modus$ = "e"
+   if instr(modus$,"h") = 1 modus$ = "h"
+   if instr(modus$,"n") = 1 modus$ = "n"
+   if instr(modus$,"b") = 1 modus$ = "b"
+   return modus$
+end sub
+
+sub grundton$(tonleiter$)
+   local grundton$,tongeschlecht$
+   if right$(tonleiter$,4) = "moll" then
+      grundton$ = left$(tonleiter$,(len(tonleiter$)-5))
+   elseif right$(tonleiter$,3) = "dur" then
+      grundton$ = left$(tonleiter$,(len(tonleiter$)-4))
+   end if
+   return grundton$
+end sub
+
+sub tongeschlecht$(tonleiter$)
+   local grundnote,grundton$,tongeschlecht$
+   if right$(tonleiter$,4) = "moll" then
+      tongeschlecht$ = "moll"
+   elseif right$(tonleiter$,3) = "dur" then
+      tongeschlecht$ = "dur"
+   end if
+   return tongeschlecht$
+end sub
+
+sub grundnote(grundton$)
+   switch grundton$
+      case "E":grundnote = 0:break
+      case "Fes":grundnote = 0:break
+      case "Fb":grundnote = 0:break
+      case "F":grundnote = 1:break
+      case "Fis":grundnote = 2:break
+      case "Ges":grundnote = 2:break
+      case "Gb":grundnote = 2:break
+      case "G":grundnote = 3:break
+      case "Gis":grundnote = 4:break
+      case "As":grundnote = 4:break
+      case "Ab":grundnote = 4:break
+      case "A":grundnote = 5:break
+      case "Ais":grundnote = 6:break
+      case "Bb":grundnote = 6:break
+      case "Bes":grundnote = 6:break
+      case "B":grundnote = 7:break
+      case "Bis":grundnote = 8:break
+      case "Cb":grundnote = 7:break
+      case "Ces":grundnote = 7:break
+      case "C":grundnote = 8:break
+      case "Cis":grundnote = 9:break
+      case "Des":grundnote = 9:break
+      case "D":grundnote = 10:break
+      case "Dis":grundnote = 11:break
+      case "es":grundnote = 11:break
+      case "eb":grundnote = 11:break
+      case "e":grundnote = 12:break
+      case "eis":grundnote = 13:break
+      case "fes":grundnote = 12:break
+      case "f":grundnote = 13:break
+      case "fis":grundnote = 14:break
+      case "ges":grundnote = 14:break
+      case "g":grundnote = 15:break
+      case "gis":grundnote = 16:break
+      case "as":grundnote = 16:break
+      case "ab":grundnote = 16:break
+      case "a":grundnote = 17:break
+      case "ais":grundnote = 18:break
+      case "bb":grundnote = 18:break
+      case "b":grundnote = 19:break
+      case "ces":grundnote = 19:break
+      case "cb":grundnote = 19:break
+      case "bis":grundnote = 20:break
+      case "c":grundnote = 20:break
+      case "cis":grundnote = 21:break
+      case "des":grundnote = 21:break
+      case "d":grundnote = 22:break
+      case "dis":grundnote = 23:break
+      case "eb":grundnote = 23:break
+      case "es":grundnote = 23:break
+   end switch
+   return grundnote
+end sub
+
+sub tl(grundnote,tongeschlecht$,zufallszahl)
+   dim dur(7)
+      dur(0)=grundnote
+      dur(1)=grundnote+2
+      dur(2)=grundnote+4
+      dur(3)=grundnote+5
+      dur(4)=grundnote+7
+      dur(5)=grundnote+9
+      dur(6)=grundnote+11
+      dur(7)=grundnote+12
+      
+   dim moll(7)
+      moll(0)=grundnote
+      moll(1)=grundnote+2
+      moll(2)=grundnote+3
+      moll(3)=grundnote+5
+      moll(4)=grundnote+7
+      moll(5)=grundnote+8
+      moll(6)=grundnote+10
+      moll(7)=grundnote+12
+
+   switch tongeschlecht$
+      case "dur":a = dur(zufallszahl):break
+      case "moll":a = moll(zufallszahl):break
+   end switch
+   return a
+end sub
+
+sub glatteNoten(a)
+   color 0,0,0
+   switch a
+
+rem sollte beser so irgendwie gehen...
+rem    if mod((a+1)/3)=0 or mod((a+1)/5)=0 or mod((a+1)/7)=0 then 
+rem      glattesA = a-
+rem       text x-10,y+j*90-(glattesA*5-5)-6, "#"
+rem   elseif
+rem      glattesA = a
+rem   end if
+   
+      case 0:glattesA = a:break
+      case 1:glattesA = a:break
+      case 2:glattesA = a-1:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 3:glattesA = a-1:break
+      case 4:glattesA = a-2:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 5:glattesA = a-2:break
+      case 6:glattesA = a-3:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 7:glattesA = a-3:break
+      case 8:glattesA = a-3:break
+      case 9:glattesA = a-4:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 10:glattesA = a-4:break //'//   d; 6
+      case 11:glattesA = a-5:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 12:glattesA = a-5:break
+      case 13:glattesA = a-5:break
+      case 14:glattesA = a-6:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 15:glattesA = a-6:break
+      case 16:glattesA = a-7:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 17:glattesA = a-7:break
+      case 18:glattesA = a-8:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 19:glattesA = a-8:break
+      case 20:glattesA = a-8:break
+      case 21:glattesA = a-9:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 22:glattesA = a-9:break //'// d';  13
+      case 23:glattesA = a-10:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 24:glattesA = a-10:break
+      case 25:glattesA = a-10:break
+      case 26:glattesA = a-11:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 27:glattesA = a-11:break
+      case 28:glattesA = a-12:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 29:glattesA = a-12:break
+      case 30:glattesA = a-13:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 31:glattesA = a-13:break
+      case 32:glattesA = a-13:break
+      case 33:glattesA = a-14:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 34:glattesA = a-14:break //'//   d''      20
+      case 35:glattesA = a-15:text x-10,y+j*90-(glattesA*5-5)-6, "#":break
+      case 36:glattesA = a-15:break
+      case 37:glattesA = a-15:break
+      default:glattesA = a
+   end switch
+   return glattesA
+end sub
+
+sub hilfslinien(glattesA,j,x,y)
+   color 0,0,250
+   switch glattesA
+      case 0:line x-10,y+j*90-5,x+10,y+j*90-5:break
+      case 12:line x-10,y+j*90-65,x+10,y+j*90-65:break
+      case 13:line x-10,y+j*90-65,x+10,y+j*90-65:break
+      case 14:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:break
+      case 15:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:break
+      case 16:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:line x-10,y+j*90-85,x+10,y+j*90-85:break
+      case 17:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:line x-10,y+j*90-85,x+10,y+j*90-85:break
+      case 18:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:line x-10,y+j*90-85,x+10,y+j*90-85:line x-10,y+j*90-95,x+10,y+j*90-95:break
+      case 19:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:line x-10,y+j*90-85,x+10,y+j*90-85:line x-10,y+j*90-95,x+10,y+j*90-95:break
+      case 20:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:line x-10,y+j*90-85,x+10,y+j*90-85:line x-10,y+j*90-95,x+10,y+j*90-95:line x-10,y+j*90-105,x+10,y+j*90-105:break
+      case 21:line x-10,y+j*90-65,x+10,y+j*90-65:line x-10,y+j*90-75,x+10,y+j*90-75:line x-10,y+j*90-85,x+10,y+j*90-85:line x-10,y+j*90-95,x+10,y+j*90-95:line x-10,y+j*90-105,x+10,y+j*90-105:break
+   end switch
+end sub
+
+sub noten(notenwert, glattesA, j, x, y)
+   if glattesA < 125 then // wenn Noten und keine Pausen
+      color 0,0,0
+      if notenwert < 2 then // Notenhäckchen
+         if glattesA < 12 then
+            new curve
+               line to x+3,y+j*90-(glattesA*5+16)-5 
+               line to x+5,y+j*90-(glattesA*5+16)-3 
+               line to x+6,y+j*90-(glattesA*5+16)+2
+               line to x+3,y+j*90-(glattesA*5+16)-5
+         end if
+         if glattesA >= 12 then
+            new curve
+               line to x+3,y+j*90-(glattesA*5-16)-5 
+               line to x+5,y+j*90-(glattesA*5-16)-7 
+               line to x+6,y+j*90-(glattesA*5-16)-13
+               line to x+3,y+j*90-(glattesA*5-16)-5
+         end if
+      end if
+      if notenwert < 4 then // Notenstriche
+         if glattesA < 12 line x+3,y+j*90-glattesA*5-5 to x+3,y+j*90-(glattesA*5+16)-5
+         if glattesA >= 12 line x+3,y+j*90-glattesA*5-5 to x+3,y+j*90-(glattesA*5-16)-5
+      end if
+      switch notenwert // Notenfüllung
+         case 1:fill circle x,y+j*90-glattesA*5-5,4:break
+         case 2:fill circle x,y+j*90-glattesA*5-5,4:x=x+15:break
+         case 4:fill circle x,y+j*90-glattesA*5-5,4:x=x+45:break
+         case 8:circle x,y+j*90-glattesA*5-5,4:break
+      end switch
+      
+   else // Pausen und keine Noten
+      color 0,0,0
+      switch glattesA
+        case 125:fill rectangle x+41,y+j*90-45 to x+49,y+j*90-42:break
+        case 126:fill rectangle x-4,y+j*90-35 to x+4,y+j*90-38:x=x+45:break
+        case 127:new curve:line to x-1,y+j*90-41:line to x+1,y+j*90-37:line to x-1,y+j*90-35:line to x+1,y+j*90-33:line to x,y+j*90-33:line to x-1,y+j*90-32:line to x-1,y+j*90-31:line to x,y+j*90-30:line x-1,y+j*90-36 to x+1,y+j*90-38:line x+1,y+j*90-39 to x-1,y+j*90-37:x=x+15:break
+        case 128:new curve:line to x-3,y+j*90-31:line to x+3,y+j*90-41:line to x-2,y+j*90-39:fill circle x-2,y+j*90-41,2
+      end switch
+   end if
+   return x
+end sub
+
+sub drawtl(modus$, notenwert, glattesA, x, y, j)
+   hilfslinien(glattesA,j,x,y)
+   if modus$ = "b" then
+   color 0,0,0
+      switch glattesA
+         case 0:text x,y+j*90, "E":break
+         case 1:text x,y+j*90-5, "F":break
+         case 2:text x,y+j*90-10, "G":break
+         case 3:text x,y+j*90-15, "A":break
+         case 4:text x,y+j*90-20, "B":break
+         case 5:text x,y+j*90-25, "C":break
+         case 6:text x,y+j*90-30, "D":break
+         case 7:text x,y+j*90-35, "e":break
+         case 8:text x,y+j*90-40, "f":break
+         case 9:text x,y+j*90-45, "g":break
+         case 10:text x,y+j*90-50, "a":break
+         case 11:text x,y+j*90-55, "b":break
+         case 12:text x,y+j*90-60, "c":break
+         case 13:text x,y+j*90-65, "d":break
+         case 14:text x,y+j*90-70, "e'":break
+         case 16:text x,y+j*90-75, "f'":break
+         case 17:text x,y+j*90-75, "g'":break
+         case 18:text x,y+j*90-75, "a'":break
+         case 19:text x,y+j*90-75, "b'":break
+         case 20:text x,y+j*90-75, "c'":break
+         case 21:text x,y+j*90-75, "d'":break
+      end switch
+      x=x+15
+   else
+      x = noten(notenwert,glattesA,j,x,y)
+   end if
+   return x
+end sub
+
+main()
+

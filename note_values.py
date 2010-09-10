@@ -29,17 +29,17 @@ class note_values(object):
     
     def calculate(self):
         remaining_bar_length = self.Time_Signature # Zum Beispiel 3.0/4 = 0.75
+        selectable_note_values_in_this_bar = self.Selectable_Note_Values
         pmx_note_value = ''
-        while remaining_bar_length > 0.0:          
-            chosen_note_value = random.choice(self.Selectable_Note_Values)
-            if remaining_bar_length - chosen_note_value >= 0.0:
-                if self.Selectable_Note_Values.index(chosen_note_value) > 0:
-                    pmx_note_value = self.PMX_Note_Values[chosen_note_value]
-                    if self.Tuplets != 0:
-                        if random.uniform(0, 1) < self.Tuplets_Frequency:
-                            pmx_note_value = self.Tuplets
-                self.Result.append(pmx_note_value)
-                remaining_bar_length -= chosen_note_value
+        while remaining_bar_length > 0.0:
+            selectable_note_values_in_this_bar = [selectable_note_values_in_this_bar[selectable_note_values_in_this_bar.index(item)] for item in selectable_note_values_in_this_bar if item <= remaining_bar_length]
+            chosen_note_value = random.choice(selectable_note_values_in_this_bar)
+            pmx_note_value = self.PMX_Note_Values[chosen_note_value]
+            if self.Tuplets != 0:
+                if random.uniform(0, 1) < self.Tuplets_Frequency:
+                    pmx_note_value = str(pmx_note_value) + self.Tuplets
+            self.Result.append(pmx_note_value)
+            remaining_bar_length -= chosen_note_value
         self.Result.append("/\n")
 
 ##############################################################################

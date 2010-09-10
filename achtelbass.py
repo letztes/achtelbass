@@ -140,7 +140,7 @@ class achtelbass(object):
         amount = len(self.Note_Values)
         for note_value in self.Note_Values:
             if isinstance(note_value, str) and note_value.count('x'):
-                tuplet_value = note_value[1:len(note_value)]
+                tuplet_value = note_value[2:len(note_value)]
                 amount += int(tuplet_value)
 
         new_pitches = pitches.pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals)
@@ -163,10 +163,11 @@ class achtelbass(object):
 #An dieser Stelle, das heißt als erste Note in der Multiolengruppe, kommt
 # bisweilen keine Pause vor. Muss man ändern. Überhaupt ist in den
 # Multiolen noch keine Pause möglich.
-                    match = re.search('x(\d)', self.Note_Values[i])
-                    note_string += self.Pitches[j] + self.Note_Values[i] + ' '
+                    match = re.search('(\d)x(\d)', self.Note_Values[i])
                     j += 1
-                    tuplet_remain = int(match.group(1))
+                    note_value_for_tuplet = int(match.group(1))
+                    tuplet_remain = int(self.Note_Values[i][2])
+                    note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
                     while tuplet_remain > 1:
                         if random.uniform(0, 1) < self.Rest_Frequency:
                             note_string += 'r '
@@ -207,7 +208,8 @@ class achtelbass(object):
         file_object.write(pmx_string)
         file_object.close()
         os.system('pmx out.pmx')
-        #os.system('evince out.dvi')
+        os.system('dvipdf out.dvi')
+        os.system('evince out.pdf')
        
 
 

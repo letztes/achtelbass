@@ -35,8 +35,9 @@
                     <li>Python interpreter</li>
                     <li>PMX</li>
                     <li>MusixTeX (normally comes with PMX)</li>
-                    <li>DVI to PDF converter (pdfdvi for instance)</li>
+                    <li>DVI to PDF converter (dvipdf for instance)</li>
                     <li>PDF viewer (evince or so)</li>
+                    <li>MIDI player (timidity for example)</li>
                 </ul>
             </div>
         </div>
@@ -70,15 +71,92 @@
                 <strong>Caveat when introducing new widgets.</strong> 
                 When new widgets are introduced to the application or old
                 ones are modified, the locales_template.py file and all the
-                existing locales files need to be modified to.<br />
+                existing locales files need to be modified too.<br />
                 However, this is only true for the accelerations with the
                 ALT-key. The accelerations with the CTRL-key work
                 different. They are bound to the key in question (e.g.
-                'CTRL+S' for Save) in the code, where the widget is 
+                'CTRL+S' for Save) in the code where the widget is 
                 defined. Maybe one day there will exist a second dictionary
                 for those key bindings too.
                 </p>
 
+            </div>
+            <div>
+                <h3>Limitations and known bugs</h3>
+                <ul>
+                    <li>PMX cannot end an xtuplet with a rest. This is
+                    exactly the error message it throws.
+                    </li>
+                    <li>Likewise, PMX cannot start a bar with a rest.</li>  
+                </ul>
+            </div>
+            <div>
+                <h3>History of achtelbass</h3>
+                <h4>achtelbass.yab</h4>
+                <div>
+                <p>
+                The first Version of achtelbass i wrote in 2005 or 2006. The
+                algorithm was implemented in yabasic and did not use oop nor
+                did it use external programs like PMX and MusiXTeX. Instead
+                it was written in a functional manner and dispayed the
+                score all by itself, using the builtin graphics functions.
+                The code is available <a href="achtelbass.yab">here</a>. You
+                can run it with the yabasic interpreter. You need to invoke
+                it from the command line, where the program asks you which
+                key and which difficulty level to choose. After these 
+                questions are answered, a graphical window pops up, showing
+                the notes.</p>
+                <p>
+                The yabasic version featured four difficulty levels, where
+                the lowest level displayed the letter names of the notes
+                instead of the notes in and between the note lines. The
+                note values were quarters only and the intervals were
+                seconds only.</p>
+                <p>
+                The second difficulty level displayed the notes instead of
+                the letters, but the intervals and the note values were the
+                same as in the first level.</p>
+                <p>
+                In the third difficulty level the note values still
+                consisted of quarters only, but the intervals consisted of 
+                seconds and thirds and some few notes were replaced by
+                rests.</p>
+                <p>
+                In the fourth difficulty level various intervals and note
+                values were mixed and the range of pitches was extended
+                beyond the five note lines.</p>
+                <div style="text-align:center; padding:0px; margin-top:0px; margin-bottom:0px">
+                    <img src="achtelbass.yab.png" alt="achtelbass.yab graphical output window at fourth difficulty level" />
+                </div>
+                <p>
+                Note that in the image above the accidental in
+                the f-major scale is a sharp in front of the 'a' and the
+                half notes are displayed as filled circles. I never fixed
+                that in the yabasic implementation, because at that time
+                i began to learn Perl and wrote the program again from
+                scratch.
+                </p>
+                </div>
+                <h4>achtelbass.pl</h4>
+                <div>
+                    <p>About 2008 i wrote a perl script that worked similar
+                    to the yabasic program but made use of the MusixTeX. The
+                    goal was to achieve pretty layout, which the *TeX
+                    programs are well known for.</p>
+                    <p>
+                    The implementation in Perl was invoked from the command
+                    line and wrote the output into a file, that was read
+                    afterwards by PMX, which called MusixTeX, which in turn
+                    wrote a DVI file. After that DVI file was converted to
+                    PDF the result could be viewed or printed. The complete
+                    command line was:
+                    </p>
+                    <pre>perl achtelbass.pl > out.pmx &amp;&amp; pmx out.pmx &amp;&amp; dvipdf out.dvi &amp;&amp; evince out.pdf</pre>
+                    <p>The program did not take any parameters and did not
+                    have a GUI. Any changes were to be made in the code
+                    itself. The code is available <a href="achtelbass.pl">here</a>.
+                    </p>
+                </div>
             </div>
             
         </div>

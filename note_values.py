@@ -36,7 +36,7 @@ class note_values(object):
             chosen_note_value = random.choice(selectable_note_values_in_this_bar)
             pmx_note_value = self.PMX_Note_Values[chosen_note_value]
             if self.Tuplets != 0:
-                if random.uniform(0, 1) < self.Tuplets_Frequency:
+                if random.uniform(0, 1) < float(self.Tuplets_Frequency):
                     pmx_note_value = str(pmx_note_value) + self.Tuplets
             self.Result.append(pmx_note_value)
             remaining_bar_length -= chosen_note_value

@@ -153,7 +153,7 @@ class achtelbass(object):
         note_string = ''
 
         previous_pitch = self.Pitches[0]
-        previous_clef = "b"
+        previous_clef = ""
         j = 0 # separate iterator for pitches. 
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
@@ -164,12 +164,13 @@ class achtelbass(object):
 # bisweilen keine Pause vor. Muss man ändern. Überhaupt ist in den
 # Multiolen noch keine Pause möglich.
                     match = re.search('(\d)x(\d)', self.Note_Values[i])
-                    j += 1
                     note_value_for_tuplet = int(match.group(1))
                     tuplet_remain = int(self.Note_Values[i][2])
                     note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
+                    j += 1
                     while tuplet_remain > 1:
-                        if random.uniform(0, 1) < self.Rest_Frequency:
+# PMX cannot end an xtuplet with a rest. But why "> 2" and not "> 1"?
+                        if random.uniform(0, 1) < self.Rest_Frequency and tuplet_remain > 2:
                             note_string += 'r '
                         else:
                             note_string += self.Pitches[j] + ' '
@@ -204,6 +205,7 @@ class achtelbass(object):
         
         new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator)
         pmx_string = new_output.print_out()
+        os.chdir('/tmp/')
         file_object = open('out.pmx', "w")
         file_object.write(pmx_string)
         file_object.close()
@@ -212,6 +214,12 @@ class achtelbass(object):
         os.system('evince out.pdf')
        
 
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Semi-random sheet music generator')
+    #parser.add_argument('
+# http://docs.python.org/library/argparse.html#module-argparse
 
 
 

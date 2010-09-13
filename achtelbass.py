@@ -105,22 +105,29 @@ class achtelbass(object):
     
         self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
+        self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
         self.Min_Pitch = parameters['min_pitch']
         self.Max_Pitch = parameters['max_pitch']
+#if max_pitch is lower than min_pitch, swap them
+        if self.Notes.index(self.Min_Pitch) > self.Notes.index(self.Max_Pitch):
+            self.Min_Pitch = parameters['max_pitch']
+            self.Max_Pitch = parameters['min_pitch']
+        
         self.Rest_Frequency = self.Frequency_Values[parameters['rest_frequency']]
         self.Selectable_Note_Values = [self.Fraction_Values[note_value] for note_value in parameters['note_values'].keys()]
         self.Selectable_Note_Values.sort()
 
-        match = re.search('(\d)/(\d)', parameters['time_signature'])
-        self.Time_Signature_Numerator = match.group(1)
-        self.Time_Signature_Denominator = match.group(2)
+       # match = re.search('(\d)/(\d)', parameters['time_signature'])
+        #self.Time_Signature_Numerator = match.group(1)
+        self.Time_Signature_Numerator = parameters['time_signature'][0]
+        #self.Time_Signature_Denominator = match.group(2)
+        self.Time_Signature_Denominator = parameters['time_signature'][2]
         self.Time_Signature = self.Fraction_Values[parameters['time_signature']]
         self.Tuplets = self.Tuplets_Values[parameters['tuplets']]
         self.Tuplets_Frequency = parameters['tuplets_frequency']
 
         # Ausgabe immer so gestalten, dass etwa 40 bars, 10 systems pro Seite stehen
         self.Amount_Of_Bars = 81 # 40 bars in 10 systems fit perfectly in 1 page.   
-        self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
         self.Note_Values = self.get_note_values()
         self.Pitches = self.get_pitches()
         self.Note_String = self.glue_together()
@@ -135,8 +142,6 @@ class achtelbass(object):
         return new_note_values.Result
     
     def get_pitches(self):
-#TODO Berechnen, wie viele pitches berechnet werden müssen: Anzahl der Elemente
-# in der Note_Values Liste plus Summe der Multiolen.
         amount = len(self.Note_Values)
         for note_value in self.Note_Values:
             if isinstance(note_value, str) and note_value.count('x'):
@@ -153,18 +158,19 @@ class achtelbass(object):
         note_string = ''
 
         previous_pitch = self.Pitches[0]
-        previous_clef = ""
+        previous_clef = "c"
+        if self.Notes.index(previous_pitch) < self.Notes.index("c4"):
+            previous_clef = "b"
         j = 0 # separate iterator for pitches. 
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
-#An dieser Stelle, das heißt als erste Note in der Multiolengruppe, kommt
-# bisweilen keine Pause vor. Muss man ändern. Überhaupt ist in den
-# Multiolen noch keine Pause möglich.
-                    match = re.search('(\d)x(\d)', self.Note_Values[i])
-                    note_value_for_tuplet = int(match.group(1))
+                    #match = re.search('(\d)x(\d)', self.Note_Values[i])
+                    #note_value_for_tuplet = int(match.group(1))
+                    #tuplet_remain = int(self.Note_Values[i][2])
+                    note_value_for_tuplet = int(self.Note_Values[i][0])
                     tuplet_remain = int(self.Note_Values[i][2])
                     note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
                     j += 1
@@ -182,7 +188,6 @@ class achtelbass(object):
                     if random.uniform(0, 1) < self.Rest_Frequency:
                         note_string += 'r'+str(self.Note_Values[i]) + ' '
                     else:
-#                        note_string += re.sub(r'^(.)(.)$', r"\g<1>"+str(self.Note_Values[i])+"\g<2>", self.Pitches[j]) + ' '# not efficient.
                         note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
                         j += 1
                 
@@ -215,14 +220,172 @@ class achtelbass(object):
        
 
 if __name__ == "__main__":
-    import argparse
+    import getopt, sys
 
-    parser = argparse.ArgumentParser(description='Semi-random sheet music generator')
-    #parser.add_argument('
-# http://docs.python.org/library/argparse.html#module-argparse
+    def usage():
+        print ""
+        print sys.argv[0], "is a semi random generator for sheet music."
+        print "Usage: ", sys.argv[0], "[OPTIONS]"
+        print "None of the options are mandatory, any omitted options"
+        print "are set to default values listed below."
+        print ""
+        print "Options are:"
+        print " -t, --tonic=TONIC"
+        print "         default=C"
+        print ""
+        print " -m, --mode=MODE"
+        print "         default=Major"
+        print ""
+        print " -i, --intervals=INTERVAL1 [--intervals=INTERVAL2...]"
+        print "         default=Second"
+        print ""
+        print " -n, --min_pitch=MIN_PITCH"
+        print "         default=c4"
+        print ""
+        print " -x, --max_pitch=MAX_PITCH"
+        print "         default=d5"
+        print ""
+        print " -r, --rest_frequency=REST_FREQUENCY"
+        print "         default='no rests'"
+        print ""
+        print " -s, --time_signature=TIME_SIGNATURE"
+        print "         default='4/4' (note the quotation marks)"
+        print ""
+        print " -v, --note_values=NOTE_VALUE1 [--note_values=NOTE_VALUE2...]"
+        print "         default=1 (1 means whole notes)"
+        print ""
+        print " -u, --tuplets=TUPLETS"
+        print "         default='no tuplets'"
+        print ""
+        print " -f, --tuplets_frequency=TUPLETS_FREQUENCY"
+        print "         default='no tuplets'"
+        print ""
+        print "     --help      print these message and exit"
+        print "     --version   print version information and exit"
+        print ""
+        
 
 
+    parameters = {'tonic' : 'C',
+                  'mode' : 'Major',
+                  'intervals' : {},
+                  'min_pitch' : 'c4',
+                  'max_pitch' : 'd5',
+                  'rest_frequency' : 'no rests',
+                  'time_signature' : '4/4',
+                  'note_values' : {},
+                  'tuplets' : 'no tuplets',
+                  'tuplets_frequency' : 'no tuplets',
+                 }
+
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:f:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplets_frequency='])
+    except getopt.GetoptError, err:
+        print str(err)
+        usage()
+        exit()
+
+    for opt, arg in opts:
+        if opt in ('-t', '--tonic'):
+            if arg in ('C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'):
+                parameters['tonic'] = arg
+                print parameters
+            else:
+                print arg, 'is not a valid value for tonic.'
+                print 'Tonic must be one of', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
+
+        if opt in ('-m', '--mode'):
+            if arg in ('Major', 'Minor'):
+                parameters['mode'] = arg
+            else:
+                print arg, 'is not a valid value for mode.'
+                print 'mode must be one of', 'Minor', 'Major'
+
+        if opt in ('-i', '--intervals'):
+            if arg in ('Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave'):
+                parameters['intervals'][arg] = True
+            else:
+                print arg, 'is not a valid value for intervals.'
+                print 'interval must be one of', 'Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave'
+        
+        pitches_opt = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        if opt in ('-n', '--min_pitch'):
+            if arg in (pitches_opt):
+                parameters['min_pitch'] = arg
+            else:
+                print arg, 'is not a valid value for min_pitch.'
+                print 'min_pitch must be one of', str(pitches_opt)[1 : -1]
+
+        if opt in ('-x', '--max_pitch'):
+            if arg in (pitches_opt):
+                parameters['max_pitch'] = arg
+            else:
+                print arg, 'is not a valid value for max_pitch.'
+                print 'max_pitch must be one of', str(pitches_opt)[1 : -1]
+
+        if opt in ('-r', '--rest_frequency'):
+            if arg in ('no rests', '0.1', '0.2', '0.3', '0.4', '0.5'):
+                parameters['rest_frequency'] = arg
+            else:
+                print arg, 'is not a valid value for rest_frequency.'
+                print 'rest_frequency must be one of', 'no rests', '0.1', '0.2', '0.3', '0.4', '0.5'
+
+        if opt in ('-s', '--time_signature'):
+            if arg in ('2/2', '3/4', '4/4'):
+                parameters['time_signature'] = arg
+            else:
+                print arg, 'is not a valid value for time_signature.'
+                print 'max_pitch must be one of', 'no rests', '2/2', '3/4', '4/4'
 
 
+        if opt in ('-v', '--note_values'):
+            if arg in ("1", "1/2", "1/4", "1/8", "1/16", "1/32"):
+                parameters['note_values'][arg] = True
+            else:
+                print arg, 'is not a valid value for note_values.'
+                print 'note_values must be one of', "'no rests'", '0.1', '0.2', '0.3', '0.4', '0.5'
 
+        if opt in ('-u', '--tuplets'):
+            if arg in ('no tuplets', '2', '3', '4', '5', '6', '7'):
+                parameters['tuplets'] = arg
+            else:
+                print arg, 'is not a valid value for tuplets.'
+                print 'tuplets must be one of', "'no tuplets'", '2', '3', '4', '5', '6', '7'
 
+        if opt in ('-f', '--tuplets_frequency'):
+            if arg in ('no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'):
+                parameters['tuplets_frequency'] = arg
+            else:
+                print arg, 'is not a valid value for tuplets_frequency.'
+                print 'tuplets_frequency must be one of', 'no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'
+
+    if not dict(parameters['note_values']):
+        parameters['note_values']['1'] = True # set default
+    if not dict(parameters['intervals']):
+        parameters['intervals']['Second'] = True # set default
+    print ''
+    print parameters
+    print ''
+    achtelbass(parameters)
+
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#

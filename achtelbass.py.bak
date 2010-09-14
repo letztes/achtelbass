@@ -281,7 +281,7 @@ if __name__ == "__main__":
     intervals_opt = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
 
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:f:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplets_frequency=', '--help', '--version'])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:f:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplets_frequency='])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -360,36 +360,30 @@ if __name__ == "__main__":
                 print arg, 'is not a valid value for tuplets_frequency.'
                 print 'tuplets_frequency must be one of', 'no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'
 
-        if opt == '--help':
-            usage()
-
-        if opt in ('--version'):
-            print argv[0], "version", version
-            print ""
-            exit()
-
     if not dict(parameters['note_values']):
         parameters['note_values']['1'] = True # set default
     if not dict(parameters['intervals']):
         parameters['intervals']['Second'] = True # set default
     print ''
-    #print parameters
+    print parameters
     print ''
 
 # If the span between min_pitch and max_pitch is smaller than the greatest
 # interval chosen, raise an error and exit.
-    names_of_chosen_intervals = parameters['intervals'].keys()
+    names_of_chosen_intervals = paramters['intervals'].keys()
     names_of_chosen_intervals.sort()
     greatest_interval_chosen = names_of_chosen_intervals[-1]
-    steps_in_note_span_chosen = abs(pitches_opt.index(parameters['max_pitch']) - pitches_opt.index(parameters['min_pitch']))
+    steps_in_note_span_chosen = abs(pitches_opt.index(parameters['max_pitch'] - pitches_opt.index(parameters['min_pitch']) 
     if steps_in_note_span_chosen < intervals_opt.index(greatest_interval_chosen):
-        #print steps_in_note_span_chosen; exit()
-        print "You have chosen", greatest_interval_chosen, "as the"
+        
+        print "You have chosen ", greatest_interval_chosen, " as the"
         print "greatest interval, but the span between the minimum"
-        print "pitch", parameters['min_pitch'], "and the maximum pitch", parameters['max_pitch'], "is only a", intervals_opt[steps_in_note_span_chosen]+"."
+        print "pitch ", parameters['min_pitch'], "and the maximum"
+        print "pitch ", parameters['max_pitch'], "is only a "
+        print  intervals_opt.index(steps_in_note_span_chosen),"."
         print "That will not fit."
         print "Please choose either a smaller interval or a greater"
-        print "span between minimum pitch and maximum pitch.\n"
+        print "span between maximum pitch."
         exit()
     achtelbass(parameters)
 

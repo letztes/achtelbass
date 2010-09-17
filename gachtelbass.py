@@ -23,7 +23,7 @@ import achtelbass
 # that are displayed on buttons and so. The keys of the dictionary are
 # the english terms, the values the terms in the language of choice.
 #from locales_de import locales
-from locales_de import locales
+from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
 CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"
@@ -49,6 +49,7 @@ class gachtelbass(object):
             self.parameters = {'tonic' : 'C',
                                 'mode' : 'Major',
                                 'intervals' : {'Second' : True},
+                                'inversion' : False,
                                 'min_pitch' : 'c4',
                                 'max_pitch' : 'd5',
                                 'rest_frequency' : 'no rests',
@@ -157,7 +158,6 @@ class gachtelbass(object):
 
         intervals_vbox.pack_start(intervals_label, False, False, 2)
 
-#        for interval in ('Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave'):
         for interval in self.Intervals:
             checkbutton = gtk.CheckButton(locales[interval])
             checkbutton.show()
@@ -166,6 +166,13 @@ class gachtelbass(object):
             if (interval in self.parameters['intervals'].keys()):
                 checkbutton.set_active(True)
 
+        # Inversion
+        checkbutton = gtk.CheckButton(locales['Inversion'])
+        checkbutton.show()
+        intervals_vbox.pack_start(checkbutton, False, False, 2)
+        checkbutton.connect('toggled', self.allow_inversion)
+        if self.parameters['inversion'] == True:
+            checkbutton.set_active(True)
         self.main_window.show()
 
 # Min pitch VBox
@@ -297,7 +304,7 @@ class gachtelbass(object):
         tuplet_vbox.pack_start(tuplet_combo_box, False, False, 2)
     # Tuplet same pitch in Tuplet VBox
         
-        tuplet_same_pitch_checkbutton = gtk.CheckButton('Same pitch in tuplet')
+        tuplet_same_pitch_checkbutton = gtk.CheckButton(locales['Same pitch in tuplet'])
         tuplet_same_pitch_checkbutton.show()
         tuplet_vbox.pack_start(tuplet_same_pitch_checkbutton, False, False,2)
         tuplet_same_pitch_checkbutton.connect("toggled", self.set_tuplet_same_pitch)
@@ -379,6 +386,11 @@ class gachtelbass(object):
             self.parameters['intervals'][interval] = True
         else:
             del self.parameters['intervals'][interval]
+    def allow_inversion(self, widget):
+        if widget.get_active():
+            self.parameters['inversion'] = True
+        else:
+            self.parameters['inversion'] = False
 
     def select_min_pitch(self, widget):
         self.parameters['min_pitch'] = widget.get_active_text()

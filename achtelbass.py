@@ -34,6 +34,8 @@ import note_values
 import pitches
 import output
 
+# Version of the program
+version = '0.1'
 
 # Die Reihenfolge ist:
 #   * dauern
@@ -101,6 +103,7 @@ class achtelbass(object):
     
         self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
+        self.Inversion = parameters['inversion']
         self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
         self.Min_Pitch = parameters['min_pitch']
         self.Max_Pitch = parameters['max_pitch']
@@ -113,10 +116,7 @@ class achtelbass(object):
         self.Selectable_Note_Values = [self.Fraction_Values[note_value] for note_value in parameters['note_values'].keys()]
         self.Selectable_Note_Values.sort()
 
-       # match = re.search('(\d)/(\d)', parameters['time_signature'])
-        #self.Time_Signature_Numerator = match.group(1)
         self.Time_Signature_Numerator = parameters['time_signature'][0]
-        #self.Time_Signature_Denominator = match.group(2)
         self.Time_Signature_Denominator = parameters['time_signature'][2]
         self.Time_Signature = self.Fraction_Values[parameters['time_signature']]
         self.Tuplets = self.Tuplets_Values[parameters['tuplets']]
@@ -145,7 +145,7 @@ class achtelbass(object):
                 tuplet_value = note_value[2:len(note_value)]
                 amount += int(tuplet_value)
 
-        new_pitches = pitches.pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals)
+        new_pitches = pitches.pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals, self.Inversion)
         
         return new_pitches.easy()
     
@@ -218,7 +218,6 @@ if __name__ == "__main__":
     import getopt, sys
 
     def usage():
-        print ""
         print sys.argv[0], "is a semi random generator for sheet music."
         print "Usage: ", sys.argv[0], "[OPTIONS]"
         print "None of the options are mandatory, any omitted options"
@@ -266,6 +265,7 @@ if __name__ == "__main__":
     parameters = {'tonic' : 'C',
                   'mode' : 'Major',
                   'intervals' : {},
+                  'inversion' : False,
                   'min_pitch' : 'c4',
                   'max_pitch' : 'd5',
                   'rest_frequency' : 'no rests',
@@ -279,7 +279,7 @@ if __name__ == "__main__":
     intervals_opt = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
 
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:pf:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplet_same_pitch', 'tuplets_frequency=', '--help', '--version'])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:en:x:r:s:v:u:pf:', ['tonic=', 'mode=', 'intervals=', 'inversion', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplet_same_pitch', 'tuplets_frequency=', 'help', 'version'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -307,7 +307,9 @@ if __name__ == "__main__":
             else:
                 print arg, 'is not a valid value for intervals.'
                 print 'interval must be one of', str(intervals_opt[1:-1])
-        
+        if opt in ('-e', '--inversion'):
+            parameters['inversion'] = True
+
         if opt in ('-n', '--min_pitch'):
             if arg in (pitches_opt):
                 parameters['min_pitch'] = arg
@@ -363,9 +365,10 @@ if __name__ == "__main__":
 
         if opt == '--help':
             usage()
+            exit()
 
         if opt in ('--version'):
-            print argv[0], "version", version
+            print sys.argv[0], "version", version
             print ""
             exit()
 

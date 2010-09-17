@@ -8,8 +8,7 @@
 #
 # TODO
 #   Wichtiges
-#   *   In note_values.py wird Unsinn berechnet: ['', '', 2, '/\n', '', '', '', '', '/\n', '', 2, 2, '/\n', 2, 2, 2, '/\n' usw. Ausprobiert mit Halben
-#       und Vierteln.
+#
 #   Großes
 #   *   Klasse implementieren, die aus PMX-Dateien maschinell lernt, welche
 #       Intervalle und Rhythmen häufig kombiniert werden. Wahrscheinlich in
@@ -20,13 +19,10 @@
 #       überprüfen kann, ob der Benutzer richtig gespielt hat. Etwa so:
 #       http://www.youtube.com/watch?v=dr5_kAQ8OGg
 #   *   Grand Staff implementieren: Optional zwei Notensysteme gleichzeitig
-#   *   n-Tolen implementieren
 #
 #   Eher kleines
 #   *   In allen Modulen den Klassennamen in CapWords schreiben.
 #       http://www.python.org/dev/peps/pep-0008/
-#   *   Wenn direkt auf Kommandozeile aufgerufen, soll mit getopts params
-#       geholt werden
 #
 
 import os
@@ -124,6 +120,7 @@ class achtelbass(object):
         self.Time_Signature_Denominator = parameters['time_signature'][2]
         self.Time_Signature = self.Fraction_Values[parameters['time_signature']]
         self.Tuplets = self.Tuplets_Values[parameters['tuplets']]
+        self.Tuplet_Same_Pitch = parameters['tuplet_same_pitch']
         self.Tuplets_Frequency = parameters['tuplets_frequency']
 
         # Ausgabe immer so gestalten, dass etwa 40 bars, 10 systems pro Seite stehen
@@ -167,21 +164,19 @@ class achtelbass(object):
                 note_string += "/\n"
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
-                    #match = re.search('(\d)x(\d)', self.Note_Values[i])
-                    #note_value_for_tuplet = int(match.group(1))
-                    #tuplet_remain = int(self.Note_Values[i][2])
                     note_value_for_tuplet = int(self.Note_Values[i][0])
                     tuplet_remain = int(self.Note_Values[i][2])
                     note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
-                    j += 1
                     while tuplet_remain > 1:
 # PMX cannot end an xtuplet with a rest. But why "> 2" and not "> 1"?
+                        if self.Tuplet_Same_Pitch == False:
+                            j += 1
                         if random.uniform(0, 1) < self.Rest_Frequency and tuplet_remain > 2:
                             note_string += 'r '
                         else:
                             note_string += self.Pitches[j] + ' '
-                            j += 1
                         tuplet_remain -= 1
+                    j += 1
 
                 else:
                     # a rest or a note?
@@ -257,10 +252,12 @@ if __name__ == "__main__":
         print " -u, --tuplets=TUPLETS"
         print "         default='no tuplets'"
         print ""
+        print " -p, --tuplet_same_pitch"
+        print ""
         print " -f, --tuplets_frequency=TUPLETS_FREQUENCY"
         print "         default='no tuplets'"
         print ""
-        print "     --help      print these message and exit"
+        print "     --help      print this message and exit"
         print "     --version   print version information and exit"
         print ""
         
@@ -275,13 +272,14 @@ if __name__ == "__main__":
                   'time_signature' : '4/4',
                   'note_values' : {},
                   'tuplets' : 'no tuplets',
+                  'tuplet_same_pitch' : False,
                   'tuplets_frequency' : 'no tuplets',
                  }
     pitches_opt = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
     intervals_opt = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
 
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:f:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplets_frequency=', '--help', '--version'])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:pf:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplet_same_pitch', 'tuplets_frequency=', '--help', '--version'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -353,6 +351,9 @@ if __name__ == "__main__":
                 print arg, 'is not a valid value for tuplets.'
                 print 'tuplets must be one of', "'no tuplets'", '2', '3', '4', '5', '6', '7'
 
+        if opt in ('-p', '--tuplet_same_pitch'):
+            parameters['tuplet_same_pitch'] = True
+
         if opt in ('-f', '--tuplets_frequency'):
             if arg in ('no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'):
                 parameters['tuplets_frequency'] = arg
@@ -368,6 +369,8 @@ if __name__ == "__main__":
             print ""
             exit()
 
+# These two are stored in a dict of dict, so their defaults must 
+# be set here separately
     if not dict(parameters['note_values']):
         parameters['note_values']['1'] = True # set default
     if not dict(parameters['intervals']):

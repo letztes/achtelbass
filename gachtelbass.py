@@ -6,16 +6,9 @@
 # http://www.pygtk.org/pygtk2tutorial/sec-ComboBoxAndComboboxEntry.html
 
 #TODO 
-#   *   Key-Accelerations: Drückt man die Alt-Taste, soll das F in File
-#       durch einen Unterstrich hervorgehoben werden. Auch soll durch die
-#       F1-Taste die Hilfe geöffnet werden. Wenn es mal so eine Man-Page
-#       geben wird.
 #   *   Refactoring: Wiederkehrende Aufrufe wie jene beim  Menüeinträge-
 #       definieren in nicht-öffentliche __Methoden auslagern.
 #   *   Anzahl der Seiten soll in einem Menü (Bearbeiten) einstellbar sein.
-#   *   Konfiguration soll nicht explizit gespeichert und geladen werden,
-#       sondern automatisch in eine Datei
-#       ${HOME}/.config/achtelbass/Preferences oder so
 
 import cPickle
 import gtk
@@ -62,6 +55,7 @@ class gachtelbass(object):
                                 'time_signature' : '4/4',
                                 'note_values' : {'1' : True},
                                 'tuplets' : 'no tuplets',
+                                'tuplet_same_pitch' : False,
                                 'tuplets_frequency' : 'no tuplets',
                                }
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -301,6 +295,14 @@ class gachtelbass(object):
 
         tuplet_vbox.pack_start(tuplet_label, False, False, 2)
         tuplet_vbox.pack_start(tuplet_combo_box, False, False, 2)
+    # Tuplet same pitch in Tuplet VBox
+        
+        tuplet_same_pitch_checkbutton = gtk.CheckButton('Same pitch in tuplet')
+        tuplet_same_pitch_checkbutton.show()
+        tuplet_vbox.pack_start(tuplet_same_pitch_checkbutton, False, False,2)
+        tuplet_same_pitch_checkbutton.connect("toggled", self.set_tuplet_same_pitch)
+        if self.parameters['tuplet_same_pitch'] == True:
+            tuplet_same_pitch_checkbutton.set_active(True)
 
 
 # Tuplet frequency VBox
@@ -398,6 +400,12 @@ class gachtelbass(object):
 
     def select_tuplet(self, widget):
         self.parameters['tuplets'] = locales_inverse[widget.get_active_text()]
+
+    def set_tuplet_same_pitch(self, widget):
+        if widget.get_active():
+            self.parameters['tuplet_same_pitch'] = True
+        else:
+            self.parameters['tuplet_same_pitch'] = False
 
     def select_tuplet_frequency(self, widget):
         self.parameters['tuplets_frequency'] = locales_inverse[widget.get_active_text()]

@@ -29,6 +29,8 @@
 #       geholt werden
 #
 
+version=0.1
+
 import os
 import random
 import re
@@ -251,7 +253,7 @@ if __name__ == "__main__":
         print " -s, --time_signature=TIME_SIGNATURE"
         print "         default='4/4' (note the quotation marks)"
         print ""
-        print " -v, --note_values=NOTE_VALUE1 [--note_values=NOTE_VALUE2...]"
+        print " -o, --note_values=NOTE_VALUE1 [--note_values=NOTE_VALUE2...]"
         print "         default=1 (1 means whole notes)"
         print ""
         print " -u, --tuplets=TUPLETS"
@@ -281,7 +283,7 @@ if __name__ == "__main__":
     intervals_opt = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
 
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:v:u:f:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplets_frequency=', '--help', '--version'])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:n:x:r:s:o:u:f:', ['tonic=', 'mode=', 'intervals=', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplets_frequency=', '--help', '--version'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -339,7 +341,7 @@ if __name__ == "__main__":
                 print 'max_pitch must be one of', 'no rests', '2/2', '3/4', '4/4'
 
 
-        if opt in ('-v', '--note_values'):
+        if opt in ('-o', '--note_values'):
             if arg in ("1", "1/2", "1/4", "1/8", "1/16", "1/32"):
                 parameters['note_values'][arg] = True
             else:
@@ -364,7 +366,7 @@ if __name__ == "__main__":
             usage()
 
         if opt in ('--version'):
-            print argv[0], "version", version
+            print sys.argv[0], "version", version
             print ""
             exit()
 
@@ -373,8 +375,10 @@ if __name__ == "__main__":
     if not dict(parameters['intervals']):
         parameters['intervals']['Second'] = True # set default
     print ''
-    #print parameters
+    print parameters
     print ''
+    #exit()
+
 
 # If the span between min_pitch and max_pitch is smaller than the greatest
 # interval chosen, raise an error and exit.

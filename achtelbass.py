@@ -218,47 +218,49 @@ if __name__ == "__main__":
     import getopt, sys
 
     def usage():
-        print sys.argv[0], "is a semi random generator for sheet music."
-        print "Usage: ", sys.argv[0], "[OPTIONS]"
-        print "None of the options are mandatory, any omitted options"
-        print "are set to default values listed below."
-        print ""
-        print "Options are:"
-        print " -t, --tonic=TONIC"
-        print "         default=C"
-        print ""
-        print " -m, --mode=MODE"
-        print "         default=Major"
-        print ""
-        print " -i, --intervals=INTERVAL1 [--intervals=INTERVAL2...]"
-        print "         default=Second"
-        print ""
-        print " -n, --min_pitch=MIN_PITCH"
-        print "         default=c4"
-        print ""
-        print " -x, --max_pitch=MAX_PITCH"
-        print "         default=d5"
-        print ""
-        print " -r, --rest_frequency=REST_FREQUENCY"
-        print "         default='no rests'"
-        print ""
-        print " -s, --time_signature=TIME_SIGNATURE"
-        print "         default='4/4' (note the quotation marks)"
-        print ""
-        print " -v, --note_values=NOTE_VALUE1 [--note_values=NOTE_VALUE2...]"
-        print "         default=1 (1 means whole notes)"
-        print ""
-        print " -u, --tuplets=TUPLETS"
-        print "         default='no tuplets'"
-        print ""
-        print " -p, --tuplet_same_pitch"
-        print ""
-        print " -f, --tuplets_frequency=TUPLETS_FREQUENCY"
-        print "         default='no tuplets'"
-        print ""
-        print "     --help      print this message and exit"
-        print "     --version   print version information and exit"
-        print ""
+        print sys.argv[0], """is a semi random generator for sheet music."
+Usage: , sys.argv[0], [OPTIONS]
+None of the options are mandatory, any omitted options
+are set to default values listed below.
+    
+Options are:
+    -t, --tonic=TONIC
+      default=C
+    
+    -m, --mode=MODE
+      default=Major
+    
+    -i, --intervals=INTERVAL1 [--intervals=INTERVAL2...]
+      default=Second
+    
+    -e, --inversion
+    
+    -n, --min_pitch=MIN_PITCH
+      default=c4
+    
+    -x, --max_pitch=MAX_PITCH
+      default=d5
+    
+    -r, --rest_frequency=REST_FREQUENCY
+      default='no rests'
+    
+    -s, --time_signature=TIME_SIGNATURE
+      default='4/4' (note the quotation marks)
+    
+    -v, --note_values=NOTE_VALUE1 [--note_values=NOTE_VALUE2...]
+      default=1 (1 means whole notes)
+    
+    -u, --tuplets=TUPLETS
+      default='no tuplets'
+    
+    -p, --tuplet_same_pitch
+    
+    -f, --tuplets_frequency=TUPLETS_FREQUENCY
+      default='no tuplets'
+    
+     --help  print this message and exit
+     --version print version information and exit"""
+   
         
 
 

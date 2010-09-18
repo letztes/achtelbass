@@ -1,9 +1,9 @@
 locales = {
-            'File' : 'File',
-            'Save configuration' : 'Save configuration',
-            'Load configuration' : 'Load configuration',
-            'Quit' : 'Quit',
-            'Help' : 'Help',
+            'File' : '_File',
+            'Save configuration' : '_Save configuration',
+            'Load configuration' : '_Load configuration',
+            'Quit' : '_Quit',
+            'Help' : '_Help',
             'About' : 'About',
             'Tonic' : 'Tonic',
             'C' : 'C',
@@ -32,6 +32,7 @@ locales = {
             'Sixth' : 'Sixth',
             'Seventh' : 'Seventh',
             'Octave' : 'Octave',
+            'Inversion' : 'Inversion',
             'Min pitch' : 'Min pitch',
             'Max pitch' : 'Max pitch',
             'Rest frequency' : 'Rest frequency',
@@ -39,6 +40,7 @@ locales = {
             'Time signature' : 'Time signature',
             'Note values' : 'Note values',
             'Tuplets' : 'Tuplets',
+            'Same pitch in tuplet' : 'Same pitch in tuplet',
             'no tuplets' : 'no tuplets',
             '2' : '2',
             '3' : '3',
@@ -57,6 +59,6 @@ locales = {
             '0.8' : '0.8',
             '0.9' : '0.9',
             '1' : '1',
-            'Generate' : 'Generate',
+            'Generate' : '_Generate',
 
 }

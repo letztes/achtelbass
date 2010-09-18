@@ -41,24 +41,30 @@ class gachtelbass(object):
         self.Tuplets = ['no tuplets', '2', '3', '4', '5', '6', '7']
         self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']
 # Parameters that will be passed to the actual achtelbass script
+        default_parameters = {'tonic' : 'C',
+                            'mode' : 'Major',
+                            'intervals' : {'Second' : True},
+                            'inversion' : False,
+                            'min_pitch' : 'c4',
+                            'max_pitch' : 'd5',
+                            'rest_frequency' : 'no rests',
+                            'time_signature' : '4/4',
+                            'note_values' : {'1' : True},
+                            'tuplets' : 'no tuplets',
+                            'tuplet_same_pitch' : False,
+                            'tuplets_frequency' : 'no tuplets',
+                           }
         try:
             file_object = open(CONFIGURATION_FILENAME, 'r')
             self.parameters = cPickle.load(file_object)
             file_object.close()
         except IOError:
-            self.parameters = {'tonic' : 'C',
-                                'mode' : 'Major',
-                                'intervals' : {'Second' : True},
-                                'inversion' : False,
-                                'min_pitch' : 'c4',
-                                'max_pitch' : 'd5',
-                                'rest_frequency' : 'no rests',
-                                'time_signature' : '4/4',
-                                'note_values' : {'1' : True},
-                                'tuplets' : 'no tuplets',
-                                'tuplet_same_pitch' : False,
-                                'tuplets_frequency' : 'no tuplets',
-                               }
+            self.parameters = default_parameters
+
+        for key in default_parameters:
+            if key not in self.parameters:
+                self.parameters[key] = default_parameters[key]
+
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_window.set_title("achtelbass")
         self.main_window.connect("delete_event", self.delete_event)

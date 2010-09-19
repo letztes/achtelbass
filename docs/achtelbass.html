@@ -11,13 +11,36 @@
             <h2>User manual</h2>
             <div>
                 <h3>How to use the program</h3>
-                <p>At the moment the program can only be invoked from the
-                command line. The appropriate command is</p>
-                <pre>$ python achtelbass.py</pre>
-                <p>All the parameters like intervals, range of pitches,
-                etc. are hard coded. However, soon this values will be
-                accepted as command line arguments.
+                <p>The program can be invoked in two ways.<br />
+                From the command line:
                 </p>
+                <pre>$ python achtelbass.py</pre>
+                <p>The following parameters can be passed as command
+                line arguments:
+                </p>
+                <ul>
+                    <li>Tonic</li>
+                    <li>Mode</li>
+                    <li>Intervals</li>
+                    <li>Inversion</li>
+                    <li>Lowest pitch</li>
+                    <li>Highest pitch</li>
+                    <li>Rest frequency</li>
+                    <li>Time signature</li>
+                    <li>Note value</li>
+                    <li>Tuplets</li>
+                    <li>Same pitch in tuplet</li>
+                    <li>Tuplets frequency</li>
+                </ul>
+                <p>None of them must be passed, any omitted parameter
+                will be filled with a default value.
+                </p>
+                <p>The programm can be invoked within a graphical user
+                interface too:
+                </p>
+                <img src="gachtelbass.py.png"/ >
+                <p>It is possible and probably desirable to have a web
+                interface to achtelbass.
             </div>
             <div>
                 <h3>Requirements</h3>
@@ -76,7 +99,7 @@
                 ALT-key. The accelerations with the CTRL-key work
                 different. They are bound to the key in question (e.g.
                 'CTRL+S' for Save) in the code where the widget is 
-                defined. Maybe one day there will exist a second dictionary
+                defined. Maybe one day there will be a second dictionary
                 for those key bindings too.
                 </p>
 
@@ -85,9 +108,12 @@
                 <h3>Limitations and known bugs</h3>
                 <ul>
                     <li>PMX cannot end an xtuplet with a rest. This is
-                    exactly the error message it throws.
+                    exactly the error message it raises.
                     </li>
                     <li>Likewise, PMX cannot start a bar with a rest.</li>  
+                    <li>PMX cannot change the clef within a tuplet,
+                    too.</li>
+                    
                 </ul>
             </div>
             <div>
@@ -166,10 +192,30 @@
                     <p>This is the current (2010) version. The revision
                     history is available at
                     <a href="http://github.com/letztes/achtelbass">
-                    http://github.com/letztes/achtelbass</a>.
+                    http://github.com/letztes/achtelbass</a>.</p>
                 </div>
             </div>
-            
+            </div>
+            <div>
+                <h3>See also</h3>
+                <ul>
+                    <li><a href="http://scret.sourceforge.net/">
+                    http://scret.sourceforge.net/</a><br />
+                    Score reading trainer <br />
+                    The items in the sheet music are limited to clef, key
+                    and accidentals. Output format is in-window onscreen
+                    drawing. Program reads keystrokes and matches them
+                    to notes displayed in a computer game fashion.
+                    Correct hit notes disappear, new randomly generated 
+                    notes appear.
+                    </li>
+                    <li><a href="http://www.solfege.org/">
+                    http://www.solfege.org/</a><br />
+                    Ear training software<br/>
+                    Extensive ear training software. Does not focus on
+                    score reading at all, it rather requires score
+                    reading skills in order to use it.</li>
+                </ul>
         </div>
     </body>
 </html>

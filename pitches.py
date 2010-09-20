@@ -45,16 +45,10 @@ class pitches(object):
             _up_or_down = random.choice(["up", "down"])
             _current_interval = random.choice(self.Intervals)
             _step = self.Interval_Values[_current_interval]
-            print "pitch: ", _current_pitch
-            print "index: ", self.Selectable_Pitches.index(_current_pitch)
-            print "up_or_down: ", _up_or_down
-            print "step: ", _step
             if self.Inversion == True:
                 if (_up_or_down == 'up' and self.Selectable_Pitches.index(_current_pitch) + _step >= self.Selectable_Pitches.index(self.Selectable_Pitches[-1])) or (_up_or_down == 'down' and self.Selectable_Pitches.index(_current_pitch) - _step < 0):
                     _step = _step - 7
 
-            print "step: ", _step
-            print ""
             if _up_or_down == "up" and self.Selectable_Pitches.index(_current_pitch) + _step <= self.Selectable_Pitches.index(self.Selectable_Pitches[-1]) and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]:
                 _current_pitch = self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]
             else:

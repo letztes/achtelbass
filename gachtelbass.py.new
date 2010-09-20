@@ -22,8 +22,8 @@ import achtelbass
 # The locales file contains a dictionary which contains all the strings
 # that are displayed on buttons and so. The keys of the dictionary are
 # the english terms, the values the terms in the language of choice.
-from locales_de import locales
-#from locales_en import locales
+#from locales_de import locales
+from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
 CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"
@@ -218,7 +218,6 @@ class gachtelbass(object):
         for pitch in self.Pitches:
             max_pitch_combo_box.append_text(pitch)
 
-        self.previous_max_pitch = self.parameters['max_pitch']
         max_pitch_combo_box.connect("changed", self.select_max_pitch)
         max_pitch_combo_box.set_active(self.Pitches.index(self.parameters['max_pitch']))
 
@@ -403,11 +402,11 @@ class gachtelbass(object):
             steps_in_note_span_chosen = abs(self.Pitches.index(self.parameters['max_pitch']) - self.Pitches.index(self.parameters['min_pitch']))
             #if steps_in_note_span_chosen < self.Intervals.index(greatest_interval_chosen):
             if self.Intervals.index(interval) > steps_in_note_span_chosen:
+                widget.set_active(False)
                 #if self.Pitches.index(self.parameters['max_pitch']) + self.Intervals.index(greatest_interval_chosen) > self.Pitches.index(self.Pitches[-1]):
                     
-                warning_message = locales['Interval warning message'] % (locales[interval], self.parameters['min_pitch'], self.parameters['max_pitch'])
+                warning_message = "Interval "+interval+" does not fit between "+self.parameters['min_pitch']+" and "+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
                 self.warning_dialog(warning_message)
-                widget.set_active(False)
             else:
                 self.parameters['intervals'][interval] = True
                 widget.set_active(True)
@@ -416,6 +415,9 @@ class gachtelbass(object):
             if interval in self.parameters['intervals'].keys():
                 del self.parameters['intervals'][interval]
       
+# This list comprehension is necessary because the keys of parameters['intervals'] alone are not sorted properly
+        #names_of_chosen_intervals = [interval for interval in self.Intervals if interval in self.parameters['intervals'].keys()]
+        #greatest_interval_chosen = names_of_chosen_intervals[-1]
 
     def allow_inversion(self, widget):
         if widget.get_active():
@@ -430,30 +432,13 @@ class gachtelbass(object):
         names_of_chosen_intervals = [interval for interval in self.Intervals if interval in self.parameters['intervals'].keys()]
         greatest_interval_chosen = names_of_chosen_intervals[-1]
         steps_in_note_span_chosen = abs(self.Pitches.index(self.parameters['max_pitch']) - self.Pitches.index(self.parameters['min_pitch']))
-        if steps_in_note_span_chosen >= self.Intervals.index(greatest_interval_chosen):
-            self.previous_min_pitch = self.parameters['min_pitch']
-        else:
-            warning_message = "Interval "+greatest_interval_chosen+" does not fit between "+self.parameters['min_pitch']+" and "+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
-            self.warning_dialog(warning_message)
-            widget.set_active(self.Pitches.index(self.previous_min_pitch))
+        if steps_in_note_span_chosen < self.Intervals.index(interval):
             self.parameters['min_pitch'] = self.previous_min_pitch
+            widget.set_active_text(self.previous_min_pitch)
 
 
     def select_max_pitch(self, widget):
         self.parameters['max_pitch'] = widget.get_active_text()
-        steps_in_note_span_chosen = abs(self.Pitches.index(self.parameters['max_pitch']) - self.Pitches.index(self.parameters['min_pitch']))
-# This list comprehension is necessary because the keys of parameters['intevals'] alone are not sorted properly
-        names_of_chosen_intervals = [interval for interval in self.Intervals if interval in self.parameters['intervals'].keys()]
-        greatest_interval_chosen = names_of_chosen_intervals[-1]
-        steps_in_note_span_chosen = abs(self.Pitches.index(self.parameters['max_pitch']) - self.Pitches.index(self.parameters['min_pitch']))
-        if steps_in_note_span_chosen >= self.Intervals.index(greatest_interval_chosen):
-            self.previous_max_pitch = self.parameters['max_pitch']
-        else:
-            warning_message = "Interval "+greatest_interval_chosen+" does not fit between "+self.parameters['min_pitch']+" and "+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
-            self.warning_dialog(warning_message)
-            widget.set_active(self.Pitches.index(self.previous_max_pitch))
-            self.parameters['max_pitch'] = self.previous_max_pitch
-
 
     def select_time_signature(self, widget):
         self.parameters['time_signature'] = widget.get_active_text()

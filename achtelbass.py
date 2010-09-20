@@ -171,6 +171,7 @@ class achtelbass(object):
 # PMX cannot end an xtuplet with a rest. But why "> 2" and not "> 1"?
                         if self.Tuplet_Same_Pitch == False:
                             j += 1
+                    
                         if random.uniform(0, 1) < self.Rest_Frequency and tuplet_remain > 2:
                             note_string += 'r '
                         else:
@@ -186,12 +187,12 @@ class achtelbass(object):
                         note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
                         j += 1
                 
-              # nachfolgender Fall für Vorzeichenwechsel im Fließtext
-                if previous_clef == 'b' and self.Notes.index(self.Pitches[j]) > self.Notes.index('d4'):
+                # Clef change
+                if previous_clef == 'b' and self.Notes.index(self.Pitches[j]) > self.Notes.index('e4'):
                     note_string += 'Ct '
                     previous_clef = 't'
                     
-                if previous_clef == 't' and self.Notes.index(self.Pitches[j]) < self.Notes.index('b3'):
+                if previous_clef == 't' and self.Notes.index(self.Pitches[j]) < self.Notes.index('a3'):
                     note_string += 'Cb '
                     previous_clef = 'b'
                     

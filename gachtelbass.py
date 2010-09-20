@@ -401,9 +401,7 @@ class gachtelbass(object):
     def add_interval(self, widget, interval):
         if widget.get_active():
             steps_in_note_span_chosen = abs(self.Pitches.index(self.parameters['max_pitch']) - self.Pitches.index(self.parameters['min_pitch']))
-            #if steps_in_note_span_chosen < self.Intervals.index(greatest_interval_chosen):
             if self.Intervals.index(interval) > steps_in_note_span_chosen:
-                #if self.Pitches.index(self.parameters['max_pitch']) + self.Intervals.index(greatest_interval_chosen) > self.Pitches.index(self.Pitches[-1]):
                     
                 warning_message = locales['Interval warning message'] % (locales[interval], self.parameters['min_pitch'], self.parameters['max_pitch'])
                 self.warning_dialog(warning_message)
@@ -415,6 +413,10 @@ class gachtelbass(object):
 # Checking is necessary because this method indirectly calls itself to uncheck bad interval in case interval does not fit into the span between min_pitch and max_pitch
             if interval in self.parameters['intervals'].keys():
                 del self.parameters['intervals'][interval]
+# It is important that at least one interval is selected. Program should
+# refuse to uncheck all intervals
+                #if not [interval for interval in widget.
+
       
 
     def allow_inversion(self, widget):

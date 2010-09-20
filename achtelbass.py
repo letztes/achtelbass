@@ -262,8 +262,6 @@ Options are:
      --help  print this message and exit
      --version print version information and exit"""
    
-        
-
 
     parameters = {'tonic' : 'C',
                   'mode' : 'Major',
@@ -342,7 +340,7 @@ Options are:
                 print 'max_pitch must be one of', 'no rests', '2/2', '3/4', '4/4'
 
 
-        if opt in ('-v', '--note_values'):
+        if opt in ('-o', '--note_values'):
             if arg in ("1", "1/2", "1/4", "1/8", "1/16", "1/32"):
                 parameters['note_values'][arg] = True
             else:
@@ -382,8 +380,10 @@ Options are:
     if not dict(parameters['intervals']):
         parameters['intervals']['Second'] = True # set default
     print ''
-    #print parameters
+    print parameters
     print ''
+    #exit()
+
 
 # If the span between min_pitch and max_pitch is smaller than the greatest
 # interval chosen, raise an error and exit.

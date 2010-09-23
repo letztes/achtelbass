@@ -102,5 +102,10 @@ locales = {
             'Interval too big' : "Interval %s does not fit between %s and %s.\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch.",
             'All intervals unselected' : "At least one interval must be selected.",
             'All note values unselected' : "At least one note value must be selected.",
+# About Dialog
+            'Artur Spengler' : 'Artur Spengler',
+            'License text' : 'This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.',
+            'Dialog comment' : 'Generates sheet music in a random fashion for practicing sight reading.',
+
 
 }

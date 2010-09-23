@@ -88,7 +88,7 @@ class gachtelbass(object):
         help_submenu = gtk.Menu()
 
         menu_item_about = gtk.MenuItem(locales['About'])
-        menu_item_about.connect("activate", self.about_window, 'about')
+        menu_item_about.connect("activate", self.about_dialog, 'about')
         menu_item_about.show()
         help_submenu.append(menu_item_about)
 
@@ -370,27 +370,19 @@ class gachtelbass(object):
     def load_configuration(self, widget, string):
         pass
 
-    def about_window(self, widget, event):
+    def about_dialog(self, widget, event):
+        about_dialog = gtk.AboutDialog()
+        about_dialog.set_destroy_with_parent(True)
+        about_dialog.set_modal(False)
+        about_dialog.set_version(achtelbass.version)
+        about_dialog.set_license(locales['License text'])
+        about_dialog.set_wrap_license(True)
+        about_dialog.set_authors([locales['Artur Spengler'] + ' <letztes@gmail.com>'])
+        about_dialog.set_comments(locales['Dialog comment'])
+        about_dialog.run()
+        about_dialog.hide()
+
 # http://www.pygtk.org/docs/pygtk/class-gtkaboutdialog.html
-        about_window = gtk.Window()
-        about_window.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
-        about_window.set_transient_for(self.main_window)
-        textview = gtk.TextView()
-        textbuffer = textview.get_buffer()
-        textbuffer.set_text("achtelbass written by Artur Spengler letztes@gmail.com")
-
-        textview.set_editable(False)
-        textview.set_cursor_visible(False)
-        textview.set_wrap_mode(gtk.WRAP_WORD)
-        textview.set_justification(gtk.JUSTIFY_CENTER)
-        textview.show()
-
-        about_vbox = gtk.VBox(False, 10)
-        about_vbox.set_border_width(10)
-        about_vbox.pack_start(textview, True, True, 0)
-        about_vbox.show()
-        about_window.add(about_vbox)
-        about_window.show()
 
     def select_tonic(self, widget):
         self.parameters['tonic'] = locales_inverse[widget.get_active_text()]

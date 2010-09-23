@@ -52,6 +52,7 @@ class achtelbass(object):
     def __init__(self, parameters, locales):
         self.Parameters = parameters
         self.Locales = locales
+        #self.Version = version
         self.Frequency_Values = {'no tuplets' : 0,
                                  'no rests' : 0,
                                  '0.1' : 0.1,

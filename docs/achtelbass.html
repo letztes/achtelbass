@@ -8,6 +8,33 @@
     <body>
         <h1>The Documentation</h1>
         <div>
+            <h2>Introduction</h2>
+            <p>Often when i explain to people what this program actually
+            does they reply that they don't think that a computer
+            program might be able to produce enjoyable music. I know
+            that. I don't think that random generated thirds and fifths
+            are likely to sound pleasureable and i never intended to
+            prove this. The intention of this program never was to
+            generate music, an attempt to do so would fail as inevitable
+            as if one tried to generate lyric or prose by randomly 
+            composing character bigrams and trigrams. Its absurd.<br />
+            The intention of this program is to generate randomly
+            arranged sheet music in order to practice sight reading.
+            Various aspects like intervals, note values and tuplets may
+            be added or disabled so one can practice purposeful those
+            elements one needs.<br />
+            Nevertheless, in future versions of this program i would
+            like to add a machine learning component which will analyze
+            pmx-files of sheet music from <a
+            href="http://icking-music-archive.org/">
+            http://icking-music-archive.org/</a> and other sources. In
+            the next step this program will generate sheet music as
+            initially intended, but it will prefer those combinations of
+            chosen elements that were found more often during the learning
+            process, thus yielding to a more enjoyable practice process.
+            </p>            
+        </div>
+        <div>
             <h2>User manual</h2>
             <div>
                 <h3>How to use the program</h3>
@@ -35,12 +62,16 @@
                 <p>None of them must be passed, any omitted parameter
                 will be filled with a default value.
                 </p>
+                <p>To check out the exact syntax of passing parameter
+                try</p>
+                <pre>$ python achtelbass.py --help</pre>
                 <p>The programm can be invoked within a graphical user
                 interface too:
                 </p>
-                <img src="gachtelbass.py.png"/ >
+                <img src="gachtelbass.py.png" alt="screenshot of gachtelbass.py UI" />
                 <p>It is possible and probably desirable to have a web
                 interface to achtelbass.
+                </p>
             </div>
             <div>
                 <h3>Requirements</h3>
@@ -70,7 +101,6 @@
             <div>
                 <h3>Upcoming features (todo list)</h3>
                 <ul>
-                    <li>Command line arguments</li>
                     <li>Machine learning routines</li>
                 </ul>
             </div>
@@ -189,7 +219,7 @@
                 </div>
                 <div>
                     <h4>achtelbass.py</h4>
-                    <p>This is the current (2010) version. The revision
+                    <p>This is the current version (2010). The revision
                     history is available at
                     <a href="http://github.com/letztes/achtelbass">
                     http://github.com/letztes/achtelbass</a>.</p>

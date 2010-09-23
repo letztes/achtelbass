@@ -403,7 +403,7 @@ class gachtelbass(object):
             steps_in_note_span_chosen = abs(self.Pitches.index(self.parameters['max_pitch']) - self.Pitches.index(self.parameters['min_pitch']))
             if self.Intervals.index(interval) > steps_in_note_span_chosen:
                     
-                warning_message = locales['Interval warning message'] % (locales[interval], self.parameters['min_pitch'], self.parameters['max_pitch'])
+                warning_message = locales['Interval too big'] % (locales[interval], self.parameters['min_pitch'], self.parameters['max_pitch'])
                 self.warning_dialog(warning_message)
                 widget.set_active(False)
             else:
@@ -413,6 +413,13 @@ class gachtelbass(object):
 # Checking is necessary because this method indirectly calls itself to uncheck bad interval in case interval does not fit into the span between min_pitch and max_pitch
             if interval in self.parameters['intervals'].keys():
                 del self.parameters['intervals'][interval]
+                if not self.parameters['intervals']:
+                    warning_message = locales['All intervals unselected']
+                    self.warning_dialog(warning_message)
+                    self.parameters['intervals'][interval] = True
+                    widget.set_active(True)
+
+                    
 # It is important that at least one interval is selected. Program should
 # refuse to uncheck all intervals
                 #if not [interval for interval in widget.
@@ -465,6 +472,11 @@ class gachtelbass(object):
             self.parameters['note_values'][note_value] = True
         else:
             del self.parameters['note_values'][note_value]
+            if not self.parameters['note_values']:
+                warning_message = locales['All note values unselected']
+                self.warning_dialog(warning_message)
+                self.parameters['note_values'][note_value] = True
+                widget.set_active(True)
 
     def select_rest_frequency(self, widget):
         self.parameters['rest_frequency'] = locales_inverse[widget.get_active_text()]

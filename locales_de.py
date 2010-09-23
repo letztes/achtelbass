@@ -94,21 +94,13 @@ locales = {
             '0.8' : '80 %',
             '0.9' : '90 %',
             '1' : '100 %',
-#            '0.1' : '0,1',
-#            '0.2' : '0,2',
-#            '0.3' : '0,3',
-#            '0.4' : '0,4',
-#            '0.5' : '0,5',
-#            '0.6' : '0,6',
-#            '0.7' : '0,7',
-#            '0.8' : '0,8',
-#            '0.9' : '0,9',
-#            '1' : '1',
             'Generate' : '_Generieren',
             'Warning' : 'Warnung',
             'OK' : 'OK',
 # Warnungsmeldung
 # %s sind Platzhalter für Intervall, tiefster Ton und höchster Ton
-            'Interval warning message' : "Interval %s passt nicht zwischen %s und %s. Wählen Sie entweder ein kleineres Intervall oder eine größere Spanne zwischen tiefstem Ton und höchstem Ton.", 
+            'Interval too big' : "Interval %s passt nicht zwischen %s und %s. Wählen Sie entweder ein kleineres Intervall oder eine größere Spanne zwischen tiefstem Ton und höchstem Ton.", 
+            'All intervals unselected' : "Mindestens ein Intervall muss ausgewählt sein.",
+            'All note values unselected' : "Mindestens ein Notenwert muss ausgewählt sein.",
 
 }

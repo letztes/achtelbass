@@ -99,6 +99,8 @@ locales = {
             'OK' : 'OK',
 # Warning message
 # The %s are placeholders for interval, min_pitch and max_pitch.
-            'Interval warning message' : "Interval %s does not fit between %s and %s.\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch.",
+            'Interval too big' : "Interval %s does not fit between %s and %s.\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch.",
+            'All intervals unselected' : "At least one interval must be selected.",
+            'All note values unselected' : "At least one note value must be selected.",
 
 }

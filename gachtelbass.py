@@ -491,7 +491,7 @@ class gachtelbass(object):
         file_object = open(CONFIGURATION_FILENAME, "w")
         cPickle.dump(self.parameters, file_object)
         file_object.close()
-        new_achtelbass = achtelbass.achtelbass(self.parameters)
+        new_achtelbass = achtelbass.achtelbass(self.parameters, locales)
 
 def main():
     gtk.main()

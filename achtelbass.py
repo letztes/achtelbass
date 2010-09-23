@@ -49,8 +49,9 @@ version = '0.1'
     
     
 class achtelbass(object):
-    def __init__(self, parameters):
+    def __init__(self, parameters, locales):
         self.Parameters = parameters
+        self.Locales = locales
         self.Frequency_Values = {'no tuplets' : 0,
                                  'no rests' : 0,
                                  '0.1' : 0.1,
@@ -204,7 +205,7 @@ class achtelbass(object):
     
     def display(self):
         
-        new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator)
+        new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator, self.Locales)
         pmx_string = new_output.print_out()
         os.chdir('/tmp/')
         file_object = open('out.pmx', "w")

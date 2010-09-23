@@ -9,7 +9,8 @@
 import re
 
 class output(object):
-    def __init__(self, key, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator):
+    def __init__(self, key, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator, locales):
+        self.Locales = locales
         self.Key = key
         self.Min_Pitch = min_pitch
         self.Max_Pitch = max_pitch
@@ -72,8 +73,8 @@ class output(object):
         ## Titel des Stuecks.
         #Wird zusammengestellt aus den Intervalsn und dem Notenumfang.
         intervals_string = ""
-        for i in self.Intervals:
-            intervals_string += i + ", "
+        for interval in self.Intervals:
+            intervals_string += self.Locales[interval] + ", "
         intervals_string = re.sub(r', $', r' in ', intervals_string)
         intervals_string = re.sub(r'(.+),(.+?)$', r'\g<1> und \g<2>', intervals_string)
         self.Titel = "Tt\n" + intervals_string + self.Min_Pitch + " - " + self.Max_Pitch # usw.

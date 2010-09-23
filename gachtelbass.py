@@ -22,8 +22,8 @@ import achtelbass
 # The locales file contains a dictionary which contains all the strings
 # that are displayed on buttons and so. The keys of the dictionary are
 # the english terms, the values the terms in the language of choice.
-from locales_de import locales
-#from locales_en import locales
+#from locales_de import locales
+from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
 CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"

@@ -364,8 +364,10 @@ class gachtelbass(object):
         gtk.main_quit()
         return False
 
-    def save_configuration(self, widget, string):
-        pass
+    def save_configuration(self):
+        file_object = open(CONFIGURATION_FILENAME, "w")
+        cPickle.dump(self.parameters, file_object)
+        file_object.close()
 
     def load_configuration(self, widget, string):
         pass
@@ -386,9 +388,11 @@ class gachtelbass(object):
 
     def select_tonic(self, widget):
         self.parameters['tonic'] = locales_inverse[widget.get_active_text()]
+        self.save_configuration()
 
     def select_mode(self, widget):
         self.parameters['mode'] = locales_inverse[widget.get_active_text()]
+        self.save_configuration()
 
     def add_interval(self, widget, interval):
         if widget.get_active():
@@ -411,18 +415,16 @@ class gachtelbass(object):
                     self.parameters['intervals'][interval] = True
                     widget.set_active(True)
 
-                    
-# It is important that at least one interval is selected. Program should
-# refuse to uncheck all intervals
-                #if not [interval for interval in widget.
+        self.save_configuration()
 
-      
 
     def allow_inversion(self, widget):
         if widget.get_active():
             self.parameters['inversion'] = True
         else:
             self.parameters['inversion'] = False
+        self.save_configuration()
+      
 
     def select_min_pitch(self, widget):
         self.parameters['min_pitch'] = widget.get_active_text()
@@ -438,6 +440,7 @@ class gachtelbass(object):
             self.warning_dialog(warning_message)
             widget.set_active(self.Pitches.index(self.previous_min_pitch))
             self.parameters['min_pitch'] = self.previous_min_pitch
+        self.save_configuration()
 
 
     def select_max_pitch(self, widget):
@@ -454,10 +457,12 @@ class gachtelbass(object):
             self.warning_dialog(warning_message)
             widget.set_active(self.Pitches.index(self.previous_max_pitch))
             self.parameters['max_pitch'] = self.previous_max_pitch
+        self.save_configuration()
 
 
     def select_time_signature(self, widget):
         self.parameters['time_signature'] = widget.get_active_text()
+        self.save_configuration()
 
     def add_note_value(self, widget, note_value):
         if widget.get_active():
@@ -469,21 +474,26 @@ class gachtelbass(object):
                 self.warning_dialog(warning_message)
                 self.parameters['note_values'][note_value] = True
                 widget.set_active(True)
+        self.save_configuration()
 
     def select_rest_frequency(self, widget):
         self.parameters['rest_frequency'] = locales_inverse[widget.get_active_text()]
+        self.save_configuration()
 
     def select_tuplet(self, widget):
         self.parameters['tuplets'] = locales_inverse[widget.get_active_text()]
+        self.save_configuration()
 
     def set_tuplet_same_pitch(self, widget):
         if widget.get_active():
             self.parameters['tuplet_same_pitch'] = True
         else:
             self.parameters['tuplet_same_pitch'] = False
+        self.save_configuration()
 
     def select_tuplet_frequency(self, widget):
         self.parameters['tuplets_frequency'] = locales_inverse[widget.get_active_text()]
+        self.save_configuration()
 
 # Some parameter values for achtelbass must be numbers, but gtk+ displays
 # only strings. So the strings are converted before passed to achtelbass.
@@ -492,9 +502,6 @@ class gachtelbass(object):
 # Zunächst die Konfiguration in eine Datei schreiben
         if not os.path.exists(CONFIGURATION_DIRNAME):
             os.makedirs(CONFIGURATION_DIRNAME)
-        file_object = open(CONFIGURATION_FILENAME, "w")
-        cPickle.dump(self.parameters, file_object)
-        file_object.close()
         new_achtelbass = achtelbass.achtelbass(self.parameters, locales)
 
 def main():

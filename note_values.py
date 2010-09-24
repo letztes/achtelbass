@@ -11,7 +11,7 @@
 
 import random
 
-class note_values(object):
+class NoteValues(object):
     def __init__(self, selectable_note_values, time_signature, tuplets, tuplets_frequency):
         self.Selectable_Note_Values = selectable_note_values
         self.Time_Signature = time_signature

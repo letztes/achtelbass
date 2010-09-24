@@ -1,14 +1,7 @@
 #!/usr/bin/env python -t
 # -*- coding: utf-8 -*-
 
-# Tutorial: http://www.pygtk.org/pygtk2tutorial/
-# http://www.pygtk.org/pygtk2tutorial/sec-ToggleButtons.html
-# http://www.pygtk.org/pygtk2tutorial/sec-ComboBoxAndComboboxEntry.html
-
 #TODO 
-#   *   Refactoring: Wiederkehrende Aufrufe wie jene beim  Menüeinträge-
-#       definieren in nicht-öffentliche __Methoden auslagern.
-#   *   Anzahl der Seiten soll in einem Menü (Bearbeiten) einstellbar sein.
 
 import cPickle
 import gtk
@@ -29,7 +22,7 @@ locales_inverse = dict([[v,k] for k,v in locales.items()])
 CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"
 CONFIGURATION_FILENAME = CONFIGURATION_DIRNAME+"configuration"
 
-class gachtelbass(object):
+class Gachtelbass(object):
     def __init__(self):
         self.Tonics = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F']
         self.Modes = ['Major', 'Minor']
@@ -502,11 +495,11 @@ class gachtelbass(object):
 # Zunächst die Konfiguration in eine Datei schreiben
         if not os.path.exists(CONFIGURATION_DIRNAME):
             os.makedirs(CONFIGURATION_DIRNAME)
-        new_achtelbass = achtelbass.achtelbass(self.parameters, locales)
+        new_achtelbass = achtelbass.Achtelbass(self.parameters, locales)
 
 def main():
     gtk.main()
     return 0
 
-gachtelbass()
+Gachtelbass()
 main()

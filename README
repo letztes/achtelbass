@@ -1,5 +1,5 @@
 This is a python script that generates sheet music. It uses a random
-number generator when picking the durations, pitches or chunks of notes
+number generator when picking the note values, pitches or chunks of notes
 so that new notes are generated in each call, thus preventing learning
 them by memory. Sight-reading can be practiced pretty well, the MIDI-
 output generated along with the PDF may be used for checking the sight-

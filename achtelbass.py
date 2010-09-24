@@ -18,10 +18,10 @@
 #   *   MIDI-Input implementieren, damit die Software selbstständig
 #       überprüfen kann, ob der Benutzer richtig gespielt hat. Etwa so:
 #       http://www.youtube.com/watch?v=dr5_kAQ8OGg
-#   *   Grand Staff implementieren: Optional zwei Notensysteme gleichzeitig
+#   *   Grand Staff implementieren, d.h.  Optional zwei Notensysteme
+#       gleichzeitig
 #
 #   Eher kleines
-#   *   In allen Modulen den Klassennamen in CapWords schreiben.
 #       http://www.python.org/dev/peps/pep-0008/
 #
 
@@ -48,7 +48,7 @@ version = '0.1'
 #
     
     
-class achtelbass(object):
+class Achtelbass(object):
     def __init__(self, parameters, locales):
         self.Parameters = parameters
         self.Locales = locales
@@ -134,7 +134,7 @@ class achtelbass(object):
     
     
     def get_note_values(self):
-        new_note_values = note_values.note_values(self.Selectable_Note_Values, self.Time_Signature, self.Tuplets, self.Tuplets_Frequency)
+        new_note_values = note_values.NoteValues(self.Selectable_Note_Values, self.Time_Signature, self.Tuplets, self.Tuplets_Frequency)
         for i in range(self.Amount_Of_Bars):
             new_note_values.calculate()
         
@@ -147,7 +147,7 @@ class achtelbass(object):
                 tuplet_value = note_value[2:len(note_value)]
                 amount += int(tuplet_value)
 
-        new_pitches = pitches.pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals, self.Inversion)
+        new_pitches = pitches.Pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals, self.Inversion)
         
         return new_pitches.easy()
     
@@ -206,7 +206,7 @@ class achtelbass(object):
     
     def display(self):
         
-        new_output = output.output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator, self.Locales)
+        new_output = output.Output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator, self.Locales)
         pmx_string = new_output.print_out()
         os.chdir('/tmp/')
         file_object = open('out.pmx', "w")

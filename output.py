@@ -8,7 +8,7 @@
 
 import re
 
-class output(object):
+class Output(object):
     def __init__(self, key, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator, locales):
         self.Locales = locales
         self.Key = key

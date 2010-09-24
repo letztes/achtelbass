@@ -5,7 +5,7 @@
 
 import random
 
-class pitches(object):
+class Pitches(object):
     def __init__(self, amount, min_pitch, max_pitch, key, intervals, inversion):
         self.Amount = amount
         self.Min_Pitch = min_pitch

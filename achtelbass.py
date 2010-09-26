@@ -402,7 +402,9 @@ Options are:
         print "Please choose either a smaller interval or a greater"
         print "span between minimum pitch and maximum pitch.\n"
         exit()
-    achtelbass(parameters)
+
+    from locales_en import locales
+    Achtelbass(parameters, locales)
 
 #
 #

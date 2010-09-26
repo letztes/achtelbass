@@ -59,7 +59,8 @@ class Output(object):
         ## Namen der Instrumente, von unten nach oben.
         # Wird vor das jeweilige Notensystem geschrieben.
         # Kann leergelassen werden.
-        self.Instrument_Name = 'Blockfloete'
+        #self.Instrument_Name = 'Blockfloete'
+        self.Instrument_Name = ''
         
         ## Clef, von unten nach oben.
         # b heisst Bassschluessel, t heisst Violinschluessel.
@@ -76,7 +77,7 @@ class Output(object):
         for interval in self.Intervals:
             intervals_string += self.Locales[interval] + ", "
         intervals_string = re.sub(r', $', r' in ', intervals_string)
-        intervals_string = re.sub(r'(.+),(.+?)$', r'\g<1> und \g<2>', intervals_string)
+        intervals_string = re.sub(r'(.+),(.+?)$', r'\g<1> '+locales['and']+' \g<2>', intervals_string)
         self.Titel = "Tt\n" + intervals_string + self.Min_Pitch + " - " + self.Max_Pitch # usw.
         
     def get_amount_of_accidentals(self):

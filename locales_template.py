@@ -1,10 +1,10 @@
 locales = {
+# Menu
             'File' : '_File',
-            'Save configuration' : '_Save configuration',
-            'Load configuration' : '_Load configuration',
             'Quit' : '_Quit',
             'Help' : '_Help',
             'About' : 'About',
+# Tonic
             'Tonic' : 'Tonic',
             'C' : 'C',
             'G' : 'G',
@@ -19,6 +19,9 @@ locales = {
             'Eb' : 'Eb',
             'Bb' : 'Bb',
             'F' : 'F',
+# min pitch and max pitch
+            'Min pitch' : 'Min pitch',
+            'Max pitch' : 'Max pitch',
             "c1" : "c1",
             "d1" : "d1",
             "e1" : "e1",
@@ -54,9 +57,11 @@ locales = {
             "g5" : "g5",
             "a5" : "a5",
             "b5" : "b5",
+# Mode
             'Mode' : 'Mode',
             'Major' : 'Major',
             'Minor' : 'Minor',
+# Interval
             'Interval' : 'Interval',
             'Intervals' : 'Intervals',
             'Unison' : 'Unison',
@@ -68,12 +73,14 @@ locales = {
             'Seventh' : 'Seventh',
             'Octave' : 'Octave',
             'Inversion' : 'Inversion',
-            'Min pitch' : 'Min pitch',
-            'Max pitch' : 'Max pitch',
+# Rest
             'Rest frequency' : 'Rest frequency',
             'no rests' : 'no rests',
+# Time signature
             'Time signature' : 'Time signature',
+# Note value
             'Note values' : 'Note values',
+# Tuplet
             'Tuplets' : 'Tuplets',
             'Same pitch in tuplet' : 'Same pitch in tuplet',
             'no tuplets' : 'no tuplets',
@@ -84,6 +91,7 @@ locales = {
             '6' : '6',
             '7' : '7',
             'Tuplet frequency' : 'Tuplet frequency',
+# Frequency values
             '0.1' : '10 %',
             '0.2' : '20 %',
             '0.3' : '30 %',
@@ -106,6 +114,8 @@ locales = {
             'Artur Spengler' : 'Artur Spengler',
             'License text' : 'This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.',
             'Dialog comment' : 'Generates sheet music in a random fashion for practicing sight reading.',
+# Other words
+            'and' : 'and'
 
 
 }

@@ -382,10 +382,29 @@ Options are:
     if not dict(parameters['intervals']):
         parameters['intervals']['Second'] = True # set default
     print ''
-    print parameters
+    #print parameters
     print ''
     #exit()
-
+# If time singature and note values don't fit together
+    opt_fraction_values = {'2/2' : 1.0,
+                            '3/4' : 0.75,
+                            '4/4' : 1.0,
+                            '1' : 1.0,
+                            '1/2' : 0.5,
+                            '1/4' : 0.25,
+                            '1/8' : 0.125,
+                            '1/16' : 0.0625,
+                            '1/32' : 0.03125,
+                           }
+# When time signature is 3/4 and the only note value is 1 or 1/2, exit
+    if opt_fraction_values[parameters['time_signature']] < 1:
+        if '1' in parameters['note_values']:
+            print "Cannot put whole notes into "+parameters['time_signature']+" bar."
+            exit()
+        if opt_fraction_values[parameters['time_signature']] != 0.5 and \
+                parameters['note_values']['1/2']:
+            print "Cannot put half notes into "+parameters['time_signature']+" bar."
+            exit()
 
 # If the span between min_pitch and max_pitch is smaller than the greatest
 # interval chosen, raise an error and exit.

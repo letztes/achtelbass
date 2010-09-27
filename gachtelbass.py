@@ -4,6 +4,7 @@
 #TODO 
 
 import cPickle
+import decimal
 import gtk
 import os
 import pygtk
@@ -47,6 +48,16 @@ class Gachtelbass(object):
                             'tuplet_same_pitch' : False,
                             'tuplets_frequency' : 'no tuplets',
                            }
+        self.Fraction_Values = {'2/2' : 1.0,
+                                '3/4' : 0.75,
+                                '4/4' : 1.0,
+                                '1' : 1.0,
+                                '1/2' : 0.5,
+                                '1/4' : 0.25,
+                                '1/8' : 0.125,
+                                '1/16' : 0.0625,
+                                '1/32' : 0.03125,
+                               }  
         try:
             file_object = open(CONFIGURATION_FILENAME, 'r')
             self.parameters = cPickle.load(file_object)
@@ -454,12 +465,21 @@ class Gachtelbass(object):
 
 
     def select_time_signature(self, widget):
+        previous_time_signature = self.parameters['time_signature']
         self.parameters['time_signature'] = widget.get_active_text()
+        if not self.is_note_value_and_time_signature_ok():
+            warning_message = locales['Bad time signature.']
+            self.warning_dialog(warning_message)
+            widget.set_active(self.Time_Signatures.index(previous_time_signature))
         self.save_configuration()
 
     def add_note_value(self, widget, note_value):
         if widget.get_active():
             self.parameters['note_values'][note_value] = True
+            if not self.is_note_value_and_time_signature_ok():
+                warning_message = locales['Bad note value.']
+                self.warning_dialog(warning_message)
+                widget.set_active(False)
         else:
             del self.parameters['note_values'][note_value]
             if not self.parameters['note_values']:
@@ -467,7 +487,28 @@ class Gachtelbass(object):
                 self.warning_dialog(warning_message)
                 self.parameters['note_values'][note_value] = True
                 widget.set_active(True)
+            if not self.is_note_value_and_time_signature_ok():
+# If time signature is not divisible by 1/2 and note value is 1/2
+                warning_message  = locales["Bad note value."]
+                self.warning_dialog(warning_message)
+                widget.set_active(True)
         self.save_configuration()
+
+    def is_note_value_and_time_signature_ok(self):
+# Need to determine the critical note_values first
+        good_note_values = 0
+        bad_note_values = 0
+        for current_note_value in self.parameters['note_values']:
+            if decimal.Decimal(str(self.Fraction_Values[self.parameters['time_signature']])).remainder_near(decimal.Decimal(str(self.Fraction_Values[current_note_value]))):
+                bad_note_values += 1
+            else:
+                good_note_values += 1
+
+        if good_note_values:
+            return True
+        else:
+            return False
+
 
     def select_rest_frequency(self, widget):
         self.parameters['rest_frequency'] = locales_inverse[widget.get_active_text()]

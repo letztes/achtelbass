@@ -32,8 +32,9 @@ class NoteValues(object):
         selectable_note_values_in_this_bar = self.Selectable_Note_Values
         pmx_note_value = ''
         while remaining_bar_length > 0.0:
-            chosen_note_value = random.choice(selectable_note_values_in_this_bar)
             selectable_note_values_in_this_bar = [selectable_note_values_in_this_bar[selectable_note_values_in_this_bar.index(item)] for item in selectable_note_values_in_this_bar if item <= remaining_bar_length]
+            chosen_note_value = random.choice(selectable_note_values_in_this_bar)
+            print chosen_note_value, remaining_bar_length
             pmx_note_value = self.PMX_Note_Values[chosen_note_value]
             if self.Tuplets != 0:
                 if random.uniform(0, 1) < float(self.Tuplets_Frequency):

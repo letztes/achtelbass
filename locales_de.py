@@ -102,6 +102,8 @@ locales = {
             'Interval too big' : "Interval %s passt nicht zwischen %s und %s. Wählen Sie entweder ein kleineres Intervall oder eine größere Spanne zwischen tiefstem Ton und höchstem Ton.", 
             'All intervals unselected' : "Mindestens ein Intervall muss ausgewählt sein.",
             'All note values unselected' : "Mindestens ein Notenwert muss ausgewählt sein.",
+            'Bad note value.' : 'Notenwert passt nicht.',
+            'Bad time signature.' : 'Taktwert passt nicht.',
 # About Info Dialog
             'Artur Spengler' : 'Artur Spengler',
             'License text' : 'Dieses Programm ist freie Software. Sie können es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder (nach Ihrer Option) jeder späteren Version.\n\nDie Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.\n\nSie sollten ein Exemplar der GNU General Public License zusammen mit diesem Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.',

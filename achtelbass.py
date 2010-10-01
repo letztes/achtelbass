@@ -97,6 +97,7 @@ class Achtelbass(object):
                                  1 : 1.0/16,
                                  3 : 1.0/32,
                                 }
+        self.Diatonic_Notes = 'C D E F G A B C'.split()
         self.Major_Accidentals = {
                              "C" : "+0",
                              "G" : "+1",
@@ -133,10 +134,15 @@ class Achtelbass(object):
                             }
         self.Tonic = parameters['tonic']
         self.Mode = parameters['mode']
+        self.Random_Key = parameters['random_key']
         #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
         self.Inversion = parameters['inversion']
-        self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1",
+                      "c2", "d2", "e2", "f2", "g2", "a2", "b2",
+                      "c3", "d3", "e3", "f3", "g3", "a3", "b3",
+                      "c4", "d4", "e4", "f4", "g4", "a4", "b4",
+                      "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
         self.Min_Pitch = parameters['min_pitch']
         self.Max_Pitch = parameters['max_pitch']
 #if max_pitch is lower than min_pitch, swap them
@@ -155,8 +161,10 @@ class Achtelbass(object):
         self.Tuplet_Same_Pitch = parameters['tuplet_same_pitch']
         self.Tuplets_Frequency = parameters['tuplets_frequency']
 
-        # Ausgabe immer so gestalten, dass etwa 40 bars, 10 systems pro Seite stehen
-        self.Amount_Of_Bars = 40 # 40 bars in 10 systems fit perfectly in 1 page.   
+        # Ausgabe immer so gestalten, dass etwa 40 bars,
+        # 10 systems pro Seite stehen
+        # 40 bars in 10 systems fit perfectly in 1 page.   
+        self.Amount_Of_Bars = 40 
         self.Note_Values = self.get_note_values()
         self.Pitches = self.get_pitches()
         self.Note_String = self.glue_together()
@@ -164,7 +172,10 @@ class Achtelbass(object):
     
     
     def get_note_values(self):
-        new_note_values = note_values.NoteValues(self.Selectable_Note_Values, self.Time_Signature, self.Tuplets, self.Tuplets_Frequency)
+        new_note_values = note_values.NoteValues(self.Selectable_Note_Values,
+                                                 self.Time_Signature,
+                                                 self.Tuplets,
+                                                 self.Tuplets_Frequency)
         for i in range(self.Amount_Of_Bars):
             new_note_values.calculate()
         
@@ -177,15 +188,76 @@ class Achtelbass(object):
                 tuplet_value = note_value[2:len(note_value)]
                 amount += int(tuplet_value)
 
-        new_pitches = pitches.Pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Tonic, self.Intervals, self.Inversion)
+        new_pitches = pitches.Pitches(amount, self.Min_Pitch,
+                                      self.Max_Pitch, self.Tonic,
+                                      self.Intervals, self.Inversion)
         
         return new_pitches.easy()
+
+
+    def get_new_accidentals(self, old_accidentals, new_note_name):
+        if self.Mode == 'Major':
+            if old_accidentals == 1:
+                new_note_name = re.sub(r"([F])", "\g<1>#", new_note_name)
+# F or C are augmented by a half tone in each of the keys with at least
+# 2 Sharp-Accidentals. That is why the "if old_accidentals == 2" is
+# skipped.
+            if old_accidentals > 1 and new_note_name in ["F", "C"]:
+                new_note_name = re.sub(r"([FC])",
+                                       "\g<1>#",
+                                       new_note_name)
+            else:
+                if old_accidentals == 3:
+                    new_note_name = re.sub(r"([G])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                if old_accidentals == 4:
+                    new_note_name = re.sub(r"([GD])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                if old_accidentals == 5:
+                    new_note_name = re.sub(r"([GDA])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                if old_accidentals == 6:
+                    new_note_name = re.sub(r"([GDAE])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                if old_accidentals == 7:
+                    new_note_name = re.sub(r"([GDAEB])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+
+            if old_accidentals == -7:
+                if new_note_name == 'F':
+                    return 'E'
+                new_note_name = re.sub(r"([CGDAEB])",
+                                       "\g<1>b",
+                                       new_note_name)
+            if old_accidentals == -6:
+                new_note_name = re.sub(r"([CGDAEB])",
+                                       "\g<1>b",
+                                       new_note_name)
+            if old_accidentals == -5:
+                new_note_name = re.sub(r"([GDAEB])",
+                                       "\g<1>b",
+                                       new_note_name)
+            if old_accidentals == -4:
+                new_note_name = re.sub(r"([DAEB])",
+                                       "\g<1>b",
+                                       new_note_name)
+            if old_accidentals == -3:
+                new_note_name = re.sub(r"([AEB])",
+                                       "\g<1>b",
+                                       new_note_name)
+            if old_accidentals == -2:
+                new_note_name = re.sub(r"([EB])",
+                                       "\g<1>b",
+                                       new_note_name)
+            if old_accidentals == -1:
+                new_note_name = re.sub(r"([B])",
+                                       "\g<1>b",
+                                       new_note_name)
+
+            return self.Major_Accidentals[new_note_name]
+        else:
+            print "At the time only Major supported. Sorry."; exit()
     
     
     def glue_together(self):
         # PMX allows only 20 key changes
         remaining_key_changes = 20
-        
+        new_accidentals = 0 
         note_string = ''
 
         previous_pitch = self.Pitches[0]
@@ -199,10 +271,12 @@ class Achtelbass(object):
 # If random key, insert random key signature
 # But only when its the before last iteration, because in the last 
 # iteration the key change would be set after the last bar.
-                if self.Mode == 'Random key' and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
-                    new_key_number = self.Major_Accidentals[self.Pitches[i][0].upper()]
-# randrange([start, ]stop[, step])
-                    note_string += 'K+0'+new_key_number+' '
+                if self.Random_Key == True and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
+                    if random.uniform(0, 1) < (20 / float(self.Amount_Of_Bars)):
+                        new_accidentals = self.get_new_accidentals(new_accidentals, self.Pitches[j][0].upper())
+                        new_accidentals = self.Major_Accidentals[self.Pitches[j][0].upper()]
+                        note_string += 'K+0'+new_accidentals+' '
+                        remaining_key_changes -= 1
 
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
@@ -246,7 +320,12 @@ class Achtelbass(object):
     
     def display(self):
         
-        new_output = output.Output(self.Tonic, self.Mode, self.Major_Accidentals, self.Minor_Accidentals, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator, self.Locales)
+        new_output = output.Output(self.Tonic, self.Mode,
+                self.Major_Accidentals, self.Minor_Accidentals,
+                self.Min_Pitch, self.Max_Pitch, self.Intervals,
+                self.Pitches, self.Note_String, self.Amount_Of_Bars,
+                self.Time_Signature_Numerator,
+                self.Time_Signature_Denominator, self.Locales)
         pmx_string = new_output.print_out()
         os.chdir('/tmp/')
         file_object = open('out.pmx', "w")
@@ -272,6 +351,8 @@ Options are:
     
     -m, --mode=MODE
       default=Major
+
+    -k, --random_key
     
     -i, --intervals=INTERVAL1 [--intervals=INTERVAL2...]
       default=Second
@@ -307,6 +388,7 @@ Options are:
 
     parameters = {'tonic' : 'C',
                   'mode' : 'Major',
+                  'random_key' : False,
                   'intervals' : {},
                   'inversion' : False,
                   'min_pitch' : 'c4',
@@ -318,11 +400,22 @@ Options are:
                   'tuplet_same_pitch' : False,
                   'tuplets_frequency' : 'no tuplets',
                  }
-    pitches_opt = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
-    intervals_opt = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
+    pitches_opt = ["c1", "d1", "e1", "f1", "g1", "a1", "b1",
+                   "c2", "d2", "e2", "f2", "g2", "a2", "b2",
+                   "c3", "d3", "e3", "f3", "g3", "a3", "b3",
+                   "c4", "d4", "e4", "f4", "g4", "a4", "b4",
+                   "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+    intervals_opt = ['Unison', 'Second', 'Third', 'Fourth',
+                     'Fifth', 'Sixth', 'Seventh', 'Octave']
 
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 't:m:i:en:x:r:s:v:u:pf:', ['tonic=', 'mode=', 'intervals=', 'inversion', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 'time_signature=', 'note_values=', 'tuplets=', 'tuplet_same_pitch', 'tuplets_frequency=', 'help', 'version'])
+        opts, args = getopt.gnu_getopt(sys.argv[1:],
+                     't:m:ki:en:x:r:s:v:u:pf:',
+                     ['tonic=', 'mode=', 'random_key', 'intervals=',
+                      'inversion', 'min_pitch=', 'max_pitch=',
+                      'rest_frequency=', 'time_signature=',
+                      'note_values=', 'tuplets=', 'tuplet_same_pitch',
+                      'tuplets_frequency=', 'help', 'version'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -330,19 +423,26 @@ Options are:
 
     for opt, arg in opts:
         if opt in ('-t', '--tonic'):
-            if arg in ('C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'):
+            if arg in ('C', 'G', 'D', 'A', 'E', 'B', 'F#',
+                       'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'):
                 parameters['tonic'] = arg
                 print parameters
             else:
                 print arg, 'is not a valid value for tonic.'
-                print 'Tonic must be one of', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
+                print 'Tonic must be one of', 'C', 'G', 'D', 'A', 'E',\
+                        'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
+                exit()
 
         if opt in ('-m', '--mode'):
             if arg in ('Major', 'Minor', 'Random key'):
                 parameters['mode'] = arg
             else:
                 print arg, 'is not a valid value for mode.'
-                print 'mode must be one of', 'Minor', 'Major', 'Random key'
+                print 'mode must be one of', 'Minor', 'Major'
+                exit()
+
+        if opt in ('-k', '--random_key'):
+            parameters['random_key'] = True
 
         if opt in ('-i', '--intervals'):
             if arg in (intervals_opt):
@@ -350,6 +450,8 @@ Options are:
             else:
                 print arg, 'is not a valid value for intervals.'
                 print 'interval must be one of', str(intervals_opt[1:-1])
+                exit()
+
         if opt in ('-e', '--inversion'):
             parameters['inversion'] = True
 
@@ -359,27 +461,33 @@ Options are:
             else:
                 print arg, 'is not a valid value for min_pitch.'
                 print 'min_pitch must be one of', str(pitches_opt)[1:-1]
+                exit()
 
         if opt in ('-x', '--max_pitch'):
             if arg in (pitches_opt):
                 parameters['max_pitch'] = arg
             else:
                 print arg, 'is not a valid value for max_pitch.'
-                print 'max_pitch must be one of', str(pitches_opt)[1 : -1]
+                print 'max_pitch must be one of', str(pitches_opt)[1:-1]
+                exit()
 
         if opt in ('-r', '--rest_frequency'):
             if arg in ('no rests', '0.1', '0.2', '0.3', '0.4', '0.5'):
                 parameters['rest_frequency'] = arg
             else:
                 print arg, 'is not a valid value for rest_frequency.'
-                print 'rest_frequency must be one of', 'no rests', '0.1', '0.2', '0.3', '0.4', '0.5'
+                print 'rest_frequency must be one of', 'no rests',\
+                      '0.1', '0.2', '0.3', '0.4', '0.5'
+                exit()
 
         if opt in ('-s', '--time_signature'):
             if arg in ('2/2', '3/4', '4/4'):
                 parameters['time_signature'] = arg
             else:
                 print arg, 'is not a valid value for time_signature.'
-                print 'max_pitch must be one of', 'no rests', '2/2', '3/4', '4/4'
+                print 'max_pitch must be one of', 'no rests', '2/2',\
+                      '3/4', '4/4'
+                exit()
 
 
         if opt in ('-o', '--note_values'):
@@ -387,24 +495,32 @@ Options are:
                 parameters['note_values'][arg] = True
             else:
                 print arg, 'is not a valid value for note_values.'
-                print 'note_values must be one of', "'no rests'", '0.1', '0.2', '0.3', '0.4', '0.5'
+                print 'note_values must be one of', "'no rests'",\
+                        '0.1', '0.2', '0.3', '0.4', '0.5'
+                exit()
 
         if opt in ('-u', '--tuplets'):
             if arg in ('no tuplets', '2', '3', '4', '5', '6', '7'):
                 parameters['tuplets'] = arg
             else:
                 print arg, 'is not a valid value for tuplets.'
-                print 'tuplets must be one of', "'no tuplets'", '2', '3', '4', '5', '6', '7'
+                print 'tuplets must be one of', "'no tuplets'",\
+                        '2', '3', '4', '5', '6', '7'
+                exit()
 
         if opt in ('-p', '--tuplet_same_pitch'):
             parameters['tuplet_same_pitch'] = True
 
         if opt in ('-f', '--tuplets_frequency'):
-            if arg in ('no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'):
+            if arg in ('no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5',
+                       '0.6', '0.7', '0.8', '0.9', '1'):
                 parameters['tuplets_frequency'] = arg
             else:
                 print arg, 'is not a valid value for tuplets_frequency.'
-                print 'tuplets_frequency must be one of', 'no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'
+                print 'tuplets_frequency must be one of', 'no tuplets',\
+                        '0.1', '0.2', '0.3', '0.4', '0.5', '0.6',\
+                        '0.7', '0.8', '0.9', '1'
+                exit()
 
         if opt == '--help':
             usage()

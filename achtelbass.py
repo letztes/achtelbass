@@ -37,18 +37,13 @@ import output
 # Version of the program
 version = '0.1'
 
-# Die Reihenfolge ist:
-#   * dauern
-#   * hoehen (Erwartet Anzahl der Notendauern aus dauern.py)
-#   * ausgabe (Erwartet Werte für die Noten aus hoehen.py)
-#
-# Zuerst werden die Noten-Dauern (Viertelnote usw.) berechnet.
-# dauern erwartet 2 Parameter: selectable_note_values, time_signature
-#                              [1/2, 1/8]            4/4
-#
-    
     
 class Achtelbass(object):
+    """The central class of the package
+
+       call note_values.py, pitches.py and output.py 
+
+    """
     def __init__(self, parameters, locales):
         self.Parameters = parameters
         self.Locales = locales
@@ -102,8 +97,43 @@ class Achtelbass(object):
                                  1 : 1.0/16,
                                  3 : 1.0/32,
                                 }
-    
-        self.Key = parameters['tonic'] + '-' + parameters['mode']
+        self.Major_Accidentals = {
+                             "C" : "+0",
+                             "G" : "+1",
+                             "D" : "+2",
+                             "A" : "+3",
+                             "E" : "+4",
+                             "B" : "+5",
+                             "F#" : "+6",
+                             "C#" : "+7",
+                             "Cb" : "-7",
+                             "Gb" : "-6",
+                             "Db" : "-5",
+                             "Ab" : "-4",
+                             "Eb" : "-3",
+                             "Bb" : "-2",
+                             "F" : "-1",
+                            }
+        self.Minor_Accidentals = {
+                             "A" : "+0",
+                             "E" : "+1",
+                             "B" : "+2",
+                             "F#" : "+3",
+                             "C#" : "+4",
+                             "Ab" : "+5",
+                             "Eb" : "+6",
+                             "A#" : "+7",
+                             "G#" : "-7",
+                             "D#" : "-6",
+                             "Bb" : "-5",
+                             "F" : "-4",
+                             "C" : "-3",
+                             "G" : "-2",
+                             "D" : "-1",
+                            }
+        self.Tonic = parameters['tonic']
+        self.Mode = parameters['mode']
+        #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
         self.Inversion = parameters['inversion']
         self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
@@ -126,7 +156,7 @@ class Achtelbass(object):
         self.Tuplets_Frequency = parameters['tuplets_frequency']
 
         # Ausgabe immer so gestalten, dass etwa 40 bars, 10 systems pro Seite stehen
-        self.Amount_Of_Bars = 81 # 40 bars in 10 systems fit perfectly in 1 page.   
+        self.Amount_Of_Bars = 40 # 40 bars in 10 systems fit perfectly in 1 page.   
         self.Note_Values = self.get_note_values()
         self.Pitches = self.get_pitches()
         self.Note_String = self.glue_together()
@@ -147,12 +177,14 @@ class Achtelbass(object):
                 tuplet_value = note_value[2:len(note_value)]
                 amount += int(tuplet_value)
 
-        new_pitches = pitches.Pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Key, self.Intervals, self.Inversion)
+        new_pitches = pitches.Pitches(amount, self.Min_Pitch, self.Max_Pitch, self.Tonic, self.Intervals, self.Inversion)
         
         return new_pitches.easy()
     
     
     def glue_together(self):
+        # PMX allows only 20 key changes
+        remaining_key_changes = 20
         
         note_string = ''
 
@@ -164,6 +196,14 @@ class Achtelbass(object):
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"
+# If random key, insert random key signature
+# But only when its the before last iteration, because in the last 
+# iteration the key change would be set after the last bar.
+                if self.Mode == 'Random key' and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
+                    new_key_number = self.Major_Accidentals[self.Pitches[i][0].upper()]
+# randrange([start, ]stop[, step])
+                    note_string += 'K+0'+new_key_number+' '
+
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
                     note_value_for_tuplet = int(self.Note_Values[i][0])
@@ -201,12 +241,12 @@ class Achtelbass(object):
                 previous_pitch = self.Pitches[j]
         note_string = re.sub(r"(C[bt] )(/\n)", r"\g<2>\g<1>", note_string)
         note_string = re.sub(r"\n/$", r"", note_string)
-        
+        #print note_string; exit()
         return note_string
     
     def display(self):
         
-        new_output = output.Output(self.Key, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator, self.Locales)
+        new_output = output.Output(self.Tonic, self.Mode, self.Major_Accidentals, self.Minor_Accidentals, self.Min_Pitch, self.Max_Pitch, self.Intervals, self.Pitches, self.Note_String, self.Amount_Of_Bars, self.Time_Signature_Numerator, self.Time_Signature_Denominator, self.Locales)
         pmx_string = new_output.print_out()
         os.chdir('/tmp/')
         file_object = open('out.pmx', "w")
@@ -298,11 +338,11 @@ Options are:
                 print 'Tonic must be one of', 'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
 
         if opt in ('-m', '--mode'):
-            if arg in ('Major', 'Minor'):
+            if arg in ('Major', 'Minor', 'Random key'):
                 parameters['mode'] = arg
             else:
                 print arg, 'is not a valid value for mode.'
-                print 'mode must be one of', 'Minor', 'Major'
+                print 'mode must be one of', 'Minor', 'Major', 'Random key'
 
         if opt in ('-i', '--intervals'):
             if arg in (intervals_opt):

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 locales = {
+# Menü
             'File' : '_Datei',
             'Quit' : '_Beenden',
             'Help' : '_Hilfe',
             'About' : '_Info',
             'Tonic' : 'Tonika',
+# Tonika
             'C' : 'C',
             'G' : 'G',
             'D' : 'D',
@@ -19,6 +21,9 @@ locales = {
             'Eb' : 'Eb',
             'Bb' : 'Bb',
             'F' : 'F',
+# Minimale und maximale Tonhöhe
+            'Min pitch' : 'Tiefster Ton',
+            'Max pitch' : 'Höchster Ton',
             "c1" : "c1",
             "d1" : "d1",
             "e1" : "e1",
@@ -54,9 +59,12 @@ locales = {
             "g5" : "g5",
             "a5" : "a5",
             "b5" : "b5",
+# Tongeschlecht
             'Mode' : 'Tongeschlecht',
             'Major' : 'Dur',
             'Minor' : 'Moll',
+            'Random key' : 'Zufällige Tonart',
+# Intervalle
             'Interval' : 'Intervall',
             'Intervals' : 'Intervalle',
             'Unison' : 'Prime',
@@ -68,8 +76,7 @@ locales = {
             'Seventh' : 'Septime',
             'Octave' : 'Oktave',
             'Inversion' : 'Inversion',
-            'Min pitch' : 'Tiefster Ton',
-            'Max pitch' : 'Höchster Ton',
+# Pausen
             'Rest frequency' : 'Pausenanteil',
             'no rests' : 'keine Pausen',
             'Time signature' : 'Taktart',
@@ -84,6 +91,7 @@ locales = {
             '6' : '6',
             '7' : '7',
             'Tuplet frequency' : 'Anteil der n-Tolen',
+# Anteilwerte
             '0.1' : '10 %',
             '0.2' : '20 %',
             '0.3' : '30 %',

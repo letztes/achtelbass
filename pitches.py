@@ -6,11 +6,11 @@
 import random
 
 class Pitches(object):
-    def __init__(self, amount, min_pitch, max_pitch, key, intervals, inversion):
+    def __init__(self, amount, min_pitch, max_pitch, tonic, intervals, inversion):
         self.Amount = amount
         self.Min_Pitch = min_pitch
         self.Max_Pitch = max_pitch
-        self.Key = key # Tonart
+        self.Tonic = tonic # Tonart
         self.Intervals = intervals
         self.Inversion = inversion
         
@@ -20,7 +20,7 @@ class Pitches(object):
 # Plus one because the slice does not include the element with the _max_index
         self.Selectable_Pitches = self.Notes[_min_index:_max_index+1]
 # Find all the notes within selectable span that are a tonic of the key
-        tonics = [note for note in self.Selectable_Pitches if note[0] == self.Key[0].lower()]
+        tonics = [note for note in self.Selectable_Pitches if note[0] == self.Tonic.lower()]
 # If no actual tonic found, take the lowest note in the selectable span
         self.First_Note = self.Selectable_Pitches[0]
 # The first fount tonic in the selectable span is the first note to print

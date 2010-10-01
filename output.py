@@ -9,9 +9,12 @@
 import re
 
 class Output(object):
-    def __init__(self, key, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator, locales):
+    def __init__(self, tonic, mode, major_accidentals, minor_accidentals, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator, locales):
         self.Locales = locales
-        self.Key = key
+        self.Tonic = tonic
+        self.Mode = mode
+        self.Major_Accidentals = major_accidentals
+        self.Minor_Accidentals = minor_accidentals
         self.Min_Pitch = min_pitch
         self.Max_Pitch = max_pitch
         self.Intervals = intervals
@@ -81,24 +84,11 @@ class Output(object):
         self.Titel = "Tt\n" + intervals_string + self.Min_Pitch + " - " + self.Max_Pitch # usw.
         
     def get_amount_of_accidentals(self):
-        self.Key = self.Key.lower();
-        self.Key = re.sub(r'[ \-]', '', self.Key)
-        amount_of_accidentals = {
-                             "cmajor" : 0,
-                             "gmajor" : 1,
-                             "dmajor" : 2,
-                             "amajor" : 3,
-                             "emajor" : 4,
-                             "bmajor" : 5,
-                             "f#major" : 6,
-                             "gbmajor" : -6,
-                             "dbmajor" : -5,
-                             "abmajor" : -4,
-                             "ebmajor" : -3,
-                             "bbmajor" : -2,
-                             "fmajor" : -1,
-                            }
-        return amount_of_accidentals[self.Key]
+        amount_of_accidentals = {}
+        if self.Mode == 'Major' or self.Mode == 'Random key':
+            return self.Major_Accidentals[self.Tonic]
+        elif self.Mode == 'Minor':
+            return self.Minor_Accidentals[self.Tonic]
     
     def print_out(self):
        

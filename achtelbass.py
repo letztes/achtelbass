@@ -255,8 +255,11 @@ class Achtelbass(object):
     
     
     def glue_together(self):
-        # PMX allows only 20 key changes
-        remaining_key_changes = 20
+        # PMX allows only 20 key changes, which means that it crashes
+        # in  case more than 20 are set. However, with exactly  
+        # 20 key changes the general key will be set incorrect, with
+        # 19 key changes it works.
+        remaining_key_changes = 19 
         new_accidentals = 0 
         note_string = ''
 
@@ -391,7 +394,7 @@ Options are:
                   'changing_key' : False,
                   'intervals' : {},
                   'inversion' : False,
-                  'min_pitch' : 'c4',
+                  'min_pitch' : 'c3',
                   'max_pitch' : 'd5',
                   'rest_frequency' : 'no rests',
                   'time_signature' : '4/4',

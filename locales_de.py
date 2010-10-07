@@ -63,7 +63,7 @@ locales = {
             'Mode' : 'Tongeschlecht',
             'Major' : 'Dur',
             'Minor' : 'Moll',
-            'Random key' : 'Zufällige Tonart',
+            'Changing key' : 'Wechselnde Tonart',
 # Intervalle
             'Interval' : 'Intervall',
             'Intervals' : 'Intervalle',

@@ -36,6 +36,7 @@ class Gachtelbass(object):
         self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']
 # Parameters that will be passed to the actual achtelbass script
         default_parameters = {'tonic' : 'C',
+                            'changing_key' : False,
                             'mode' : 'Major',
                             'intervals' : {'Second' : True},
                             'inversion' : False,
@@ -135,6 +136,15 @@ class Gachtelbass(object):
         tonic_label.set_alignment(0, 0)
         tonic_vbox.pack_start(tonic_label, False, False, 2)
         tonic_vbox.pack_start(tonic_combo_box, False, False, 2)
+
+        # Changing key checkbox   
+        checkbutton = gtk.CheckButton(locales['Changing key'])
+        checkbutton.show()
+        tonic_vbox.pack_start(checkbutton, False, False, 2)
+        checkbutton.connect('toggled', self.set_changing_key)
+        if 'changing_key' in self.parameters:
+            checkbutton.set_active(True)
+
 
 # Mode VBox 
         
@@ -373,9 +383,6 @@ class Gachtelbass(object):
         cPickle.dump(self.parameters, file_object)
         file_object.close()
 
-    def load_configuration(self, widget, string):
-        pass
-
     def about_dialog(self, widget, event):
         about_dialog = gtk.AboutDialog()
         about_dialog.set_destroy_with_parent(True)
@@ -393,6 +400,12 @@ class Gachtelbass(object):
     def select_tonic(self, widget):
         self.parameters['tonic'] = locales_inverse[widget.get_active_text()]
         self.save_configuration()
+
+    def set_changing_key(self, widget):
+        if widget.get_active():
+            self.parameters['changing_key'] = True
+        else:
+            self.parameters['changing_key'] = False
 
     def select_mode(self, widget):
         self.parameters['mode'] = locales_inverse[widget.get_active_text()]

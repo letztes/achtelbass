@@ -134,7 +134,7 @@ class Achtelbass(object):
                             }
         self.Tonic = parameters['tonic']
         self.Mode = parameters['mode']
-        self.Random_Key = parameters['random_key']
+        self.Changing_Key = parameters['changing_key']
         #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
         self.Inversion = parameters['inversion']
@@ -271,7 +271,7 @@ class Achtelbass(object):
 # If random key, insert random key signature
 # But only when its the before last iteration, because in the last 
 # iteration the key change would be set after the last bar.
-                if self.Random_Key == True and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
+                if self.Changing_Key == True and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
                     if random.uniform(0, 1) < (20 / float(self.Amount_Of_Bars)):
                         new_accidentals = self.get_new_accidentals(new_accidentals, self.Pitches[j][0].upper())
                         new_accidentals = self.Major_Accidentals[self.Pitches[j][0].upper()]
@@ -352,7 +352,7 @@ Options are:
     -m, --mode=MODE
       default=Major
 
-    -k, --random_key
+    -k, --changing_key
     
     -i, --intervals=INTERVAL1 [--intervals=INTERVAL2...]
       default=Second
@@ -388,7 +388,7 @@ Options are:
 
     parameters = {'tonic' : 'C',
                   'mode' : 'Major',
-                  'random_key' : False,
+                  'changing_key' : False,
                   'intervals' : {},
                   'inversion' : False,
                   'min_pitch' : 'c4',
@@ -411,7 +411,7 @@ Options are:
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
                      't:m:ki:en:x:r:s:v:u:pf:',
-                     ['tonic=', 'mode=', 'random_key', 'intervals=',
+                     ['tonic=', 'mode=', 'changing_key', 'intervals=',
                       'inversion', 'min_pitch=', 'max_pitch=',
                       'rest_frequency=', 'time_signature=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
@@ -434,15 +434,15 @@ Options are:
                 exit()
 
         if opt in ('-m', '--mode'):
-            if arg in ('Major', 'Minor', 'Random key'):
+            if arg in ('Major', 'Minor', 'Changing key'):
                 parameters['mode'] = arg
             else:
                 print arg, 'is not a valid value for mode.'
                 print 'mode must be one of', 'Minor', 'Major'
                 exit()
 
-        if opt in ('-k', '--random_key'):
-            parameters['random_key'] = True
+        if opt in ('-k', '--changing_key'):
+            parameters['changing_key'] = True
 
         if opt in ('-i', '--intervals'):
             if arg in (intervals_opt):

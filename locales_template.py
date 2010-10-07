@@ -61,7 +61,7 @@ locales = {
             'Mode' : 'Mode',
             'Major' : 'Major',
             'Minor' : 'Minor',
-            'Random key' : 'Random key',
+            'Changing key' : 'Changing key',
 # Interval
             'Interval' : 'Interval',
             'Intervals' : 'Intervals',

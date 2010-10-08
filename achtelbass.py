@@ -196,6 +196,8 @@ class Achtelbass(object):
 
 
     def get_new_accidentals(self, old_accidentals, new_note_name):
+        old_accidentals = int(old_accidentals)
+        print old_accidentals.__class__, old_accidentals, new_note_name
         if self.Mode == 'Major':
             if old_accidentals == 1:
                 new_note_name = re.sub(r"([F])", "\g<1>#", new_note_name)
@@ -208,43 +210,72 @@ class Achtelbass(object):
                                        new_note_name)
             else:
                 if old_accidentals == 3:
-                    new_note_name = re.sub(r"([G])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                    print "3accidentals: new_note_name is", new_note_name
+                    if new_note_name == "G":
+                        new_note_name = "Ab"
+                    #new_note_name = re.sub(r"([G])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 4:
-                    new_note_name = re.sub(r"([GD])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                    print "4accidentals: new_note_name is", new_note_name
+                    if new_note_name in "G D".split():
+                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
+                    #new_note_name = re.sub(r"([GD])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 5:
-                    new_note_name = re.sub(r"([GDA])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                    print "5accidentals: new_note_name is", new_note_name
+                    if new_note_name in "G D A".split():
+                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
+                    #new_note_name = re.sub(r"([GDA])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 6:
-                    new_note_name = re.sub(r"([GDAE])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                    print "6accidentals: new_note_name is", new_note_name
+                    if  new_note_name in "G D A".split():
+                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
+                    elif new_note_name == "E":
+                        new_note_name = "F"
+                    #new_note_name = re.sub(r"([GDAE])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 7:
-                    new_note_name = re.sub(r"([GDAEB])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
+                    print "7accidentals: new_note_name is", new_note_name
+                    if  new_note_name in "G D A B".split():
+                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
+                    elif new_note_name == "E":
+                        new_note_name = "F"
+                    #new_note_name = re.sub(r"([GDAEB])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
 
             if old_accidentals == -7:
+                print "Yes, -7!"; exit()
                 if new_note_name == 'F':
-                    return 'E'
-                new_note_name = re.sub(r"([CGDAEB])",
-                                       "\g<1>b",
-                                       new_note_name)
+                    new_note_name = 'E'
+                else:
+                    new_note_name = new_note_name+"b"
+                    #new_note_name = re.sub(r"([CGDAEB])",
+                    #                       "\g<1>b",
+                    #                       new_note_name)
+
             if old_accidentals == -6:
+                print "Yes, -6!";
                 new_note_name = re.sub(r"([CGDAEB])",
                                        "\g<1>b",
                                        new_note_name)
             if old_accidentals == -5:
+                print "Yes, -5!";
                 new_note_name = re.sub(r"([GDAEB])",
                                        "\g<1>b",
                                        new_note_name)
             if old_accidentals == -4:
+                print "Yes, -4!";
                 new_note_name = re.sub(r"([DAEB])",
                                        "\g<1>b",
                                        new_note_name)
             if old_accidentals == -3:
+                print "Yes, -3!";
                 new_note_name = re.sub(r"([AEB])",
                                        "\g<1>b",
                                        new_note_name)
             if old_accidentals == -2:
+                print "Yes, -2!";
                 new_note_name = re.sub(r"([EB])",
                                        "\g<1>b",
                                        new_note_name)
             if old_accidentals == -1:
+                print "Yes, -1!";
                 new_note_name = re.sub(r"([B])",
                                        "\g<1>b",
                                        new_note_name)
@@ -277,6 +308,7 @@ class Achtelbass(object):
         j = 0 # separate iterator for pitches. 
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
+                print "next bar"
                 note_string += "/\n"
                 # If random key, insert random key signature
                 # But only when its the before last iteration, because in 

@@ -271,13 +271,14 @@ class Achtelbass(object):
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"
-# If random key, insert random key signature
-# But only when its the before last iteration, because in the last 
-# iteration the key change would be set after the last bar.
+                # If random key, insert random key signature
+                # But only when its the before last iteration, because in 
+                # the last iteration the key change would be set after the
+                # last bar.
                 if self.Changing_Key == True and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
                     if random.uniform(0, 1) < (20 / float(self.Amount_Of_Bars)):
                         new_accidentals = self.get_new_accidentals(new_accidentals, self.Pitches[j][0].upper())
-                        new_accidentals = self.Major_Accidentals[self.Pitches[j][0].upper()]
+                 #       new_accidentals = self.Major_Accidentals[self.Pitches[j][0].upper()]
                         note_string += 'K+0'+new_accidentals+' '
                         remaining_key_changes -= 1
 

@@ -10,7 +10,9 @@ class Pitches(object):
         self.Amount = amount
         self.Min_Pitch = min_pitch
         self.Max_Pitch = max_pitch
-        self.Tonic = tonic # Tonart
+# Because the accidentals will be set according to the actual tonic name,
+# we don't need the sharp or b in the tonic name here.
+        self.Tonic = tonic[0] # Tonart
         self.Intervals = intervals
         self.Inversion = inversion
         

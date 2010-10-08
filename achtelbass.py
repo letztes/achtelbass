@@ -252,6 +252,13 @@ class Achtelbass(object):
             return self.Major_Accidentals[new_note_name]
         else:
             print "At the time only Major supported. Sorry."; exit()
+
+    
+    def get_amount_of_accidentals(self):
+        if self.Mode == 'Major':
+            return self.Major_Accidentals[self.Tonic]
+        elif self.Mode == 'Minor':
+            return self.Minor_Accidentals[self.Tonic]
     
     
     def glue_together(self):
@@ -260,7 +267,7 @@ class Achtelbass(object):
         # 20 key changes the general key will be set incorrect, with
         # 19 key changes it works.
         remaining_key_changes = 19 
-        new_accidentals = 0 
+        new_accidentals = self.get_new_accidentals(0, self.Tonic)
         note_string = ''
 
         previous_pitch = self.Pitches[0]

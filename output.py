@@ -84,8 +84,7 @@ class Output(object):
         self.Titel = "Tt\n" + intervals_string + self.Min_Pitch + " - " + self.Max_Pitch # usw.
         
     def get_amount_of_accidentals(self):
-        amount_of_accidentals = {}
-        if self.Mode == 'Major' or self.Mode == 'Random key':
+        if self.Mode == 'Major':
             return self.Major_Accidentals[self.Tonic]
         elif self.Mode == 'Minor':
             return self.Minor_Accidentals[self.Tonic]

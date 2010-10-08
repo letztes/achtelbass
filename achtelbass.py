@@ -357,7 +357,7 @@ Options are:
 
     -k, --changing_key
     
-    -i, --intervals=INTERVAL1 [--intervals=INTERVAL2...]
+    -i, --interval=INTERVAL1 [--interval=INTERVAL2...]
       default=Second
     
     -e, --inversion
@@ -414,7 +414,7 @@ Options are:
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
                      't:m:ki:en:x:r:s:v:u:pf:',
-                     ['tonic=', 'mode=', 'changing_key', 'intervals=',
+                     ['tonic=', 'mode=', 'changing_key', 'interval=',
                       'inversion', 'min_pitch=', 'max_pitch=',
                       'rest_frequency=', 'time_signature=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
@@ -447,11 +447,11 @@ Options are:
         if opt in ('-k', '--changing_key'):
             parameters['changing_key'] = True
 
-        if opt in ('-i', '--intervals'):
+        if opt in ('-i', '--interval'):
             if arg in (intervals_opt):
                 parameters['intervals'][arg] = True
             else:
-                print arg, 'is not a valid value for intervals.'
+                print arg, 'is not a valid value for interval.'
                 print 'interval must be one of', str(intervals_opt[1:-1])
                 exit()
 

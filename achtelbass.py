@@ -181,15 +181,19 @@ class Achtelbass(object):
         
         return new_note_values.Result
     
-    def get_pitches(self):
+    def get_pitches(self, current_tonic=""):
+# current_tonic is only needed when key is changed and new tonic occurs
         amount = len(self.Note_Values)
         for note_value in self.Note_Values:
             if isinstance(note_value, str) and note_value.count('x'):
                 tuplet_value = note_value[2:len(note_value)]
                 amount += int(tuplet_value)
 
+        if not current_tonic:
+            current_tonic = self.Tonic
+
         new_pitches = pitches.Pitches(amount, self.Min_Pitch,
-                                      self.Max_Pitch, self.Tonic,
+                                      self.Max_Pitch, current_tonic,
                                       self.Intervals, self.Inversion)
         
         return new_pitches.easy()
@@ -261,6 +265,7 @@ class Achtelbass(object):
                                       new_note_name[0],
                                       self.Intervals, self.Inversion)
             self.Pitches = new_pitches.easy()
+            self.Pitches = self.get_pitches(new_note_name[0])
             print "####################"
             print self.Pitches
             return self.Major_Accidentals[new_note_name]

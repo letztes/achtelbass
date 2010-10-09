@@ -197,7 +197,6 @@ class Achtelbass(object):
 
     def get_new_accidentals(self, old_accidentals, new_note_name):
         old_accidentals = int(old_accidentals)
-        print old_accidentals.__class__, old_accidentals, new_note_name
         if self.Mode == 'Major':
             if old_accidentals == 1:
                 if new_note_name == 'F':
@@ -254,18 +253,20 @@ class Achtelbass(object):
             if old_accidentals == -1:
                 if new_note_name == "B":
                     new_note_name = "Bb"
-
+            
+            print self.Pitches
+            new_pitches = pitches.Pitches(len(self.Note_Values),
+                                      self.Min_Pitch,
+                                      self.Max_Pitch,
+                                      new_note_name[0],
+                                      self.Intervals, self.Inversion)
+            self.Pitches = new_pitches.easy()
+            print "####################"
+            print self.Pitches
             return self.Major_Accidentals[new_note_name]
         else:
             print "At the time only Major supported. Sorry."; exit()
 
-    
-    def get_amount_of_accidentals(self):
-        if self.Mode == 'Major':
-            return self.Major_Accidentals[self.Tonic]
-        elif self.Mode == 'Minor':
-            return self.Minor_Accidentals[self.Tonic]
-    
     
     def glue_together(self):
         # PMX allows only 20 key changes, which means that it crashes
@@ -283,7 +284,6 @@ class Achtelbass(object):
         j = 0 # separate iterator for pitches. 
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
-                print "next bar"
                 note_string += "/\n"
                 # If random key, insert random key signature
                 # But only when its the before last iteration, because in 
@@ -294,6 +294,11 @@ class Achtelbass(object):
                         new_accidentals = self.get_new_accidentals(new_accidentals, self.Pitches[j][0].upper())
                         note_string += 'K+0'+new_accidentals+' '
                         remaining_key_changes -= 1
+# j is reset to zero because in the method get_new_accidentals self.Pitches
+# are calculated new with the current new_note as the tonic for the new
+# key. It would be better if the resetting of the tonic and the enharmonic
+# swapping of it were explicitly here.
+                        j = 0
 
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole

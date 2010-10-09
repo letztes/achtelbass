@@ -200,85 +200,60 @@ class Achtelbass(object):
         print old_accidentals.__class__, old_accidentals, new_note_name
         if self.Mode == 'Major':
             if old_accidentals == 1:
-                new_note_name = re.sub(r"([F])", "\g<1>#", new_note_name)
+                if new_note_name == 'F':
+                    new_note_name = 'F#'
 # F or C are augmented by a half tone in each of the keys with at least
 # 2 Sharp-Accidentals. That is why the "if old_accidentals == 2" is
 # skipped.
             if old_accidentals > 1 and new_note_name in ["F", "C"]:
-                new_note_name = re.sub(r"([FC])",
-                                       "\g<1>#",
-                                       new_note_name)
+                if new_note_name in "F C".split():
+                    new_note_name = new_note_name + '#'
             else:
                 if old_accidentals == 3:
-                    print "3accidentals: new_note_name is", new_note_name
                     if new_note_name == "G":
                         new_note_name = "Ab"
-                    #new_note_name = re.sub(r"([G])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 4:
-                    print "4accidentals: new_note_name is", new_note_name
                     if new_note_name in "G D".split():
                         new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                    #new_note_name = re.sub(r"([GD])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 5:
-                    print "5accidentals: new_note_name is", new_note_name
                     if new_note_name in "G D A".split():
                         new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                    #new_note_name = re.sub(r"([GDA])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 6:
-                    print "6accidentals: new_note_name is", new_note_name
                     if  new_note_name in "G D A".split():
                         new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
                     elif new_note_name == "E":
                         new_note_name = "F"
-                    #new_note_name = re.sub(r"([GDAE])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
                 if old_accidentals == 7:
-                    print "7accidentals: new_note_name is", new_note_name
                     if  new_note_name in "G D A B".split():
                         new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
                     elif new_note_name == "E":
                         new_note_name = "F"
-                    #new_note_name = re.sub(r"([GDAEB])", self.Diatonic_Notes[self.Diatonic_Notes.index("\g<1>")+1]+"b", new_note_name)
 
             if old_accidentals == -7:
-                print "Yes, -7!"; exit()
                 if new_note_name == 'F':
                     new_note_name = 'E'
                 else:
                     new_note_name = new_note_name+"b"
-                    #new_note_name = re.sub(r"([CGDAEB])",
-                    #                       "\g<1>b",
-                    #                       new_note_name)
-
             if old_accidentals == -6:
-                print "Yes, -6!";
-                new_note_name = re.sub(r"([CGDAEB])",
-                                       "\g<1>b",
-                                       new_note_name)
+                if new_note_name == "C":
+                    new_note_name = "B"
+                if new_note_name in "G A B D E".split():
+                    new_note_name = new_note_name+"b"
             if old_accidentals == -5:
-                print "Yes, -5!";
-                new_note_name = re.sub(r"([GDAEB])",
-                                       "\g<1>b",
-                                       new_note_name)
+                if new_note_name in "G A B D E".split():
+                    new_note_name = new_note_name+"b"
             if old_accidentals == -4:
-                print "Yes, -4!";
-                new_note_name = re.sub(r"([DAEB])",
-                                       "\g<1>b",
-                                       new_note_name)
+                if new_note_name in "A B D E".split():
+                    new_note_name = new_note_name+"b"
             if old_accidentals == -3:
-                print "Yes, -3!";
-                new_note_name = re.sub(r"([AEB])",
-                                       "\g<1>b",
-                                       new_note_name)
+                if new_note_name in "A B E".split():
+                    new_note_name = new_note_name+"b"
             if old_accidentals == -2:
-                print "Yes, -2!";
-                new_note_name = re.sub(r"([EB])",
-                                       "\g<1>b",
-                                       new_note_name)
+                if new_note_name in "B E".split():
+                    new_note_name = new_note_name+"b"
             if old_accidentals == -1:
-                print "Yes, -1!";
-                new_note_name = re.sub(r"([B])",
-                                       "\g<1>b",
-                                       new_note_name)
+                if new_note_name == "B":
+                    new_note_name = "Bb"
 
             return self.Major_Accidentals[new_note_name]
         else:
@@ -317,7 +292,6 @@ class Achtelbass(object):
                 if self.Changing_Key == True and remaining_key_changes > 0 and i < len(self.Note_Values)-2:
                     if random.uniform(0, 1) < (20 / float(self.Amount_Of_Bars)):
                         new_accidentals = self.get_new_accidentals(new_accidentals, self.Pitches[j][0].upper())
-                 #       new_accidentals = self.Major_Accidentals[self.Pitches[j][0].upper()]
                         note_string += 'K+0'+new_accidentals+' '
                         remaining_key_changes -= 1
 

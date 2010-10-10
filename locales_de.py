@@ -105,6 +105,11 @@ locales = {
             'Generate' : '_Generieren',
             'Warning' : 'Warnung',
             'OK' : 'OK',
+# Other parameters
+            'Other parameters' : 'Andere parameter',
+            'Accents' : 'Akzente',
+            'Anacrusis' : 'Auftakt',
+            'Dots and ties' : 'Punkte und Bindebögen',
 # Warnungsmeldung
 # %s sind Platzhalter für Intervall, tiefster Ton und höchster Ton
             'Interval too big' : "Interval %s passt nicht zwischen %s und %s. Wählen Sie entweder ein kleineres Intervall oder eine größere Spanne zwischen tiefstem Ton und höchstem Ton.", 

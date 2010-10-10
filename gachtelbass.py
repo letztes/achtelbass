@@ -355,6 +355,30 @@ class Gachtelbass(object):
         tuplet_frequency_vbox.pack_start(tuplet_frequency_label, False, False, 2)
         tuplet_frequency_vbox.pack_start(tuplet_frequency_combo_box, False, False, 2)
 
+# Other widgets like anacrusis checkbox VBox
+
+        others_vbox = gtk.VBox(False, 0)
+        others_vbox.show()
+        parameters_hbox.pack_start(others_vbox, False, False, 2)
+
+        others_label = gtk.Label(locales['Other parameters'])
+        others_label.show()
+        others_label.set_alignment(0, 0)
+        others_vbox.pack_start(others_label, False, False, 2)
+
+        accents_checkbutton = gtk.CheckButton(locales['Accents'])
+        accents_checkbutton.show()
+        others_vbox.pack_start(accents_checkbutton, False, False, 2)
+
+        dots_and_ties_checkbutton = gtk.CheckButton(locales['Dots and ties'])
+        dots_and_ties_checkbutton.show()
+        others_vbox.pack_start(dots_and_ties_checkbutton, False, False, 2)
+
+        anacrusis_checkbutton = gtk.CheckButton(locales['Anacrusis'])
+        anacrusis_checkbutton.show()
+        others_vbox.pack_start(anacrusis_checkbutton, False, False, 2)
+
+
 # The submit button
         submit_box = gtk.HBox(False, 0)
         submit_box.show()

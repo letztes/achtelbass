@@ -130,7 +130,8 @@ class Gachtelbass(object):
         # hbox_2 contains rather exotic elements like tuplets, anacrusis,
         # bows etc. They are optional.
         self.parameters_hbox_2 = gtk.HBox(False, 0)
-        self.parameters_hbox_2.show()
+        if self.parameters['show_advanced_settings']:
+            self.parameters_hbox_2.show()
         main_vbox.pack_start(self.parameters_hbox_2, False, False, 5)
 
         # hline separates hbox_2 from the submit button

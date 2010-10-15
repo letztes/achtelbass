@@ -127,6 +127,16 @@ class Gachtelbass(object):
         hline.show()
         main_vbox.pack_start(hline, False, False, 5)
         
+# The "show advanced settings" checkbox
+        checkbox = gtk.CheckButton(locales["Show advanced settings"])
+        checkbox.show()
+        checkbox.connect("toggled", self.show_advanced_settings)
+        if self.parameters['show_advanced_settings'] == True:
+            checkbox.set_active(True)
+
+
+        main_vbox.pack_start(checkbox, False, False, 0)
+
         # hbox_2 contains rather exotic elements like tuplets, anacrusis,
         # bows etc. They are optional.
         self.parameters_hbox_2 = gtk.HBox(False, 0)
@@ -400,16 +410,6 @@ class Gachtelbass(object):
         anacrusis_checkbutton = gtk.CheckButton(locales['Anacrusis'])
         anacrusis_checkbutton.show()
         others_vbox.pack_start(anacrusis_checkbutton, False, False, 2)
-
-# The "show advanced settings" checkbox
-        checkbox = gtk.CheckButton(locales["Show advanced settings"])
-        checkbox.show()
-        checkbox.connect("toggled", self.show_advanced_settings)
-        if self.parameters['show_advanced_settings'] == True:
-            checkbox.set_active(True)
-
-
-        main_vbox.pack_start(checkbox, False, False, 0)
 
 
 # The submit button

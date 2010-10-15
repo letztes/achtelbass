@@ -48,6 +48,7 @@ class Gachtelbass(object):
                             'tuplets' : 'no tuplets',
                             'tuplet_same_pitch' : False,
                             'tuplets_frequency' : 'no tuplets',
+                            'show_advanced_settings' : False,
                            }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,
@@ -128,9 +129,9 @@ class Gachtelbass(object):
         
         # hbox_2 contains rather exotic elements like tuplets, anacrusis,
         # bows etc. They are optional.
-        parameters_hbox_2 = gtk.HBox(False, 0)
-        parameters_hbox_2.show()
-        main_vbox.pack_start(parameters_hbox_2, False, False, 5)
+        self.parameters_hbox_2 = gtk.HBox(False, 0)
+        self.parameters_hbox_2.show()
+        main_vbox.pack_start(self.parameters_hbox_2, False, False, 5)
 
         # hline separates hbox_2 from the submit button
         hline = gtk.HSeparator()
@@ -301,13 +302,13 @@ class Gachtelbass(object):
             if note_value in self.parameters['note_values'].keys():
                 checkbutton.set_active(True)
 
-# Here begins the content of parameters_hbox_2
+# Here begins the content of self.parameters_hbox_2
 
 # Rest frequency VBox
         
         rest_frequency_vbox = gtk.VBox(False, 0)
         rest_frequency_vbox.show()
-        parameters_hbox_2.pack_start(rest_frequency_vbox, False, False, 2)
+        self.parameters_hbox_2.pack_start(rest_frequency_vbox, False, False, 2)
 
         rest_frequency_label = gtk.Label(locales['Rest frequency'])
         rest_frequency_label.show()
@@ -329,7 +330,7 @@ class Gachtelbass(object):
         
         tuplet_vbox = gtk.VBox(False, 0)
         tuplet_vbox.show()
-        parameters_hbox_2.pack_start(tuplet_vbox, False, False, 2)
+        self.parameters_hbox_2.pack_start(tuplet_vbox, False, False, 2)
 
         tuplet_label = gtk.Label(locales['Tuplets'])
         tuplet_label.show()
@@ -359,7 +360,7 @@ class Gachtelbass(object):
         
         tuplet_frequency_vbox = gtk.VBox(False, 0)
         tuplet_frequency_vbox.show()
-        parameters_hbox_2.pack_start(tuplet_frequency_vbox, False, False, 2)
+        self.parameters_hbox_2.pack_start(tuplet_frequency_vbox, False, False, 2)
 
         tuplet_frequency_label = gtk.Label(locales['Tuplet frequency'])
         tuplet_frequency_label.show()
@@ -380,7 +381,7 @@ class Gachtelbass(object):
 
         others_vbox = gtk.VBox(False, 0)
         others_vbox.show()
-        parameters_hbox_2.pack_start(others_vbox, False, False, 2)
+        self.parameters_hbox_2.pack_start(others_vbox, False, False, 2)
 
         others_label = gtk.Label(locales['Other parameters'])
         others_label.show()
@@ -399,6 +400,16 @@ class Gachtelbass(object):
         anacrusis_checkbutton.show()
         others_vbox.pack_start(anacrusis_checkbutton, False, False, 2)
 
+# The "show advanced settings" checkbox
+        checkbox = gtk.CheckButton(locales["Show advanced settings"])
+        checkbox.show()
+        checkbox.connect("toggled", self.show_advanced_settings)
+        if self.parameters['show_advanced_settings'] == True:
+            checkbox.set_active(True)
+
+
+        main_vbox.pack_start(checkbox, False, False, 0)
+
 
 # The submit button
         submit_box = gtk.HBox(False, 0)
@@ -409,6 +420,8 @@ class Gachtelbass(object):
         submit_button.show()
         submit_button.connect("clicked", self.execute_achtelbass)
         submit_box.pack_start(submit_button, True, False, 0)
+
+# From here come the callback methods
 
     def warning_dialog(self, string):
         dialog = gtk.MessageDialog(self.main_window,
@@ -477,6 +490,15 @@ class Gachtelbass(object):
                     self.parameters['intervals'][interval] = True
                     widget.set_active(True)
 
+        self.save_configuration()
+
+    def show_advanced_settings(self, widget):
+        if widget.get_active():
+            self.parameters['show_advanced_settings'] = True
+            self.parameters_hbox_2.show()
+        else:
+            self.parameters['show_advanced_settings'] = False
+            self.parameters_hbox_2.hide()
         self.save_configuration()
 
 

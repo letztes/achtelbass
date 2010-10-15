@@ -103,6 +103,8 @@ locales = {
             '0.8' : '80 %',
             '0.9' : '90 %',
             '1' : '100 %',
+# General stuff
+            'Show advanced settings' : 'Show advanced settings', 
             'Generate' : '_Generate',
             'Warning' : 'Warning',
             'OK' : 'OK',

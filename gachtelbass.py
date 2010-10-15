@@ -115,14 +115,33 @@ class Gachtelbass(object):
 
 # The actual content of achtelbass programm user interface
 # Nested VBoxes are used, so that the title of the widget is displayed above
-        parameters_hbox = gtk.HBox(False, 0)
-        parameters_hbox.show()
-        main_vbox.pack_start(parameters_hbox, False, False, 5)
+        # hbox_1 contains mandatory elements like tonic, note value,
+        # intervals etc.
+        parameters_hbox_1 = gtk.HBox(False, 0)
+        parameters_hbox_1.show()
+        main_vbox.pack_start(parameters_hbox_1, False, False, 5)
+        
+        # hline separates hbox_1 from hbox_2
+        hline = gtk.HSeparator()
+        hline.show()
+        main_vbox.pack_start(hline, False, False, 5)
+        
+        # hbox_2 contains rather exotic elements like tuplets, anacrusis,
+        # bows etc. They are optional.
+        parameters_hbox_2 = gtk.HBox(False, 0)
+        parameters_hbox_2.show()
+        main_vbox.pack_start(parameters_hbox_2, False, False, 5)
+
+        # hline separates hbox_2 from the submit button
+        hline = gtk.HSeparator()
+        hline.show()
+        main_vbox.pack_start(hline, False, False, 5)
+        
 
 # Tonic is the first nested VBox
         tonic_vbox = gtk.VBox(False, 0)
         tonic_vbox.show()
-        parameters_hbox.pack_start(tonic_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(tonic_vbox, False, False, 2)
 
         tonic_combo_box = gtk.combo_box_new_text()
         tonic_combo_box.show()
@@ -150,7 +169,7 @@ class Gachtelbass(object):
         
         mode_vbox = gtk.VBox(False, 0)
         mode_vbox.show()
-        parameters_hbox.pack_start(mode_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(mode_vbox, False, False, 2)
 
         mode_combo_box = gtk.combo_box_new_text()
         mode_combo_box.show()
@@ -170,7 +189,7 @@ class Gachtelbass(object):
 
         intervals_vbox = gtk.VBox(False, 0)
         intervals_vbox.show()
-        parameters_hbox.pack_start(intervals_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(intervals_vbox, False, False, 2)
 
         intervals_label = gtk.Label(locales['Intervals'])
         intervals_label.show()
@@ -199,7 +218,7 @@ class Gachtelbass(object):
 
         min_pitch_vbox = gtk.VBox(False, 0)
         min_pitch_vbox.show()
-        parameters_hbox.pack_start(min_pitch_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(min_pitch_vbox, False, False, 2)
 
         min_pitch_label = gtk.Label(locales['Min pitch'])
         min_pitch_label.show()
@@ -221,7 +240,7 @@ class Gachtelbass(object):
 
         max_pitch_vbox = gtk.VBox(False, 0)
         max_pitch_vbox.show()
-        parameters_hbox.pack_start(max_pitch_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(max_pitch_vbox, False, False, 2)
 
         max_pitch_label = gtk.Label(locales['Max pitch'])
         max_pitch_label.show()
@@ -239,32 +258,11 @@ class Gachtelbass(object):
         max_pitch_vbox.pack_start(max_pitch_label, False, False, 2)
         max_pitch_vbox.pack_start(max_pitch_combo_box, False, False, 2)
 
-# Rest frequency VBox
-        
-        rest_frequency_vbox = gtk.VBox(False, 0)
-        rest_frequency_vbox.show()
-        parameters_hbox.pack_start(rest_frequency_vbox, False, False, 2)
-
-        rest_frequency_label = gtk.Label(locales['Rest frequency'])
-        rest_frequency_label.show()
-        rest_frequency_label.set_alignment(0, 0)
-
-        rest_frequency_combo_box = gtk.combo_box_new_text()
-        rest_frequency_combo_box.show()
-        for rest_frequency in self.Rest_Frequencies:
-            rest_frequency_combo_box.append_text(locales[rest_frequency])
-
-        rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
-        rest_frequency_combo_box.set_active(self.Rest_Frequencies.index(self.parameters['rest_frequency']))
-
-        rest_frequency_vbox.pack_start(rest_frequency_label, False, False, 2)
-        rest_frequency_vbox.pack_start(rest_frequency_combo_box, False, False, 2)
-
 # Time signature VBox
         
         time_signature_vbox = gtk.VBox(False, 0)
         time_signature_vbox.show()
-        parameters_hbox.pack_start(time_signature_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(time_signature_vbox, False, False, 2)
 
         time_signature_label = gtk.Label(locales['Time signature'])
         time_signature_label.show()
@@ -285,7 +283,7 @@ class Gachtelbass(object):
         
         note_value_vbox = gtk.VBox(False, 0)
         note_value_vbox.show()
-        parameters_hbox.pack_start(note_value_vbox, False, False, 2)
+        parameters_hbox_1.pack_start(note_value_vbox, False, False, 2)
 
         note_value_label = gtk.Label(locales['Note values'])
         note_value_label.show()
@@ -303,12 +301,35 @@ class Gachtelbass(object):
             if note_value in self.parameters['note_values'].keys():
                 checkbutton.set_active(True)
 
+# Here begins the content of parameters_hbox_2
+
+# Rest frequency VBox
+        
+        rest_frequency_vbox = gtk.VBox(False, 0)
+        rest_frequency_vbox.show()
+        parameters_hbox_2.pack_start(rest_frequency_vbox, False, False, 2)
+
+        rest_frequency_label = gtk.Label(locales['Rest frequency'])
+        rest_frequency_label.show()
+        rest_frequency_label.set_alignment(0, 0)
+
+        rest_frequency_combo_box = gtk.combo_box_new_text()
+        rest_frequency_combo_box.show()
+        for rest_frequency in self.Rest_Frequencies:
+            rest_frequency_combo_box.append_text(locales[rest_frequency])
+
+        rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
+        rest_frequency_combo_box.set_active(self.Rest_Frequencies.index(self.parameters['rest_frequency']))
+
+        rest_frequency_vbox.pack_start(rest_frequency_label, False, False, 2)
+        rest_frequency_vbox.pack_start(rest_frequency_combo_box, False, False, 2)
+
 
 # Tuplet VBox
         
         tuplet_vbox = gtk.VBox(False, 0)
         tuplet_vbox.show()
-        parameters_hbox.pack_start(tuplet_vbox, False, False, 2)
+        parameters_hbox_2.pack_start(tuplet_vbox, False, False, 2)
 
         tuplet_label = gtk.Label(locales['Tuplets'])
         tuplet_label.show()
@@ -338,7 +359,7 @@ class Gachtelbass(object):
         
         tuplet_frequency_vbox = gtk.VBox(False, 0)
         tuplet_frequency_vbox.show()
-        parameters_hbox.pack_start(tuplet_frequency_vbox, False, False, 2)
+        parameters_hbox_2.pack_start(tuplet_frequency_vbox, False, False, 2)
 
         tuplet_frequency_label = gtk.Label(locales['Tuplet frequency'])
         tuplet_frequency_label.show()
@@ -359,7 +380,7 @@ class Gachtelbass(object):
 
         others_vbox = gtk.VBox(False, 0)
         others_vbox.show()
-        parameters_hbox.pack_start(others_vbox, False, False, 2)
+        parameters_hbox_2.pack_start(others_vbox, False, False, 2)
 
         others_label = gtk.Label(locales['Other parameters'])
         others_label.show()

@@ -28,7 +28,7 @@ class Gachtelbass(object):
         self.Tonics = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F']
         self.Modes = ['Major', 'Minor']
         self.Intervals = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
-        self.Pitches = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        self.Pitches = ["b5", "a5", "g5", "f5", "e5", "d5", "c5", "b4", "a4", "g4", "f4", "e4", "d4", "c4", "b3", "a3", "g3", "f3", "e3", "d3", "c3", "b2", "a2", "g2", "f2", "e2", "d2", "c2", "b1", "a1", "g1", "f1", "e1", "d1", "c1"]
         self.Rest_Frequencies = ['no rests', '0.1', '0.2', '0.3', '0.4', '0.5']
         self.Time_Signatures = ['2/2', '3/4', '4/4']
         self.Note_Values = ["1", "1/2", "1/4", "1/8", "1/16", "1/32"]

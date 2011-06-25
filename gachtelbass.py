@@ -142,7 +142,7 @@ class Gachtelbass(object):
         checkbutton.show()
         tonic_vbox.pack_start(checkbutton, False, False, 2)
         checkbutton.connect('toggled', self.set_changing_key)
-        if 'changing_key' in self.parameters:
+        if self.parameters['changing_key'] == True:
             checkbutton.set_active(True)
 
 
@@ -406,6 +406,7 @@ class Gachtelbass(object):
             self.parameters['changing_key'] = True
         else:
             self.parameters['changing_key'] = False
+        self.save_configuration()
 
     def select_mode(self, widget):
         self.parameters['mode'] = locales_inverse[widget.get_active_text()]

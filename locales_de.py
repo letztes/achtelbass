@@ -81,6 +81,7 @@ locales = {
             'no rests' : 'keine Pausen',
             'Time signature' : 'Taktart',
             'Note values' : 'Notenwert',
+# Multiolen
             'Tuplets' : 'n-Tolen',
             'Same pitch in tuplet' : 'Gesamte n-Tole auf einer Tonhöhe',
             'no tuplets' : 'keine n-Tolen',
@@ -91,6 +92,8 @@ locales = {
             '6' : '6',
             '7' : '7',
             'Tuplet frequency' : 'Anteil der n-Tolen',
+# Akkorde
+            'Chords' : 'Akkorde',
 # Anteilwerte
             '0.1' : '10 %',
             '0.2' : '20 %',

@@ -137,12 +137,14 @@ class Achtelbass(object):
         self.Changing_Key = parameters['changing_key']
         #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
+        self.Chords = parameters['chords'] # boolean
         self.Inversion = parameters['inversion']
         self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1",
                       "c2", "d2", "e2", "f2", "g2", "a2", "b2",
                       "c3", "d3", "e3", "f3", "g3", "a3", "b3",
                       "c4", "d4", "e4", "f4", "g4", "a4", "b4",
                       "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        self.Note_Letters = ["c", "d", "e", "f", "g", "a", "b"]
         self.Min_Pitch = parameters['min_pitch']
         self.Max_Pitch = parameters['max_pitch']
 #if max_pitch is lower than min_pitch, swap them
@@ -328,6 +330,8 @@ class Achtelbass(object):
                         note_string += 'r'+str(self.Note_Values[i]) + ' '
                     else:
                         note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
+                        if self.Chords == True:
+                            note_string += 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' ' # works, but not needed for bass.
                         j += 1
                 
                 # Clef change
@@ -381,6 +385,8 @@ Options are:
 
     -k, --changing_key
     
+    -c, --chords
+    
     -i, --interval=INTERVAL1 [--interval=INTERVAL2...]
       default=Second
     
@@ -412,10 +418,11 @@ Options are:
      --help  print this message and exit
      --version print version information and exit"""
    
-
+    # Definition of default parameters
     parameters = {'tonic' : 'C',
                   'mode' : 'Major',
                   'changing_key' : False,
+                  'chords' : False,
                   'intervals' : {},
                   'inversion' : False,
                   'min_pitch' : 'c3',
@@ -438,7 +445,7 @@ Options are:
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
                      't:m:ki:en:x:r:s:v:u:pf:',
-                     ['tonic=', 'mode=', 'changing_key', 'interval=',
+                     ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=',
                       'inversion', 'min_pitch=', 'max_pitch=',
                       'rest_frequency=', 'time_signature=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
@@ -470,6 +477,11 @@ Options are:
 
         if opt in ('-k', '--changing_key'):
             parameters['changing_key'] = True
+
+        if opt in ('-c', '--chords'):
+            parameters['chords'] = True
+            
+            
 
         if opt in ('-i', '--interval'):
             if arg in (intervals_opt):

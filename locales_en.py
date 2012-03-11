@@ -92,6 +92,8 @@ locales = {
             '6' : '6',
             '7' : '7',
             'Tuplet frequency' : 'Tuplet frequency',
+# Chords
+            'Chords' : 'Chords',
 # Frequency values
             '0.1' : '10 %',
             '0.2' : '20 %',

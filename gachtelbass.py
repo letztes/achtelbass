@@ -49,6 +49,7 @@ class Gachtelbass(object):
                             'tuplet_same_pitch' : False,
                             'tuplets_frequency' : 'no tuplets',
                             'show_advanced_settings' : False,
+                            'chords': False,
                            }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,
@@ -387,6 +388,27 @@ class Gachtelbass(object):
 
         tuplet_frequency_vbox.pack_start(tuplet_frequency_label, False, False, 2)
         tuplet_frequency_vbox.pack_start(tuplet_frequency_combo_box, False, False, 2)
+        
+# Chords Checkbox
+# VBox may be expanded in a future version to a list of dropdown lists 
+# for frequencies of m7, m9, m7b9#11, etc chords
+        
+        chords_vbox = gtk.VBox(False, 0)
+        chords_vbox.show()
+        self.parameters_hbox_2.pack_start(chords_vbox, False, False, 2)
+        
+        #TODO locales! for chords
+        chords_label = gtk.Label(locales['Chords'])
+        chords_label.show()
+        chords_label.set_alignment(0, 0)
+        chords_vbox.pack_start(chords_label, False, False, 2)
+        
+        chords_checkbutton = gtk.CheckButton(locales['Chords'])
+        chords_checkbutton.show()
+        chords_vbox.pack_start(chords_checkbutton, False, False, 2)
+        chords_checkbutton.connect('toggled', self.set_chords)
+        if self.parameters['chords'] == True:
+            chords_checkbutton.set_active(True)
 
 # Other widgets like anacrusis checkbox VBox
 
@@ -465,6 +487,13 @@ class Gachtelbass(object):
             self.parameters['changing_key'] = True
         else:
             self.parameters['changing_key'] = False
+        self.save_configuration()
+        
+    def set_chords(self, widget):
+        if widget.get_active():
+            self.parameters['chords'] = True
+        else:
+            self.parameters['chords'] = False
         self.save_configuration()
 
     def select_mode(self, widget):

@@ -200,79 +200,82 @@ class Achtelbass(object):
         
         return new_pitches.easy()
 
-
-    def get_new_accidentals(self, old_accidentals, new_note_name):
+    def get_new_accidentals(self, old_accidentals, old_note_name):
+#        print "old accidentals: " + old_accidentals
         old_accidentals = int(old_accidentals)
-        if old_accidentals == 1:
-            if new_note_name == 'F':
-                new_note_name = 'F#'
-# F or C are augmented by a half tone in each of the keys with at least
-# 2 Sharp-Accidentals. That is why the "if old_accidentals == 2" is
-# skipped.
-        if old_accidentals > 1 and new_note_name in ["F", "C"]:
-            if new_note_name in "F C".split():
-                new_note_name = new_note_name + '#'
-        else:
-            if old_accidentals == 3:
-                if new_note_name == "G":
-                    new_note_name = "Ab"
-            if old_accidentals == 4:
-                if new_note_name in "G D".split():
-                    new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-            if old_accidentals == 5:
-                if new_note_name in "G D A".split():
-                    new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-            if old_accidentals == 6:
-                if  new_note_name in "G D A".split():
-                    new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                elif new_note_name == "E":
-                    new_note_name = "F"
-            if old_accidentals == 7:
-                if  new_note_name in "G D A B".split():
-                    new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                elif new_note_name == "E":
-                    new_note_name = "F"
-
-        if old_accidentals == -7:
-            if new_note_name == 'F':
-                new_note_name = 'E'
-            else:
-                new_note_name = new_note_name+"b"
-        if old_accidentals == -6:
-            if new_note_name == "C":
-                new_note_name = "B"
-            if new_note_name in "G A B D E".split():
-                new_note_name = new_note_name+"b"
-        if old_accidentals == -5:
-            if new_note_name in "G A B D E".split():
-                new_note_name = new_note_name+"b"
-        if old_accidentals == -4:
-            if new_note_name in "A B D E".split():
-                new_note_name = new_note_name+"b"
-        if old_accidentals == -3:
-            if new_note_name in "A B E".split():
-                new_note_name = new_note_name+"b"
-        if old_accidentals == -2:
-            if new_note_name in "B E".split():
-                new_note_name = new_note_name+"b"
-        if old_accidentals == -1:
-            if new_note_name == "B":
-                new_note_name = "Bb"
-
+        new_tonic = old_note_name # default in case no alternation possible
+        if self.Mode == 'Major':
+            if old_accidentals < 0:
+                if old_accidentals <= -7:
+                    if old_note_name == 'B':
+                        new_tonic = 'Bb'
+                if old_accidentals <= -6:
+                    if old_note_name == "C":
+                        new_tonic = "B"
+                if old_accidentals <= -5:
+                    if old_note_name == "G":
+                        new_tonic = "F#"
+                if old_accidentals <= -4:
+                    if old_note_name == "D":
+                        new_tonic = "C#"
+                if old_accidentals <= -3:
+                    if old_note_name == "A":
+                        new_tonic = "Ab"
+                if old_accidentals <= -2:
+                    if old_note_name == "E":
+                        new_tonic = "Eb"
+                if old_accidentals == -1:
+                    if old_note_name == "B":
+                        new_tonic = "Bb"
+                # in each case
+                if old_note_name == "F":
+                    new_tonic = "F"
+                        
+            if old_accidentals >= 0:
+                if old_accidentals >= 0:
+                    if old_note_name == 'B':
+                        new_tonic = 'Cb'
+                if old_accidentals >= 1:
+                    if old_note_name == 'F':
+                        new_tonic = 'Gb'
+                if old_accidentals >= 2:
+                    if old_note_name == 'C':
+                        new_tonic = 'Db'
+                if old_accidentals >= 3:
+                    if old_note_name == 'G':
+                        new_tonic = 'Ab'
+                if old_accidentals >= 4:
+                    if old_note_name == 'D':
+                        new_tonic = 'Eb'
+                if old_accidentals >= 5:
+                    if old_note_name == 'A':
+                        new_tonic = 'Bb'
+                if old_accidentals >= 6:
+                    if old_note_name == 'E':
+                        new_tonic = 'F'
+                if old_accidentals == 7:
+                    if old_note_name == 'B':
+                        new_tonic = 'C'
+                        
+#TODO Das gleiche nochmal für Moll.
+                        
+#            print "mode: " + self.Mode            
+#            print "old_note_name:   " + old_note_name
+#            print "new_tonic:       " + new_tonic
 # Initially the algorithm was not intented to calculate the pitches
 # in every bar, but whenever the key changes from # to b and vice versa,
 # the names of the notes change. So it becomes necessary.
         new_pitches = pitches.Pitches(len(self.Note_Values),
                                   self.Min_Pitch,
                                   self.Max_Pitch,
-                                  new_note_name[0],
+                                  new_tonic[0],
                                   self.Intervals, self.Inversion)
         self.Pitches = new_pitches.easy()
-        self.Pitches = self.get_pitches(new_note_name[0])
+        self.Pitches = self.get_pitches(new_tonic[0])
         if self.Mode == 'Major':
-            return self.Major_Accidentals[new_note_name]
+            return self.Major_Accidentals[new_tonic]
         else:
-            return self.Minor_Accidentals[new_note_name]
+            return self.Minor_Accidentals[new_tonic]
 
     
     def glue_together(self):
@@ -280,8 +283,14 @@ class Achtelbass(object):
         # in  case more than 20 are set. However, with exactly  
         # 20 key changes the general key will be set incorrect, with
         # 19 key changes it works.
-        remaining_key_changes = 19 
-        new_accidentals = self.get_new_accidentals(0, self.Tonic)
+        remaining_key_changes = 19
+        
+        if self.Mode == 'Major':
+            initial_accidentals = self.Major_Accidentals[self.Tonic]
+        else:
+            initial_accidentals = self.Minor_Accidentals[self.Tonic]
+         
+        new_accidentals = self.get_new_accidentals(initial_accidentals, self.Tonic[0].upper())
         note_string = ''
 
         previous_pitch = self.Pitches[0]
@@ -309,7 +318,6 @@ class Achtelbass(object):
 
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
-                    note_value_for_tuplet = int(self.Note_Values[i][0])
                     tuplet_remain = int(self.Note_Values[i][2])
                     note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
                     while tuplet_remain > 1:
@@ -331,7 +339,7 @@ class Achtelbass(object):
                     else:
                         note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
                         if self.Chords == True:
-                            note_string += 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' ' # works, but not needed for bass.
+                            note_string += 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' '
                         j += 1
                 
                 # Clef change

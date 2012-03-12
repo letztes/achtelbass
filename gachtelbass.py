@@ -397,7 +397,6 @@ class Gachtelbass(object):
         chords_vbox.show()
         self.parameters_hbox_2.pack_start(chords_vbox, False, False, 2)
         
-        #TODO locales! for chords
         chords_label = gtk.Label(locales['Chords'])
         chords_label.show()
         chords_label.set_alignment(0, 0)

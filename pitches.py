@@ -7,7 +7,6 @@ import random
 
 class Pitches(object):
     def __init__(self, amount, min_pitch, max_pitch, tonic, intervals, inversion):
-        print tonic
         self.Amount = amount
         self.Min_Pitch = min_pitch
         self.Max_Pitch = max_pitch

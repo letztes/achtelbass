@@ -103,9 +103,16 @@ locales = {
             '0.8' : '80 %',
             '0.9' : '90 %',
             '1' : '100 %',
+# General stuff
+            'Show advanced settings' : 'Show advanced settings', 
             'Generate' : '_Generate',
             'Warning' : 'Warning',
             'OK' : 'OK',
+# Other parameters
+            'Other parameters' : 'Other parameters',
+            'Accents' : 'Accents',
+            'Anacrusis' : 'Anacrusis',
+            'Dots and ties' : 'Dots and ties',
 # Warning message
 # The %s are placeholders for interval, min_pitch and max_pitch.
             'Interval too big' : "Interval %s does not fit between %s and %s.\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch.",

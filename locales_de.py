@@ -81,6 +81,7 @@ locales = {
             'no rests' : 'keine Pausen',
             'Time signature' : 'Taktart',
             'Note values' : 'Notenwert',
+# Multiolen
             'Tuplets' : 'n-Tolen',
             'Same pitch in tuplet' : 'Gesamte n-Tole auf einer Tonhöhe',
             'no tuplets' : 'keine n-Tolen',
@@ -91,6 +92,8 @@ locales = {
             '6' : '6',
             '7' : '7',
             'Tuplet frequency' : 'Anteil der n-Tolen',
+# Akkorde
+            'Chords' : 'Akkorde',
 # Anteilwerte
             '0.1' : '10 %',
             '0.2' : '20 %',
@@ -102,9 +105,16 @@ locales = {
             '0.8' : '80 %',
             '0.9' : '90 %',
             '1' : '100 %',
+# Allgemeines
+            'Show advanced settings' : 'Erweiterte Einstellungen', 
             'Generate' : '_Generieren',
             'Warning' : 'Warnung',
             'OK' : 'OK',
+# Other parameters
+            'Other parameters' : 'Andere parameter',
+            'Accents' : 'Akzente',
+            'Anacrusis' : 'Auftakt',
+            'Dots and ties' : 'Punkte und Bindebögen',
 # Warnungsmeldung
 # %s sind Platzhalter für Intervall, tiefster Ton und höchster Ton
             'Interval too big' : "Interval %s passt nicht zwischen %s und %s. Wählen Sie entweder ein kleineres Intervall oder eine größere Spanne zwischen tiefstem Ton und höchstem Ton.", 

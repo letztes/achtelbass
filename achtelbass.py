@@ -98,51 +98,55 @@ class Achtelbass(object):
                                  3 : 1.0/32,
                                 }
         self.Diatonic_Notes = 'C D E F G A B C'.split()
-        self.Major_Accidentals = {
-                             "C" : "+0",
-                             "G" : "+1",
-                             "D" : "+2",
-                             "A" : "+3",
-                             "E" : "+4",
-                             "B" : "+5",
-                             "F#" : "+6",
-                             "C#" : "+7",
-                             "Cb" : "-7",
-                             "Gb" : "-6",
-                             "Db" : "-5",
-                             "Ab" : "-4",
-                             "Eb" : "-3",
-                             "Bb" : "-2",
-                             "F" : "-1",
-                            }
-        self.Minor_Accidentals = {
-                             "A" : "+0",
-                             "E" : "+1",
-                             "B" : "+2",
-                             "F#" : "+3",
-                             "C#" : "+4",
-                             "Ab" : "+5",
-                             "Eb" : "+6",
-                             "A#" : "+7",
-                             "G#" : "-7",
-                             "D#" : "-6",
-                             "Bb" : "-5",
-                             "F" : "-4",
-                             "C" : "-3",
-                             "G" : "-2",
-                             "D" : "-1",
-                            }
+        self.Accidentals_For = {
+                             'Major' : {
+                                 "C"  : "+0",
+                                 "G"  : "+1",
+                                 "D"  : "+2",
+                                 "A"  : "+3",
+                                 "E"  : "+4",
+                                 "B"  : "+5",
+                                 "F#" : "+6",
+                                 "C#" : "+7",
+                                 "Cb" : "-7",
+                                 "Gb" : "-6",
+                                 "Db" : "-5",
+                                 "Ab" : "-4",
+                                 "Eb" : "-3",
+                                 "Bb" : "-2",
+                                 "F"  : "-1",
+                              },
+                              'Minor' : {
+                                 "A"  : "+0",
+                                 "E"  : "+1",
+                                 "B"  : "+2",
+                                 "F#" : "+3",
+                                 "C#" : "+4",
+                                 "G#" : "+5",
+                                 "D#" : "+6",
+                                 "A#" : "+7",
+                                 "Ab" : "-7",
+                                 "Eb" : "-6",
+                                 "Bb" : "-5",
+                                 "F"  : "-4",
+                                 "C"  : "-3",
+                                 "G"  : "-2",
+                                 "D"  : "-1",
+                              }
+        }
         self.Tonic = parameters['tonic']
         self.Mode = parameters['mode']
         self.Changing_Key = parameters['changing_key']
         #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
+        self.Chords = parameters['chords'] # boolean
         self.Inversion = parameters['inversion']
         self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1",
                       "c2", "d2", "e2", "f2", "g2", "a2", "b2",
                       "c3", "d3", "e3", "f3", "g3", "a3", "b3",
                       "c4", "d4", "e4", "f4", "g4", "a4", "b4",
                       "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        self.Note_Letters = ["c", "d", "e", "f", "g", "a", "b"]
         self.Min_Pitch = parameters['min_pitch']
         self.Max_Pitch = parameters['max_pitch']
 #if max_pitch is lower than min_pitch, swap them
@@ -198,79 +202,259 @@ class Achtelbass(object):
         
         return new_pitches.easy()
 
-
-    def get_new_accidentals(self, old_accidentals, new_note_name):
+    def get_new_accidentals(self, old_accidentals, old_note_name):
+#        print "old accidentals: " + old_accidentals
         old_accidentals = int(old_accidentals)
-        if self.Mode == 'Major':
-            if old_accidentals == 1:
-                if new_note_name == 'F':
-                    new_note_name = 'F#'
-# F or C are augmented by a half tone in each of the keys with at least
-# 2 Sharp-Accidentals. That is why the "if old_accidentals == 2" is
-# skipped.
-            if old_accidentals > 1 and new_note_name in ["F", "C"]:
-                if new_note_name in "F C".split():
-                    new_note_name = new_note_name + '#'
-            else:
-                if old_accidentals == 3:
-                    if new_note_name == "G":
-                        new_note_name = "Ab"
-                if old_accidentals == 4:
-                    if new_note_name in "G D".split():
-                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                if old_accidentals == 5:
-                    if new_note_name in "G D A".split():
-                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                if old_accidentals == 6:
-                    if  new_note_name in "G D A".split():
-                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                    elif new_note_name == "E":
-                        new_note_name = "F"
-                if old_accidentals == 7:
-                    if  new_note_name in "G D A B".split():
-                        new_note_name = self.Diatonic_Notes[self.Diatonic_Notes.index(new_note_name)+1]+"b"
-                    elif new_note_name == "E":
-                        new_note_name = "F"
-
-            if old_accidentals == -7:
-                if new_note_name == 'F':
-                    new_note_name = 'E'
-                else:
-                    new_note_name = new_note_name+"b"
-            if old_accidentals == -6:
-                if new_note_name == "C":
-                    new_note_name = "B"
-                if new_note_name in "G A B D E".split():
-                    new_note_name = new_note_name+"b"
-            if old_accidentals == -5:
-                if new_note_name in "G A B D E".split():
-                    new_note_name = new_note_name+"b"
-            if old_accidentals == -4:
-                if new_note_name in "A B D E".split():
-                    new_note_name = new_note_name+"b"
-            if old_accidentals == -3:
-                if new_note_name in "A B E".split():
-                    new_note_name = new_note_name+"b"
-            if old_accidentals == -2:
-                if new_note_name in "B E".split():
-                    new_note_name = new_note_name+"b"
-            if old_accidentals == -1:
-                if new_note_name == "B":
-                    new_note_name = "Bb"
-            
-            print self.Pitches
-            new_pitches = pitches.Pitches(len(self.Note_Values),
-                                      self.Min_Pitch,
-                                      self.Max_Pitch,
-                                      new_note_name[0],
-                                      self.Intervals, self.Inversion)
-            self.Pitches = new_pitches.easy()
-            self.Pitches = self.get_pitches(new_note_name[0])
-            print "####################"
-            print self.Pitches
-            return self.Major_Accidentals[new_note_name]
+        new_tonic = old_note_name # default in case no alternation possible
+        
+        # Better take a dictionary of dictionaries of dictionaries instead of 
+        # all those infinite ifs
+        self.New_Tonic_For = {
+                                'Major' : {
+                                            '0' : {
+                                                    'B' : ['B', 'Cb'],
+                                            },
+                                            '1' : {
+                                                    'F' : ['F#', 'Gb'],
+                                            },
+                                            '2' : {
+                                                    'C' : ['C#', 'Db'],
+                                            },
+                                            '3' : {
+                                                    'G' : ['Ab'],
+                                            },
+                                            '4' : {
+                                                    'D' : ['Eb'],
+                                            },
+                                            '5' : {
+                                                    'A' : ['Bb'],
+                                            },
+                                            '6' : {
+                                                    'E' : ['F'],
+                                            },
+                                            '7' : {
+                                                    'B' : ['C'],
+                                            },
+                                            '-7' : {
+                                                    'F' : ['E'],
+                                            },
+                                            '-6' : {
+                                                    'C' : ['B'],
+                                            },
+                                            '-5' : {
+                                                    'G' : ['F#'],
+                                            },
+                                            '-4' : {
+                                                    'D' : ['C#'],
+                                            },
+                                            '-3' : {
+                                                    'A' : ['Ab'],
+                                            },
+                                            '-2' : {
+                                                    'E' : ['Eb'],
+                                            },
+                                            '-1' : {
+                                                    'B' : ['Bb'],
+                                            },
+                                },
+                                'Minor' : {
+                                            '0' : {
+                                                    'B' : ['B'],
+                                            },
+                                            '1' : {
+                                                    'F' : ['F#'],
+                                            },
+                                            '2' : {
+                                                    'C' : ['C#'],
+                                            },
+                                            '3' : {
+                                                    'G' : ['G#', 'Ab'],
+                                            },
+                                            '4' : {
+                                                    'D' : ['D#', 'Eb'],
+                                            },
+                                            '5' : {
+                                                    'A' : ['A#', 'Bb'],
+                                            },
+                                            '6' : {
+                                                    'E' : ['F'],
+                                            },
+                                            '7' : {
+                                                    'B' : ['C'],
+                                            },
+                                            '-7' : {
+                                                    'F' : ['E'],
+                                            },
+                                            '-6' : {
+                                                    'C' : ['B'],
+                                            },
+                                            '-5' : {
+                                                    'G' : ['F#'],
+                                            },
+                                            '-4' : {
+                                                    'D' : ['C#'],
+                                            },
+                                            '-3' : {
+                                                    'A' : ['Ab'],
+                                            },
+                                            '-2' : {
+                                                    'E' : ['Eb'],
+                                            },
+                                            '-1' : {
+                                                    'B' : ['Bb'],
+                                            },
+                                },
+         }
+         
+        # new_tonic defaults to old_note_name
+        new_tonic = old_note_name
+        
+        if old_accidentals > 0:
+            old_accidentals_range = range(0, old_accidentals)
         else:
-            print "At the time only Major supported. Sorry."; exit()
+            old_accidentals_range = range(old_accidentals, -1)
+        for current_accidentals_amount in old_accidentals_range:
+            print "accidentals in current loop: " + str(current_accidentals_amount)
+            # try to get new tonic from current combination
+            if old_note_name in self.New_Tonic_For[ self.Mode ][ str(current_accidentals_amount) ]:
+                new_tonic = random.choice( self.New_Tonic_For[ self.Mode ][ str(current_accidentals_amount) ][ old_note_name ] )
+                
+# Initially the algorithm was not intented to calculate the pitches
+# in every bar, but whenever the key changes from # to b and vice versa,
+# the names of the notes change. So it becomes necessary.
+        new_pitches = pitches.Pitches(len(self.Note_Values),
+                                  self.Min_Pitch,
+                                  self.Max_Pitch,
+                                  new_tonic[0],
+                                  self.Intervals, self.Inversion)
+        self.Pitches = new_pitches.easy()
+        self.Pitches = self.get_pitches(new_tonic[0])
+        print "---"
+        print "mode: " + self.Mode            
+        print "old_accidentals: " + str(old_accidentals)
+        print "old_note_name:   " + old_note_name
+        print "new_tonic:       " + new_tonic
+        print "new accidentals: " + str(self.Accidentals_For[ self.Mode ][ new_tonic ])
+        return self.Accidentals_For[ self.Mode ][ new_tonic ]
+
+
+#        if self.Mode == 'Major':     
+#            if old_accidentals >= 0:
+#                if old_accidentals >= 0:
+#                    if old_note_name == 'B':
+#                        new_tonic = 'Cb'
+#                if old_accidentals >= 1:
+#                    if old_note_name == 'F':
+#                        new_tonic = 'Gb'
+#                if old_accidentals >= 2:
+#                    if old_note_name == 'C':
+#                        new_tonic = 'Db'
+#                if old_accidentals >= 3:
+#                    if old_note_name == 'G':
+#                        new_tonic = 'Ab'
+#                if old_accidentals >= 4:
+#                    if old_note_name == 'D':
+#                        new_tonic = 'Eb'
+#                if old_accidentals >= 5:
+#                    if old_note_name == 'A':
+#                        new_tonic = 'Bb'
+#                if old_accidentals >= 6:
+#                    if old_note_name == 'E':
+#                        new_tonic = 'F'
+#                if old_accidentals == 7:
+#                    if old_note_name == 'B':
+#                        new_tonic = 'C'
+#                        
+#            if old_accidentals < 0:
+#                if old_accidentals <= -7:
+#                    if old_note_name == 'F':
+#                        new_tonic = 'E'
+#                if old_accidentals <= -6:
+#                    if old_note_name == "C":
+#                        new_tonic = "B"
+#                if old_accidentals <= -5:
+#                    if old_note_name == "G":
+#                        new_tonic = "F#"
+#                if old_accidentals <= -4:
+#                    if old_note_name == "D":
+#                        new_tonic = "C#"
+#                if old_accidentals <= -3:
+#                    if old_note_name == "A":
+#                        new_tonic = "Ab"
+#                if old_accidentals <= -2:
+#                    if old_note_name == "E":
+#                        new_tonic = "Eb"
+#                if old_accidentals == -1:
+#                    if old_note_name == "B":
+#                        new_tonic = "Bb"
+#                        
+#        if self.Mode == 'Minor':
+#            if old_accidentals >= 0:
+#                if old_accidentals >= 0:
+#                    if old_note_name == 'B':
+#                        new_tonic = 'B'
+#                if old_accidentals >= 1:
+#                    if old_note_name == 'F':
+#                        new_tonic = 'F#'
+#                if old_accidentals >= 2:
+#                    if old_note_name == 'C':
+#                        new_tonic = 'C#'
+#                if old_accidentals >= 3:
+#                    if old_note_name == 'G':
+#                        new_tonic = random.choice(['Ab', 'G#'])
+#                if old_accidentals >= 4:
+#                    if old_note_name == 'D':
+#                        new_tonic = random.choice(['Eb', 'D#'])
+#                if old_accidentals >= 5:
+#                    if old_note_name == 'A':
+#                        new_tonic = random.choice(['Bb', 'A#'])'
+#                if old_accidentals >= 6:
+#                    if old_note_name == 'E':
+#                        new_tonic = 'F'
+#                if old_accidentals == 7:
+#                    if old_note_name == 'B':
+#                        new_tonic = 'C'
+#                        
+#            if old_accidentals < 0:
+#                if old_accidentals <= -7:
+#                    if old_note_name == 'F':
+#                        new_tonic = 'E'
+#                if old_accidentals <= -6:
+#                    if old_note_name == "C":
+#                        new_tonic = "B"
+#                if old_accidentals <= -5:
+#                    if old_note_name == "G":
+#                        new_tonic = "F#"
+#                if old_accidentals <= -4:
+#                    if old_note_name == "D":
+#                        new_tonic = "C#"
+#                if old_accidentals <= -3:
+#                    if old_note_name == "A":
+#                        new_tonic = random.choice(['Ab', 'G#'])
+#                if old_accidentals <= -2:
+#                    if old_note_name == "E":
+#                        new_tonic = random.choice(['Eb', 'D#'])
+#                if old_accidentals == -1:
+#                    if old_note_name == "B":
+#                        new_tonic = random.choice(['Bb', 'A#'])'
+                        
+#            print "mode: " + self.Mode            
+#            print "old_note_name:   " + old_note_name
+#            print "new_tonic:       " + new_tonic
+# Initially the algorithm was not intented to calculate the pitches
+# in every bar, but whenever the key changes from # to b and vice versa,
+# the names of the notes change. So it becomes necessary.
+#        new_pitches = pitches.Pitches(len(self.Note_Values),
+#                                  self.Min_Pitch,
+#                                  self.Max_Pitch,
+#                                  new_tonic[0],
+#                                  self.Intervals, self.Inversion)
+#        self.Pitches = new_pitches.easy()
+#        self.Pitches = self.get_pitches(new_tonic[0])
+#        if self.Mode == 'Major':
+#            return self.Major_Accidentals[new_tonic]
+#        else:
+#            return self.Minor_Accidentals[new_tonic]
 
     
     def glue_together(self):
@@ -278,8 +462,11 @@ class Achtelbass(object):
         # in  case more than 20 are set. However, with exactly  
         # 20 key changes the general key will be set incorrect, with
         # 19 key changes it works.
-        remaining_key_changes = 19 
-        new_accidentals = self.get_new_accidentals(0, self.Tonic)
+        remaining_key_changes = 19
+        
+        initial_accidentals = self.Accidentals_For[ self.Mode ][ self.Tonic ]
+         
+        new_accidentals = self.get_new_accidentals(initial_accidentals, self.Tonic[0].upper())
         note_string = ''
 
         previous_pitch = self.Pitches[0]
@@ -307,7 +494,6 @@ class Achtelbass(object):
 
             else:
                 if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
-                    note_value_for_tuplet = int(self.Note_Values[i][0])
                     tuplet_remain = int(self.Note_Values[i][2])
                     note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
                     while tuplet_remain > 1:
@@ -328,6 +514,8 @@ class Achtelbass(object):
                         note_string += 'r'+str(self.Note_Values[i]) + ' '
                     else:
                         note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
+                        if self.Chords == True:
+                            note_string += 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' '
                         j += 1
                 
                 # Clef change
@@ -348,7 +536,7 @@ class Achtelbass(object):
     def display(self):
         
         new_output = output.Output(self.Tonic, self.Mode,
-                self.Major_Accidentals, self.Minor_Accidentals,
+                self.Accidentals_For['Major'], self.Accidentals_For['Minor'],
                 self.Min_Pitch, self.Max_Pitch, self.Intervals,
                 self.Pitches, self.Note_String, self.Amount_Of_Bars,
                 self.Time_Signature_Numerator,
@@ -381,6 +569,8 @@ Options are:
 
     -k, --changing_key
     
+    -c, --chords
+    
     -i, --interval=INTERVAL1 [--interval=INTERVAL2...]
       default=Second
     
@@ -412,10 +602,11 @@ Options are:
      --help  print this message and exit
      --version print version information and exit"""
    
-
+    # Definition of default parameters
     parameters = {'tonic' : 'C',
                   'mode' : 'Major',
                   'changing_key' : False,
+                  'chords' : False,
                   'intervals' : {},
                   'inversion' : False,
                   'min_pitch' : 'c3',
@@ -438,7 +629,7 @@ Options are:
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
                      't:m:ki:en:x:r:s:v:u:pf:',
-                     ['tonic=', 'mode=', 'changing_key', 'interval=',
+                     ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=',
                       'inversion', 'min_pitch=', 'max_pitch=',
                       'rest_frequency=', 'time_signature=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
@@ -470,6 +661,11 @@ Options are:
 
         if opt in ('-k', '--changing_key'):
             parameters['changing_key'] = True
+
+        if opt in ('-c', '--chords'):
+            parameters['chords'] = True
+            
+            
 
         if opt in ('-i', '--interval'):
             if arg in (intervals_opt):

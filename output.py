@@ -72,16 +72,16 @@ class Output(object):
         self.Clef_Vormals = self.Clef
 
         ## Das Directory, in das die Tex-Datei geschrieben werden soll.
-        self.Directory = "./"
+        self.Directory = './'
         
         ## Titel des Stuecks.
         #Wird zusammengestellt aus den Intervalsn und dem Notenumfang.
-        intervals_string = ""
+        intervals_string = ''
         for interval in self.Intervals:
-            intervals_string += self.Locales[interval] + ", "
+            intervals_string += self.Locales[interval] + ', '
         intervals_string = re.sub(r', $', r' in ', intervals_string)
         intervals_string = re.sub(r'(.+),(.+?)$', r'\g<1> '+locales['and']+' \g<2>', intervals_string)
-        self.Titel = "Tt\n" + intervals_string + self.Min_Pitch + " - " + self.Max_Pitch # usw.
+        self.Titel = "Tt\n" + intervals_string + self.Min_Pitch + ' - ' + self.Max_Pitch # usw.
         
     def get_amount_of_accidentals(self):
         if self.Mode == 'Major':
@@ -120,8 +120,8 @@ class Output(object):
         # Dabei werden die Noten um eine Oktave tiefer ausgegeben.
         # T-12 ist die Anweisung zum Transponieren um 12 Halbtoene nach unten
         # beim Schreiben der Midi-Datei.
-        output_string += "% CORPUS" + "\n"
-        output_string += "Prc Ii34" + "\n"
+        output_string += '% CORPUS' + "\n"
+        output_string += 'Prc Ii34' + "\n"
         
         # An dieser Stelle werden die eigentlichen Noten gesetzt.
         output_string += self.Note_String + "\n"

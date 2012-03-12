@@ -16,7 +16,7 @@ class Pitches(object):
         self.Intervals = intervals
         self.Inversion = inversion
         
-        self.Notes = ["c1", "d1", "e1", "f1", "g1", "a1", "b1", "c2", "d2", "e2", "f2", "g2", "a2", "b2", "c3", "d3", "e3", "f3", "g3", "a3", "b3", "c4", "d4", "e4", "f4", "g4", "a4", "b4", "c5", "d5", "e5", "f5", "g5", "a5", "b5"]
+        self.Notes = ['c1', 'd1', 'e1', 'f1', 'g1', 'a1', 'b1', 'c2', 'd2', 'e2', 'f2', 'g2', 'a2', 'b2', 'c3', 'd3', 'e3', 'f3', 'g3', 'a3', 'b3', 'c4', 'd4', 'e4', 'f4', 'g4', 'a4', 'b4', 'c5', 'd5', 'e5', 'f5', 'g5', 'a5', 'b5']
         _min_index = self.Notes.index(self.Min_Pitch)
         _max_index = self.Notes.index(self.Max_Pitch)
 # Plus one because the slice does not include the element with the _max_index
@@ -52,19 +52,19 @@ class Pitches(object):
         _pre_previous_pitch = ''
         self.Result.append(_current_pitch)
         for i in range(self.Amount-1):# -1 weil der erste Ton=Tonika feststeht
-            _up_or_down = random.choice(["up", "down"])
+            _up_or_down = random.choice(['up', 'down'])
             _current_interval = random.choice(self.Intervals)
             _step = self.Interval_Values[_current_interval]
             if self.Inversion == True:
                 if (_up_or_down == 'up' and self.Selectable_Pitches.index(_current_pitch) + _step >= self.Selectable_Pitches.index(self.Selectable_Pitches[-1])) or (_up_or_down == 'down' and self.Selectable_Pitches.index(_current_pitch) - _step < 0):
                     _step = _step - 7
 
-            if _up_or_down == "up" and self.Selectable_Pitches.index(_current_pitch) + _step <= self.Selectable_Pitches.index(self.Selectable_Pitches[-1]) and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]:
+            if _up_or_down == 'up' and self.Selectable_Pitches.index(_current_pitch) + _step <= self.Selectable_Pitches.index(self.Selectable_Pitches[-1]) and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]:
                 _current_pitch = self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)+_step]
             else:
-                _up_or_down = "down"
+                _up_or_down = 'down'
                 
-            if _up_or_down == "down" and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)-_step]:
+            if _up_or_down == 'down' and _pre_previous_pitch != self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)-_step]:
                 if self.Selectable_Pitches.index(_current_pitch) - _step >= 0:
                     _current_pitch = self.Selectable_Pitches[self.Selectable_Pitches.index(_current_pitch)-_step]
                 else:

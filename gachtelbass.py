@@ -20,18 +20,18 @@ import achtelbass
 from locales_en import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
-CONFIGURATION_DIRNAME = os.environ['HOME']+"/.config/achtelbass/"
-CONFIGURATION_FILENAME = CONFIGURATION_DIRNAME+"configuration"
+CONFIGURATION_DIRNAME = os.environ['HOME']+'/.config/achtelbass/'
+CONFIGURATION_FILENAME = CONFIGURATION_DIRNAME+'configuration'
 
 class Gachtelbass(object):
     def __init__(self):
         self.Tonics = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F']
         self.Modes = ['Major', 'Minor']
         self.Intervals = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
-        self.Pitches = ["b5", "a5", "g5", "f5", "e5", "d5", "c5", "b4", "a4", "g4", "f4", "e4", "d4", "c4", "b3", "a3", "g3", "f3", "e3", "d3", "c3", "b2", "a2", "g2", "f2", "e2", "d2", "c2", "b1", "a1", "g1", "f1", "e1", "d1", "c1"]
+        self.Pitches = ['b5', 'a5', 'g5', 'f5', 'e5', 'd5', 'c5', 'b4', 'a4', 'g4', 'f4', 'e4', 'd4', 'c4', 'b3', 'a3', 'g3', 'f3', 'e3', 'd3', 'c3', 'b2', 'a2', 'g2', 'f2', 'e2', 'd2', 'c2', 'b1', 'a1', 'g1', 'f1', 'e1', 'd1', 'c1']
         self.Rest_Frequencies = ['no rests', '0.1', '0.2', '0.3', '0.4', '0.5']
         self.Time_Signatures = ['2/2', '3/4', '4/4']
-        self.Note_Values = ["1", "1/2", "1/4", "1/8", "1/16", "1/32"]
+        self.Note_Values = ['1', '1/2', '1/4', '1/8', '1/16', '1/32']
         self.Tuplets = ['no tuplets', '2', '3', '4', '5', '6', '7']
         self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']
 # Parameters that will be passed to the actual achtelbass script
@@ -73,8 +73,8 @@ class Gachtelbass(object):
                 self.parameters[key] = default_parameters[key]
 
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.main_window.set_title("achtelbass")
-        self.main_window.connect("delete_event", self.delete_event)
+        self.main_window.set_title('achtelbass')
+        self.main_window.connect('delete_event', self.delete_event)
 
 # Create a menu and add acceleration to it
         accel_group = gtk.AccelGroup()
@@ -83,7 +83,7 @@ class Gachtelbass(object):
         file_submenu = gtk.Menu()
 
         menu_item_quit = gtk.MenuItem(locales['Quit'])
-        menu_item_quit.connect("activate", self.delete_event, locales['Quit'])
+        menu_item_quit.connect('activate', self.delete_event, locales['Quit'])
         menu_item_quit.show()
         file_submenu.append(menu_item_quit)
 
@@ -95,7 +95,7 @@ class Gachtelbass(object):
         help_submenu = gtk.Menu()
 
         menu_item_about = gtk.MenuItem(locales['About'])
-        menu_item_about.connect("activate", self.about_dialog, 'about')
+        menu_item_about.connect('activate', self.about_dialog, 'about')
         menu_item_about.show()
         help_submenu.append(menu_item_about)
 
@@ -129,9 +129,9 @@ class Gachtelbass(object):
         main_vbox.pack_start(hline, False, False, 5)
         
 # The "show advanced settings" checkbox
-        checkbox = gtk.CheckButton(locales["Show advanced settings"])
+        checkbox = gtk.CheckButton(locales['Show advanced settings'])
         checkbox.show()
-        checkbox.connect("toggled", self.show_advanced_settings)
+        checkbox.connect('toggled', self.show_advanced_settings)
         if self.parameters['show_advanced_settings'] == True:
             checkbox.set_active(True)
 
@@ -161,7 +161,7 @@ class Gachtelbass(object):
         for tonic in self.Tonics:
             tonic_combo_box.append_text(locales[tonic])
 
-        tonic_combo_box.connect("changed", self.select_tonic)
+        tonic_combo_box.connect('changed', self.select_tonic)
         tonic_combo_box.set_active(self.Tonics.index(self.parameters['tonic']))
         tonic_label = gtk.Label(locales['Tonic'])
         tonic_label.show()
@@ -189,7 +189,7 @@ class Gachtelbass(object):
         for mode in self.Modes:
             mode_combo_box.append_text(locales[mode])
         
-        mode_combo_box.connect("changed", self.select_mode)
+        mode_combo_box.connect('changed', self.select_mode)
         mode_combo_box.set_active(self.Modes.index(self.parameters['mode']))
 
         mode_label = gtk.Label(locales['Mode'])
@@ -243,7 +243,7 @@ class Gachtelbass(object):
             min_pitch_combo_box.append_text(pitch)
         
         self.previous_min_pitch = self.parameters['min_pitch']
-        min_pitch_combo_box.connect("changed", self.select_min_pitch)
+        min_pitch_combo_box.connect('changed', self.select_min_pitch)
         min_pitch_combo_box.set_active(self.Pitches.index(self.parameters['min_pitch']))
 
         min_pitch_vbox.pack_start(min_pitch_label, False, False, 2)
@@ -265,7 +265,7 @@ class Gachtelbass(object):
             max_pitch_combo_box.append_text(pitch)
 
         self.previous_max_pitch = self.parameters['max_pitch']
-        max_pitch_combo_box.connect("changed", self.select_max_pitch)
+        max_pitch_combo_box.connect('changed', self.select_max_pitch)
         max_pitch_combo_box.set_active(self.Pitches.index(self.parameters['max_pitch']))
 
         max_pitch_vbox.pack_start(max_pitch_label, False, False, 2)
@@ -286,7 +286,7 @@ class Gachtelbass(object):
         for time_signature in self.Time_Signatures:
             time_signature_combo_box.append_text(time_signature)
 
-        time_signature_combo_box.connect("changed", self.select_time_signature)
+        time_signature_combo_box.connect('changed', self.select_time_signature)
         time_signature_combo_box.set_active(self.Time_Signatures.index(self.parameters['time_signature']))
 
         time_signature_vbox.pack_start(time_signature_label, False, False, 2)
@@ -310,7 +310,7 @@ class Gachtelbass(object):
             checkbutton = gtk.CheckButton(note_value)
             checkbutton.show()
             note_value_vbox.pack_start(checkbutton, False, False, 2)
-            checkbutton.connect("toggled", self.add_note_value, note_value)
+            checkbutton.connect('toggled', self.add_note_value, note_value)
             if note_value in self.parameters['note_values'].keys():
                 checkbutton.set_active(True)
 
@@ -331,7 +331,7 @@ class Gachtelbass(object):
         for rest_frequency in self.Rest_Frequencies:
             rest_frequency_combo_box.append_text(locales[rest_frequency])
 
-        rest_frequency_combo_box.connect("changed", self.select_rest_frequency)
+        rest_frequency_combo_box.connect('changed', self.select_rest_frequency)
         rest_frequency_combo_box.set_active(self.Rest_Frequencies.index(self.parameters['rest_frequency']))
 
         rest_frequency_vbox.pack_start(rest_frequency_label, False, False, 2)
@@ -353,7 +353,7 @@ class Gachtelbass(object):
         for tuplet in self.Tuplets:
             tuplet_combo_box.append_text(locales[tuplet])
 
-        tuplet_combo_box.connect("changed", self.select_tuplet)
+        tuplet_combo_box.connect('changed', self.select_tuplet)
         tuplet_combo_box.set_active(self.Tuplets.index(self.parameters['tuplets']))
 
         tuplet_vbox.pack_start(tuplet_label, False, False, 2)
@@ -363,7 +363,7 @@ class Gachtelbass(object):
         tuplet_same_pitch_checkbutton = gtk.CheckButton(locales['Same pitch in tuplet'])
         tuplet_same_pitch_checkbutton.show()
         tuplet_vbox.pack_start(tuplet_same_pitch_checkbutton, False, False,2)
-        tuplet_same_pitch_checkbutton.connect("toggled", self.set_tuplet_same_pitch)
+        tuplet_same_pitch_checkbutton.connect('toggled', self.set_tuplet_same_pitch)
         if self.parameters['tuplet_same_pitch'] == True:
             tuplet_same_pitch_checkbutton.set_active(True)
 
@@ -383,7 +383,7 @@ class Gachtelbass(object):
         for tuplet_frequency in self.Tuplet_Frequencies:
             tuplet_frequency_combo_box.append_text(locales[tuplet_frequency])
 
-        tuplet_frequency_combo_box.connect("changed", self.select_tuplet_frequency)
+        tuplet_frequency_combo_box.connect('changed', self.select_tuplet_frequency)
         tuplet_frequency_combo_box.set_active(self.Tuplet_Frequencies.index(self.parameters['tuplets_frequency']))
 
         tuplet_frequency_vbox.pack_start(tuplet_frequency_label, False, False, 2)
@@ -440,7 +440,7 @@ class Gachtelbass(object):
 
         submit_button = gtk.Button(locales['Generate'], stock=None, use_underline=True)
         submit_button.show()
-        submit_button.connect("clicked", self.execute_achtelbass)
+        submit_button.connect('clicked', self.execute_achtelbass)
         submit_box.pack_start(submit_button, True, False, 0)
 
 # From here come the callback methods
@@ -459,7 +459,7 @@ class Gachtelbass(object):
         return False
 
     def save_configuration(self):
-        file_object = open(CONFIGURATION_FILENAME, "w")
+        file_object = open(CONFIGURATION_FILENAME, 'w')
         cPickle.dump(self.parameters, file_object)
         file_object.close()
 
@@ -550,7 +550,7 @@ class Gachtelbass(object):
         if steps_in_note_span_chosen >= self.Intervals.index(greatest_interval_chosen):
             self.previous_min_pitch = self.parameters['min_pitch']
         else:
-            warning_message = "Interval "+greatest_interval_chosen+" does not fit between "+self.parameters['min_pitch']+" and "+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
+            warning_message = 'Interval '+greatest_interval_chosen+' does not fit between '+self.parameters['min_pitch']+' and '+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
             self.warning_dialog(warning_message)
             widget.set_active(self.Pitches.index(self.previous_min_pitch))
             self.parameters['min_pitch'] = self.previous_min_pitch
@@ -567,7 +567,7 @@ class Gachtelbass(object):
         if steps_in_note_span_chosen >= self.Intervals.index(greatest_interval_chosen):
             self.previous_max_pitch = self.parameters['max_pitch']
         else:
-            warning_message = "Interval "+greatest_interval_chosen+" does not fit between "+self.parameters['min_pitch']+" and "+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
+            warning_message = 'Interval '+greatest_interval_chosen+' does not fit between '+self.parameters['min_pitch']+' and '+self.parameters['max_pitch']+".\nPlease choose either a smaller interval or a greater span between minimum pitch and maximum pitch."
             self.warning_dialog(warning_message)
             widget.set_active(self.Pitches.index(self.previous_max_pitch))
             self.parameters['max_pitch'] = self.previous_max_pitch
@@ -599,7 +599,7 @@ class Gachtelbass(object):
                 widget.set_active(True)
             if not self.is_note_value_and_time_signature_ok():
 # If time signature is not divisible by 1/2 and note value is 1/2
-                warning_message  = locales["Bad note value."]
+                warning_message  = locales['Bad note value.']
                 self.warning_dialog(warning_message)
                 widget.set_active(True)
         self.save_configuration()

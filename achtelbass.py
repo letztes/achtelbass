@@ -387,7 +387,7 @@ class Achtelbass(object):
                     else:
                         note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
                         if self.Chords == True:
-                            note_string += 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' '
+                            note_string += ' ? ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' ' + '? '
                         j += 1
                 
                 # Clef change

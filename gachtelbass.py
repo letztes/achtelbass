@@ -50,6 +50,7 @@ class Gachtelbass(object):
                             'tuplets_frequency' : 'no tuplets',
                             'show_advanced_settings' : False,
                             'chords': False,
+                            'prolongations': False,
                            }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,
@@ -420,13 +421,16 @@ class Gachtelbass(object):
         others_label.set_alignment(0, 0)
         others_vbox.pack_start(others_label, False, False, 2)
 
-        accents_checkbutton = gtk.CheckButton(locales['Accents'])
-        accents_checkbutton.show()
-        others_vbox.pack_start(accents_checkbutton, False, False, 2)
+#        accents_checkbutton = gtk.CheckButton(locales['Accents'])
+#        accents_checkbutton.show()
+#        others_vbox.pack_start(accents_checkbutton, False, False, 2)
 
         dots_and_ties_checkbutton = gtk.CheckButton(locales['Dots and ties'])
         dots_and_ties_checkbutton.show()
         others_vbox.pack_start(dots_and_ties_checkbutton, False, False, 2)
+        dots_and_ties_checkbutton.connect('toggled', self.set_prolongations)
+        if self.parameters['prolongations'] == True:
+            dots_and_ties_checkbutton.set_active(True)
 
         anacrusis_checkbutton = gtk.CheckButton(locales['Anacrusis'])
         anacrusis_checkbutton.show()
@@ -493,6 +497,13 @@ class Gachtelbass(object):
             self.parameters['chords'] = True
         else:
             self.parameters['chords'] = False
+        self.save_configuration()
+        
+    def set_prolongations(self, widget):
+        if widget.get_active():
+            self.parameters['prolongations'] = True
+        else:
+            self.parameters['prolongations'] = False
         self.save_configuration()
 
     def select_mode(self, widget):

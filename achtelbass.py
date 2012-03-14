@@ -140,6 +140,7 @@ class Achtelbass(object):
         #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
         self.Chords = parameters['chords'] # boolean
+        self.Prolongations = parameters['prolongations'] # boolean
         self.Inversion = parameters['inversion']
         self.Notes = ['c1', 'd1', 'e1', 'f1', 'g1', 'a1', 'b1',
                       'c2', 'd2', 'e2', 'f2', 'g2', 'a2', 'b2',
@@ -343,6 +344,7 @@ class Achtelbass(object):
 
         previous_pitch = self.Pitches[0]
         previous_clef = 'c'
+        _tie_pending = False
         if self.Notes.index(previous_pitch) < self.Notes.index('c4'):
             previous_clef = 'b'
         j = 0 # separate iterator for pitches. 
@@ -365,11 +367,12 @@ class Achtelbass(object):
                         j = 0
 
             else:
-                if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'): # Falls Multiole
+                # if tuplet
+                if isinstance(self.Note_Values[i], str) and self.Note_Values[i].count('x'):
                     tuplet_remain = int(self.Note_Values[i][2])
                     note_string += self.Pitches[j][0] + self.Note_Values[i][0] + self.Pitches[j][1] + self.Note_Values[i][1:3] + ' '
                     while tuplet_remain > 1:
-# PMX cannot end an xtuplet with a rest. But why "> 2" and not "> 1"?
+# PMX cannot end an xtuplet with a rest.
                         if self.Tuplet_Same_Pitch == False:
                             j += 1
                     
@@ -381,14 +384,33 @@ class Achtelbass(object):
                     j += 1
 
                 else:
-                    # a rest or a note?
-                    if random.uniform(0, 1) < self.Rest_Frequency:
-                        note_string += 'r'+str(self.Note_Values[i]) + ' '
+                    # if current note value measures half the previous skip
+                    # the current pitch but prolongate the previous with a dot
+                    # But only if it is not the first note in the bar
+                    self.Prolongations_Frequency = 0.0
+                    if self.Prolongations:
+                        self.Prolongations_Frequency = 0.5
+                    if _tie_pending == True or random.uniform(0, 1) < float(self.Prolongations_Frequency):
+                        if _tie_pending == False and self.Note_Values[i-1] != "/\n" and note_string[-2] != ")" and self.PMX_Note_Values[self.Note_Values[i-1]] == (2 * self.PMX_Note_Values[self.Note_Values[i]]):
+                            note_string = re.sub(r" $", 'd ', note_string)
+                        # tie the previous note to current note
+                        else:
+                            if _tie_pending == False:
+                                note_string += '( ' + self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
+                                _tie_pending = True
+                            else:
+                                note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' ) '
+                                _tie_pending = False
                     else:
-                        note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
-                        if self.Chords == True:
-                            note_string += ' ? ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' ' + '? '
-                        j += 1
+                        # a rest or a note?
+                        if random.uniform(0, 1) < self.Rest_Frequency:
+                            note_string += 'r'+str(self.Note_Values[i]) + ' '
+                        else:
+                            note_string += self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
+                            if self.Chords == True:
+                                note_string += ' ? ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 5] + ' ' + 'z' + self.Note_Letters[ self.Note_Letters.index(self.Pitches[j][0]) - 3] + ' ' + '? '
+                            j += 1
+                        
                 
                 # Clef change
                 if previous_clef == 'b' and self.Notes.index(self.Pitches[j]) > self.Notes.index('e4'):
@@ -443,6 +465,8 @@ Options are:
     
     -c, --chords
     
+    -l, --prolongations
+    
     -i, --interval=INTERVAL1 [--interval=INTERVAL2...]
       default=Second
     
@@ -489,6 +513,7 @@ Options are:
                   'tuplets' : 'no tuplets',
                   'tuplet_same_pitch' : False,
                   'tuplets_frequency' : 'no tuplets',
+                  'prolongations' : False,
                  }
     pitches_opt = ['c1', 'd1', 'e1', 'f1', 'g1', 'a1', 'b1',
                    'c2', 'd2', 'e2', 'f2', 'g2', 'a2', 'b2',
@@ -503,7 +528,7 @@ Options are:
                      't:m:ki:en:x:r:s:v:u:pf:',
                      ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=',
                       'inversion', 'min_pitch=', 'max_pitch=',
-                      'rest_frequency=', 'time_signature=',
+                      'rest_frequency=', 'time_signature=', 'prolongations',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
                       'tuplets_frequency=', 'help', 'version'])
     except getopt.GetoptError, err:
@@ -536,6 +561,9 @@ Options are:
 
         if opt in ('-c', '--chords'):
             parameters['chords'] = True
+
+        if opt in ('-l', '--prolongations'):
+            parameters['prolongations'] = True
             
             
 
@@ -590,8 +618,8 @@ Options are:
                 parameters['note_values'][arg] = True
             else:
                 print arg, 'is not a valid value for note_values.'
-                print 'note_values must be one of', "'no rests'",\
-                        '0.1', '0.2', '0.3', '0.4', '0.5'
+                print 'note_values must be one of',\
+                        "'1',", "'1/2',", "'1/4',", "'1/8',", "'1/16',", "'1/32',"
                 exit()
 
         if opt in ('-u', '--tuplets'):

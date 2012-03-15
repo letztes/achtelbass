@@ -51,6 +51,7 @@ class Gachtelbass(object):
                             'show_advanced_settings' : False,
                             'chords': False,
                             'prolongations': False,
+                            'tempo' : 'andante',
                            }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,

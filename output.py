@@ -9,7 +9,7 @@
 import re
 
 class Output(object):
-    def __init__(self, tonic, mode, major_accidentals, minor_accidentals, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator, locales):
+    def __init__(self, tonic, mode, major_accidentals, minor_accidentals, min_pitch, max_pitch, intervals, pitches, note_string, amount_of_bars, time_signature_numerator, time_signature_denominator, locales, bpm):
         self.Locales = locales
         self.Tonic = tonic
         self.Mode = mode
@@ -21,6 +21,7 @@ class Output(object):
         self.Note_String = note_string
         self.Time_Signature_Numerator = time_signature_numerator
         self.Time_Signature_Denominator = time_signature_denominator
+        self.BPM = bpm
         
         ## Hier faengt die Definition der Praeambelelemente an.
         ## Zwoelf Zahlen stehen als erstes in der Praeambel, durch whitespace
@@ -121,7 +122,7 @@ class Output(object):
         # T-12 ist die Anweisung zum Transponieren um 12 Halbtoene nach unten
         # beim Schreiben der Midi-Datei.
         output_string += '% CORPUS' + "\n"
-        output_string += 'Prc Ii34' + "\n"
+        output_string += 'Prc It' + str(self.BPM) + 'i34' + "\n"
         
         # An dieser Stelle werden die eigentlichen Noten gesetzt.
         output_string += self.Note_String + "\n"

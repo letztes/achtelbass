@@ -165,6 +165,23 @@ class Achtelbass(object):
         self.Tuplets = self.Tuplets_Values[parameters['tuplets']]
         self.Tuplet_Same_Pitch = parameters['tuplet_same_pitch']
         self.Tuplets_Frequency = parameters['tuplets_frequency']
+        
+        self.BPM_For_Tempo = {'grave' : 40,
+                            'largo' : 44,
+                            'lento' : 52,
+                            'adagio' : 58,
+                            'andante' : 66,
+                            'moderato' : 88,
+                            'allegretto' : 104,
+                            'allegro' : 132,
+                            'vivace' : 160,
+                            'presto' : 184,
+        }
+        self.Tempo = parameters['tempo']
+        try:
+            self.BPM = parameters['bpm']
+        except KeyError:
+            self.BPM = self.BPM_For_Tempo[self.Tempo]
 
         # Ausgabe immer so gestalten, dass etwa 40 bars,
         # 10 systems pro Seite stehen
@@ -434,7 +451,7 @@ class Achtelbass(object):
                 self.Min_Pitch, self.Max_Pitch, self.Intervals,
                 self.Pitches, self.Note_String, self.Amount_Of_Bars,
                 self.Time_Signature_Numerator,
-                self.Time_Signature_Denominator, self.Locales)
+                self.Time_Signature_Denominator, self.Locales, self.BPM)
         pmx_string = new_output.print_out()
         os.chdir('/tmp/')
         file_object = open('out.pmx', 'w')
@@ -466,6 +483,13 @@ Options are:
     -c, --chords
     
     -l, --prolongations
+    
+    -m, --tempo=TEMPO
+      default=andante
+    
+    -b, --bpm=BPM
+      default=60
+      bpm overrides tempo if set both
     
     -i, --interval=INTERVAL1 [--interval=INTERVAL2...]
       default=Second
@@ -514,6 +538,8 @@ Options are:
                   'tuplet_same_pitch' : False,
                   'tuplets_frequency' : 'no tuplets',
                   'prolongations' : False,
+                  'bpm' : 60,
+                  'tempo' : 'andante',
                  }
     pitches_opt = ['c1', 'd1', 'e1', 'f1', 'g1', 'a1', 'b1',
                    'c2', 'd2', 'e2', 'f2', 'g2', 'a2', 'b2',
@@ -522,15 +548,18 @@ Options are:
                    'c5', 'd5', 'e5', 'f5', 'g5', 'a5', 'b5']
     intervals_opt = ['Unison', 'Second', 'Third', 'Fourth',
                      'Fifth', 'Sixth', 'Seventh', 'Octave']
+    tempo_opt = ['grave', 'largo', 'lento', 'adagio',
+                     'andante', 'moderato', 'allegretto', 'allegro',
+                     'vivace', 'presto']
 
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
-                     't:m:ki:en:x:r:s:v:u:pf:',
+                     't:m:kci:en:x:r:s:lv:u:pf:bm',
                      ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=',
                       'inversion', 'min_pitch=', 'max_pitch=',
                       'rest_frequency=', 'time_signature=', 'prolongations',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
-                      'tuplets_frequency=', 'help', 'version'])
+                      'tuplets_frequency=', 'bpm', 'tempo', 'help', 'version'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -541,11 +570,28 @@ Options are:
             if arg in ('C', 'G', 'D', 'A', 'E', 'B', 'F#',
                        'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'):
                 parameters['tonic'] = arg
-                print parameters
             else:
                 print arg, 'is not a valid value for tonic.'
                 print 'Tonic must be one of', 'C', 'G', 'D', 'A', 'E',\
                         'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'
+                exit()
+
+    for opt, arg in opts:
+        if opt in ('-m', '--tempo'):
+            if arg in ():
+                parameters['tempo'] = arg
+            else:
+                print arg, 'is not a valid value for tempo.'
+                print 'Tempo must be one of', str(tempo_opt[1:-1])
+                exit()
+
+    for opt, arg in opts:
+        if opt in ('-b', '--bpm'):
+            if arg > 40 and arg < 200:
+                parameters['bpm'] = arg
+            else:
+                print arg, 'is not a valid value for bpm.'
+                print 'Beats per minute must be an integer between 40 and 200'
                 exit()
 
         if opt in ('-m', '--mode'):
@@ -553,7 +599,7 @@ Options are:
                 parameters['mode'] = arg
             else:
                 print arg, 'is not a valid value for mode.'
-                print 'mode must be one of', 'Minor', 'Major'
+                print "mode must be one of Minor, Major, 'Changing key'"
                 exit()
 
         if opt in ('-k', '--changing_key'):

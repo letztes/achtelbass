@@ -365,6 +365,12 @@ class Achtelbass(object):
         if self.Notes.index(previous_pitch) < self.Notes.index('c4'):
             previous_clef = 'b'
         j = 0 # separate iterator for pitches. 
+        
+        # Metronome in the first bar
+        for i in range(0, int(self.Time_Signature_Numerator)):
+            note_string += self.Pitches[0][0] + str(self.Time_Signature_Denominator) + self.Pitches[0][1] + ' '
+        note_string += "/\n"
+        
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"

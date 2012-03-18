@@ -1,14 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# TODO: 
-#   *   Optionale Punktierungen 
-#       ein Viertel+Achtel c4 gefolgt von einem Achtel d4 schreibt man als c44d d8
-#   *   Optionale Bindebögen
-#       Buchstabe t, mit Leerzeichen getrennt, jeweils hinter die Note, an der
-#       der Bindebogen beginnt und noch ein t hinter der Note, wo er endet.
-#       
-
 import random
 
 class NoteValues(object):

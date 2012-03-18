@@ -25,7 +25,10 @@ CONFIGURATION_FILENAME = CONFIGURATION_DIRNAME+'configuration'
 
 class Gachtelbass(object):
     def __init__(self):
-        self.Tonics = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F']
+#        self.Tonics = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F']
+        self.Tonics = {'Major' : ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'],
+                       'Minor' : ['A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'Eb', 'Bb', 'F', 'C', 'G', 'D'],
+                       }
         self.Modes = ['Major', 'Minor']
         self.Intervals = ['Unison', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Octave']
         self.Pitches = ['b5', 'a5', 'g5', 'f5', 'e5', 'd5', 'c5', 'b4', 'a4', 'g4', 'f4', 'e4', 'd4', 'c4', 'b3', 'a3', 'g3', 'f3', 'e3', 'd3', 'c3', 'b2', 'a2', 'g2', 'f2', 'e2', 'd2', 'c2', 'b1', 'a1', 'g1', 'f1', 'e1', 'd1', 'c1']
@@ -160,18 +163,24 @@ class Gachtelbass(object):
         tonic_vbox.show()
         parameters_hbox_1.pack_start(tonic_vbox, False, False, 2)
 
-        tonic_combo_box = gtk.combo_box_new_text()
-        tonic_combo_box.show()
-        for tonic in self.Tonics:
-            tonic_combo_box.append_text(locales[tonic])
+        self.tonic_combo_box = gtk.combo_box_new_text()
+        self.tonic_combo_box.show()
+        for tonic in self.Tonics[self.parameters['mode']]:
+            self.tonic_combo_box.append_text(locales[tonic])
 
-        tonic_combo_box.connect('changed', self.select_tonic)
-        tonic_combo_box.set_active(self.Tonics.index(self.parameters['tonic']))
+        self.tonic_combo_box.connect('changed', self.select_tonic)
+        # Try to set the tonic of the previous run to current mode
+        # May fail if the previous tonic does not exist in current mode
+        try:
+            self.tonic_combo_box.set_active(self.Tonics[self.parameters['mode']].index(self.parameters['tonic']))
+        except ValueError:
+            self.parameters['tonic'] = self.Tonics[self.parameters['mode']][0]
+            self.tonic_combo_box.set_active(0)
         tonic_label = gtk.Label(locales['Tonic'])
         tonic_label.show()
         tonic_label.set_alignment(0, 0)
         tonic_vbox.pack_start(tonic_label, False, False, 2)
-        tonic_vbox.pack_start(tonic_combo_box, False, False, 2)
+        tonic_vbox.pack_start(self.tonic_combo_box, False, False, 2)
 
         # Changing key checkbox   
         checkbutton = gtk.CheckButton(locales['Changing key'])
@@ -526,7 +535,23 @@ class Gachtelbass(object):
         self.save_configuration()
 
     def select_mode(self, widget):
+        # clear tonic combo box and populate it with tonics of new mode
+        #for position in range(0, len(self.parameters['mode'])-1 ):
+        model = self.tonic_combo_box.get_model()
+        self.tonic_combo_box.set_model(None)
+        model.clear()
+            
         self.parameters['mode'] = locales_inverse[widget.get_active_text()]
+        for tonic in self.Tonics[self.parameters['mode']]:
+            model.append([tonic])
+        self.tonic_combo_box.set_model(model)
+        # Try to set the tonic of the previous run to current mode
+        # May fail if the previous tonic does not exist in current mode
+        try:
+            self.tonic_combo_box.set_active(self.Tonics[self.parameters['mode']].index(self.parameters['tonic']))
+        except ValueError:
+            self.parameters['tonic'] = self.Tonics[self.parameters['mode']][0]
+            self.tonic_combo_box.set_active(0)
         self.save_configuration()
 
     def add_interval(self, widget, interval):

@@ -84,7 +84,7 @@ locales = {
 # Tuplet
             'Tuplets' : 'Tuplets',
             'Same pitch in tuplet' : 'Same pitch in tuplet',
-            'no tuplets' : 'no tuplets',
+            'None' : 'None',
             '2' : '2',
             '3' : '3',
             '4' : '4',

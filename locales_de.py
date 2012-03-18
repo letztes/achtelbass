@@ -84,14 +84,14 @@ locales = {
 # Multiolen
             'Tuplets' : 'n-Tolen',
             'Same pitch in tuplet' : 'Gesamte n-Tole auf einer Tonhöhe',
-            'no tuplets' : 'keine n-Tolen',
+            'None' : 'Keine',
             '2' : '2',
             '3' : '3',
             '4' : '4',
             '5' : '5',
             '6' : '6',
             '7' : '7',
-            'Tuplet frequency' : 'Anteil der n-Tolen',
+            'Tuplet frequency' : 'Häufigkeit der n-Tolen',
 # Akkorde
             'Chords' : 'Akkorde',
 # Anteilwerte

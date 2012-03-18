@@ -17,7 +17,7 @@ import achtelbass
 # that are displayed on buttons and so. The keys of the dictionary are
 # the english terms, the values the terms in the language of choice.
 #from locales_de import locales
-from locales_en import locales
+from locales_de import locales
 locales_inverse = dict([[v,k] for k,v in locales.items()])
 
 CONFIGURATION_DIRNAME = os.environ['HOME']+'/.config/achtelbass/'
@@ -32,8 +32,10 @@ class Gachtelbass(object):
         self.Rest_Frequencies = ['no rests', '0.1', '0.2', '0.3', '0.4', '0.5']
         self.Time_Signatures = ['2/2', '3/4', '4/4']
         self.Note_Values = ['1', '1/2', '1/4', '1/8', '1/16', '1/32']
-        self.Tuplets = ['no tuplets', '2', '3', '4', '5', '6', '7']
-        self.Tuplet_Frequencies = ['no tuplets', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']
+        self.Tuplets = ['None', '2', '3', '4', '5', '6', '7']
+        self.Frequencies = ['None', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1']
+        self.Tuplet_Frequencies = self.Frequencies
+        self.Prolongations_Frequencies = self.Frequencies
 # Parameters that will be passed to the actual achtelbass script
         default_parameters = {'tonic' : 'C',
                             'changing_key' : False,
@@ -45,12 +47,12 @@ class Gachtelbass(object):
                             'rest_frequency' : 'no rests',
                             'time_signature' : '4/4',
                             'note_values' : {'1' : True},
-                            'tuplets' : 'no tuplets',
+                            'tuplets' : 'None',
                             'tuplet_same_pitch' : False,
-                            'tuplets_frequency' : 'no tuplets',
+                            'tuplets_frequency' : 'None',
                             'show_advanced_settings' : False,
                             'chords': False,
-                            'prolongations': False,
+                            'prolongations_frequency': 'None',
                             'tempo' : 'andante',
                            }
         self.Fraction_Values = {'2/2' : 1.0,
@@ -413,29 +415,48 @@ class Gachtelbass(object):
 
 # Other widgets like anacrusis checkbox VBox
 
-        others_vbox = gtk.VBox(False, 0)
-        others_vbox.show()
-        self.parameters_hbox_2.pack_start(others_vbox, False, False, 2)
+#        others_vbox = gtk.VBox(False, 0)
+#        others_vbox.show()
+#        self.parameters_hbox_2.pack_start(others_vbox, False, False, 2)
 
-        others_label = gtk.Label(locales['Other parameters'])
-        others_label.show()
-        others_label.set_alignment(0, 0)
-        others_vbox.pack_start(others_label, False, False, 2)
+#        others_label = gtk.Label(locales['Other parameters'])
+#        others_label.show()
+#        others_label.set_alignment(0, 0)
+#        others_vbox.pack_start(others_label, False, False, 2)
 
 #        accents_checkbutton = gtk.CheckButton(locales['Accents'])
 #        accents_checkbutton.show()
 #        others_vbox.pack_start(accents_checkbutton, False, False, 2)
 
-        dots_and_ties_checkbutton = gtk.CheckButton(locales['Dots and ties'])
-        dots_and_ties_checkbutton.show()
-        others_vbox.pack_start(dots_and_ties_checkbutton, False, False, 2)
-        dots_and_ties_checkbutton.connect('toggled', self.set_prolongations)
-        if self.parameters['prolongations'] == True:
-            dots_and_ties_checkbutton.set_active(True)
+# Prolongations, i.e. Dots and ties frequency VBox
+        
+        prolongations_frequency_vbox = gtk.VBox(False, 0)
+        prolongations_frequency_vbox.show()
+        self.parameters_hbox_2.pack_start(prolongations_frequency_vbox, False, False, 2)
 
-        anacrusis_checkbutton = gtk.CheckButton(locales['Anacrusis'])
-        anacrusis_checkbutton.show()
-        others_vbox.pack_start(anacrusis_checkbutton, False, False, 2)
+        prolongations_frequency_label = gtk.Label(locales['Dots and ties'])#
+        prolongations_frequency_label.show()
+        prolongations_frequency_label.set_alignment(0, 0)
+
+        prolongations_frequency_combo_box = gtk.combo_box_new_text()
+        prolongations_frequency_combo_box.show()
+        for prolongations_frequency in self.Prolongations_Frequencies:
+            prolongations_frequency_combo_box.append_text(locales[prolongations_frequency])
+
+        prolongations_frequency_combo_box.connect('changed', self.select_prolongations_frequency)
+        prolongations_frequency_combo_box.set_active(self.Prolongations_Frequencies.index(self.parameters['prolongations_frequency']))
+
+        prolongations_frequency_vbox.pack_start(prolongations_frequency_label, False, False, 2)
+        prolongations_frequency_vbox.pack_start(prolongations_frequency_combo_box, False, False, 2)
+
+#        dots_and_ties_checkbutton = gtk.CheckButton(locales['Dots and ties'])
+#        dots_and_ties_checkbutton.show()
+#        others_vbox.pack_start(dots_and_ties_checkbutton, False, False, 2)
+#        dots_and_ties_checkbutton.connect('toggled', self.set_prolongations_frequency)
+
+#        anacrusis_checkbutton = gtk.CheckButton(locales['Anacrusis'])
+#        anacrusis_checkbutton.show()
+#        others_vbox.pack_start(anacrusis_checkbutton, False, False, 2)
 
 
 # The submit button
@@ -500,11 +521,8 @@ class Gachtelbass(object):
             self.parameters['chords'] = False
         self.save_configuration()
         
-    def set_prolongations(self, widget):
-        if widget.get_active():
-            self.parameters['prolongations'] = True
-        else:
-            self.parameters['prolongations'] = False
+    def select_prolongations_frequency(self, widget):
+        self.parameters['prolongations_frequency'] = locales_inverse[widget.get_active_text()]
         self.save_configuration()
 
     def select_mode(self, widget):

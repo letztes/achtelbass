@@ -48,7 +48,7 @@ class Achtelbass(object):
         self.Parameters = parameters
         self.Locales = locales
         #self.Version = version
-        self.Frequency_Values = {'no tuplets' : 0,
+        self.Frequency_Values = {'None' : 0,
                                  'no rests' : 0,
                                  '0.1' : 0.1,
                                  '0.2' : 0.2,
@@ -69,7 +69,7 @@ class Achtelbass(object):
                                  '8' : 8,
                                  '9' : 9,
                                 }
-        self.Tuplets_Values = {'no tuplets' : 0,
+        self.Tuplets_Values = {'None' : 0,
                                 '2' : 'x2',
                                 '3' : 'x3',
                                 '4' : 'x4',
@@ -140,7 +140,7 @@ class Achtelbass(object):
         #self.Key = parameters['tonic'] + '-' + parameters['mode']
         self.Intervals = parameters['intervals'].keys()
         self.Chords = parameters['chords'] # boolean
-        self.Prolongations = parameters['prolongations'] # boolean
+        self.Prolongations_Frequency = parameters['prolongations_frequency']
         self.Inversion = parameters['inversion']
         self.Notes = ['c1', 'd1', 'e1', 'f1', 'g1', 'a1', 'b1',
                       'c2', 'd2', 'e2', 'f2', 'g2', 'a2', 'b2',
@@ -401,16 +401,14 @@ class Achtelbass(object):
                     j += 1
 
                 else:
-                    # if current note value measures half the previous skip
-                    # the current pitch but prolongate the previous with a dot
-                    # But only if it is not the first note in the bar
-                    self.Prolongations_Frequency = 0.0
-                    if self.Prolongations:
-                        self.Prolongations_Frequency = 0.5
-                    if _tie_pending == True or random.uniform(0, 1) < float(self.Prolongations_Frequency):
+                    if _tie_pending == True or random.uniform(0, 1) < float(self.Frequency_Values[self.Prolongations_Frequency]):
+                    
+                        # if current note value measures half the previous skip
+                        # the current pitch but prolongate the previous with a dot
+                        # But only if it is not the first note in the bar
                         if _tie_pending == False and self.Note_Values[i-1] != "/\n" and note_string[-2] != ")" and self.PMX_Note_Values[self.Note_Values[i-1]] == (2 * self.PMX_Note_Values[self.Note_Values[i]]):
                             note_string = re.sub(r" $", 'd ', note_string)
-                        # tie the previous note to current note
+                        # else tie the previous note to current note
                         else:
                             if _tie_pending == False:
                                 note_string += '( ' + self.Pitches[j][0] + str(self.Note_Values[i]) + self.Pitches[j][1] + ' '
@@ -484,6 +482,9 @@ Options are:
     
     -l, --prolongations
     
+    -q, --prolongations_frequency=FREQUENCY
+      default=0.5
+    
     -m, --tempo=TEMPO
       default=andante
     
@@ -538,6 +539,7 @@ Options are:
                   'tuplet_same_pitch' : False,
                   'tuplets_frequency' : 'no tuplets',
                   'prolongations' : False,
+                  'prolongations_frequency' : 0.5,
                   'bpm' : 60,
                   'tempo' : 'andante',
                  }
@@ -554,10 +556,10 @@ Options are:
 
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
-                     't:m:kci:en:x:r:s:lv:u:pf:bm',
+                     't:m:kci:en:x:r:s:l:v:u:pf:bm',
                      ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=',
-                      'inversion', 'min_pitch=', 'max_pitch=',
-                      'rest_frequency=', 'time_signature=', 'prolongations',
+                      'inversion', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 
+                      'time_signature=', 'prolongations_frequency=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
                       'tuplets_frequency=', 'bpm', 'tempo', 'help', 'version'])
     except getopt.GetoptError, err:
@@ -607,10 +609,15 @@ Options are:
 
         if opt in ('-c', '--chords'):
             parameters['chords'] = True
-
-        if opt in ('-l', '--prolongations'):
-            parameters['prolongations'] = True
             
+        if opt in ('-q', '--prolongations_frequency'):
+            if float(arg) >= 0 and float(arg) <= 1:
+                parameters['prolongations_frequency'] = arg
+            else:
+                print arg, 'is not a valid value for prolongations_frequency.'
+                print 'prolongations_frequency must be an integer between 0 and 1'
+                print 'For example 0.5'
+                exit()
             
 
         if opt in ('-i', '--interval'):

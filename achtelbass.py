@@ -545,7 +545,7 @@ Options are:
                   'tuplet_same_pitch' : False,
                   'tuplets_frequency' : 'None',
                   'prolongations' : False,
-                  'prolongations_frequency' : 0.5,
+                  'prolongations_frequency' : 'None',
                   'bpm' : 60,
                   'tempo' : 'andante',
                  }

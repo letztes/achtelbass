@@ -165,6 +165,7 @@ class Achtelbass(object):
         self.Tuplets = self.Tuplets_Values[parameters['tuplets']]
         self.Tuplet_Same_Pitch = parameters['tuplet_same_pitch']
         self.Tuplets_Frequency = parameters['tuplets_frequency']
+        self.Display_PDF = parameters['display_pdf']
         
         self.BPM_For_Tempo = {'grave' : 40,
                             'largo' : 44,
@@ -463,7 +464,8 @@ class Achtelbass(object):
         file_object.close()
         os.system('pmx out.pmx')
         os.system('dvipdf out.dvi')
-        os.system('evince out.pdf')
+        if self.Display_PDF:
+            os.system('evince out.pdf')
        
 
 if __name__ == '__main__':
@@ -536,6 +538,7 @@ Options are:
                   'chords' : False,
                   'intervals' : {},
                   'inversion' : False,
+                  'display_pdf'    : True,
                   'min_pitch' : 'c3',
                   'max_pitch' : 'd5',
                   'rest_frequency' : 'no rests',
@@ -562,8 +565,8 @@ Options are:
 
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
-                     't:m:kci:en:x:r:s:l:v:u:pf:bm',
-                     ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=',
+                     't:m:kcid:en:x:r:s:l:v:u:pf:bm',
+                     ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=', 'no_pdf',
                       'inversion', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 
                       'time_signature=', 'prolongations_frequency=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
@@ -703,6 +706,9 @@ Options are:
                         '0.1', '0.2', '0.3', '0.4', '0.5', '0.6',\
                         '0.7', '0.8', '0.9', '1'
                 exit()
+                
+        if opt == '--no_pdf':
+            parameters['display_pdf'] = 0
 
         if opt == '--help':
             usage()

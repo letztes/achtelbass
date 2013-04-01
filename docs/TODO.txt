@@ -1,0 +1,5 @@
+* A widget for syncopes and their probabilities, i.e. whether a smaller note value may appear before the greather one if more than one is given. Syncopes disabled means: As long as the smaller note values do not count up to a greater note value, the greater one must not appear again.
+For example, if 1/2, 1/4 and 1/8 are selected, then:
+If the bar begins with 1/2, then all of the three note values may follow.
+If the bar begins with 1/4, then only 1/4 or 1/8 may follow. If 1/4 follows, then the note values do count up to 1/2 and that means that again 1/2 may fallow. If 1/8 follows, then only another 1/8 may follow, but after that again all three may follow.
+If the bar begins with 1/8, only another 1/8 may follow. After the second 1/8 another 1/8 or 1/4 may follow, because the first 2 of the 1/8 count up to a 1/4. And so forth.

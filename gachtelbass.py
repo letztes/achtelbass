@@ -57,6 +57,7 @@ class Gachtelbass(object):
                             'chords': False,
                             'prolongations_frequency': 'None',
                             'tempo' : 'andante',
+                            'display_pdf' : True,
                            }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,

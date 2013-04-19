@@ -466,6 +466,9 @@ class Achtelbass(object):
         os.system('dvipdf out.dvi')
         if self.Display_PDF:
             os.system('evince out.pdf')
+        else:
+            os.system('musescore /tmp/out.mid')
+            
        
 
 if __name__ == '__main__':
@@ -493,7 +496,7 @@ Options are:
     -q, --prolongations_frequency=FREQUENCY
       default=0.5
     
-    -m, --tempo=TEMPO
+    -w, --tempo=TEMPO
       default=andante
     
     -b, --bpm=BPM
@@ -565,12 +568,12 @@ Options are:
 
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:],
-                     't:m:kcid:en:x:r:s:l:v:u:pf:bm',
+                     't:m:kcid:en:x:r:s:l:v:u:pf:b:w:',
                      ['tonic=', 'mode=', 'changing_key', 'chords', 'interval=', 'no_pdf',
                       'inversion', 'min_pitch=', 'max_pitch=', 'rest_frequency=', 
                       'time_signature=', 'prolongations_frequency=',
                       'note_values=', 'tuplets=', 'tuplet_same_pitch',
-                      'tuplets_frequency=', 'bpm', 'tempo', 'help', 'version'])
+                      'tuplets_frequency=', 'bpm=', 'tempo=', 'help', 'version'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -588,7 +591,7 @@ Options are:
                 exit()
 
     for opt, arg in opts:
-        if opt in ('-m', '--tempo'):
+        if opt in ('-w', '--tempo'):
             if arg in ():
                 parameters['tempo'] = arg
             else:
@@ -598,11 +601,12 @@ Options are:
 
     for opt, arg in opts:
         if opt in ('-b', '--bpm'):
-            if arg > 40 and arg < 200:
+            arg=int(arg)
+            if arg >= 20 and arg <= 200:
                 parameters['bpm'] = arg
             else:
                 print arg, 'is not a valid value for bpm.'
-                print 'Beats per minute must be an integer between 40 and 200'
+                print 'Beats per minute must be an integer between 20 and 200'
                 exit()
 
         if opt in ('-m', '--mode'):
@@ -708,7 +712,7 @@ Options are:
                 exit()
                 
         if opt == '--no_pdf':
-            parameters['display_pdf'] = 0
+            parameters['display_pdf'] = False
 
         if opt == '--help':
             usage()

@@ -58,6 +58,7 @@ class Gachtelbass(object):
                             'prolongations_frequency': 'None',
                             'tempo' : 'andante',
                             'display_pdf' : True,
+                            'bpm': 60,
                            }
         self.Fraction_Values = {'2/2' : 1.0,
                                 '3/4' : 0.75,
@@ -329,6 +330,35 @@ class Gachtelbass(object):
                 checkbutton.set_active(True)
 
 # Here begins the content of self.parameters_hbox_2
+
+# Tempo slider
+        
+        tempo_vbox = gtk.VBox(False, 0)
+        tempo_vbox.show()
+        self.parameters_hbox_2.pack_start(tempo_vbox, False, False, 2)
+        
+        #TODO add a translation locales entry for tempo
+        tempo_label = gtk.Label('Tempo')
+        tempo_label.show()
+        tempo_label.set_alignment(0, 0)
+        
+        # value, lower, upper, step_increment, page_increment, page_size
+        # Note that the page_size value only makes a difference for
+        # scrollbar widgets, and the highest value you'll get is actually
+        # (upper - page_size).
+        #TODO: Write self.parameters['bpm'] to configuration file
+        tempo_adjustment = gtk.Adjustment(self.parameters['bpm'], 20.0, 200.0, 1.0, 1.0, 1.0)
+        #tempo_adjustment = gtk.Adjustment(60, 20, 200, 1, 1, 1)
+        tempo_adjustment.connect('value_changed', self.set_tempo)
+        
+        self.vscale = gtk.VScale(tempo_adjustment)
+        self.vscale.set_inverted(True)
+        
+        tempo_vbox.pack_start(tempo_label, False, False, 2)
+        tempo_vbox.pack_start(self.vscale, True, True, 0)
+        self.vscale.show()
+        
+        
 
 # Rest frequency VBox
         
@@ -674,7 +704,10 @@ class Gachtelbass(object):
             return True
         else:
             return False
-
+    
+    def set_tempo(self, adjustment):
+        self.parameters['bpm'] = adjustment.value
+        self.save_configuration()
 
     def select_rest_frequency(self, widget):
         self.parameters['rest_frequency'] = locales_inverse[widget.get_active_text()]

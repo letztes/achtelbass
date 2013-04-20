@@ -541,7 +541,7 @@ Options are:
                   'chords' : False,
                   'intervals' : {},
                   'inversion' : False,
-                  'display_pdf'    : True,
+                  'display_pdf'    : False,
                   'min_pitch' : 'c3',
                   'max_pitch' : 'd5',
                   'rest_frequency' : 'no rests',

@@ -85,6 +85,8 @@ locales = {
             'Time signature' : 'Time signature',
 # Note value
             'Note values' : 'Note values',
+# Tempo
+            'Tempo' : 'Tempo',
 # Tuplet
             'Tuplets' : 'Tuplets',
             'Same pitch in tuplet' : 'Same pitch in tuplet',

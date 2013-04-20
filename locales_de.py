@@ -85,6 +85,8 @@ locales = {
             'no rests' : 'keine Pausen',
             'Time signature' : 'Taktart',
             'Note values' : 'Notenwert',
+# Tempo
+            'Tempo' : 'Tempo',
 # Multiolen
             'Tuplets' : 'n-Tolen',
             'Same pitch in tuplet' : 'Gesamte n-Tole auf einer Tonhöhe',

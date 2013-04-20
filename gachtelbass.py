@@ -338,7 +338,7 @@ class Gachtelbass(object):
         self.parameters_hbox_2.pack_start(tempo_vbox, False, False, 2)
         
         #TODO add a translation locales entry for tempo
-        tempo_label = gtk.Label('Tempo')
+        tempo_label = gtk.Label(locales['Tempo'])
         tempo_label.show()
         tempo_label.set_alignment(0, 0)
         
@@ -346,7 +346,6 @@ class Gachtelbass(object):
         # Note that the page_size value only makes a difference for
         # scrollbar widgets, and the highest value you'll get is actually
         # (upper - page_size).
-        #TODO: Write self.parameters['bpm'] to configuration file
         tempo_adjustment = gtk.Adjustment(self.parameters['bpm'], 20.0, 200.0, 1.0, 1.0, 1.0)
         #tempo_adjustment = gtk.Adjustment(60, 20, 200, 1, 1, 1)
         tempo_adjustment.connect('value_changed', self.set_tempo)

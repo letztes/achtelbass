@@ -367,11 +367,34 @@ class Achtelbass(object):
             previous_clef = 'b'
         j = 0 # separate iterator for pitches. 
         
-        # Metronome in the first bar
-        for i in range(0, int(self.Time_Signature_Numerator)):
-            note_string += self.Pitches[0][0] + str(self.Time_Signature_Denominator) + self.Pitches[0][1] + ' '
-        note_string += "/\n"
+        ### Begin of metronome in the first bar ###
         
+        # Metronome unit is not slower than Time_Signature_Denominator
+        # which is usually 1/4 because the common time signature is 4/4
+        # But the metronome unit is as fast as double the fastest
+        # note value. 
+        # For example if note values 1/2 and 1/4 are selected,
+        # metronome unit is 1/4 (in case time signature is 3/4 or 4/4)
+        # If note values are 1/16 and 1/32 metronome unit is 1/16
+        metronome_unit = 1.0/float(self.Time_Signature_Denominator)
+        if float(self.Selectable_Note_Values[0]) * 2.0 < metronome_unit:
+            metronome_unit = float(self.Selectable_Note_Values[0]) * 2.0
+        
+        new_note_values = note_values.NoteValues([metronome_unit],
+                                                 self.Time_Signature,
+                                                 0,#self.Tuplets
+                                                 0)#self.Tuplets_Frequency
+        
+        new_note_values.calculate()
+        
+        for note in new_note_values.Result:
+            if note != "/\n":
+                note = self.Pitches[0][0] + str(note) + self.Pitches[0][1] + ' '
+                note_string += note
+        note_string += "/\n"
+        ### End of metronome in the first bar ###
+        
+        ### Begin of actual music ###
         for i in range(len(self.Note_Values)):
             if self.Note_Values[i] == "/\n":
                 note_string += "/\n"

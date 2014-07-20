@@ -485,8 +485,8 @@ class Achtelbass(object):
         file_object = open('out.pmx', 'w')
         file_object.write(pmx_string)
         file_object.close()
-        os.system('pmx out.pmx')
-        os.system('dvipdf out.dvi')
+        os.system('pmx2pdf out.pmx')
+        #os.system('dvipdf out.dvi')
         if self.Display_PDF:
             os.system('evince out.pdf')
         else:
